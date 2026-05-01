@@ -659,6 +659,20 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .step-dot.done { background: var(--green); }
 .step-dot.error { background: var(--red); }
 
+/* ---- Info circle button ---- */
+.btn-info-circle {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  min-width: auto;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
 /* ---- File inputs ---- */
 .file-group { margin-bottom: 8px; }
 .file-group label { display: block; font-size: 0.65rem; color: var(--text-dim); margin-bottom: 3px; }

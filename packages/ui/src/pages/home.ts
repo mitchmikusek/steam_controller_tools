@@ -2,6 +2,7 @@ import type { ControllerInfo, ControllerDevice } from '@scflash/protocol';
 import { JINGLES } from '@scflash/protocol';
 import { logger } from '../logger';
 import { showBleHelpModal } from '../components/ble-help-modal';
+import { createInfoButton } from '../components/firmware-info-modal';
 
 const KNOWN_BLE_FW = [0x5b0f21bd, 0x58be1e97];
 
@@ -23,7 +24,6 @@ export class HomePage {
   private connStatus: HTMLElement;
   private controllerSection: HTMLElement;
   private extrasSection: HTMLElement;
-  private flashRow: HTMLElement;
   private controller: ControllerDevice | null = null;
   private currentFwType: 'ble' | 'production' | 'unknown' = 'unknown';
 
@@ -34,58 +34,10 @@ export class HomePage {
     this.el = document.createElement('div');
     this.el.className = 'page';
 
-    // ---- Connection bar ----
-    const connBar = document.createElement('div');
-    connBar.className = 'conn-bar';
-    this.connDot = document.createElement('div');
-    this.connDot.className = 'conn-dot ok';
-    this.connStatus = document.createElement('span');
-    this.connStatus.className = 'conn-status';
-    this.connStatus.textContent = 'Connected';
-    const disconnectBtn = document.createElement('button');
-    disconnectBtn.className = 'btn-ghost btn-sm';
-    disconnectBtn.textContent = 'Disconnect';
-    disconnectBtn.addEventListener('click', () => this.onDisconnect());
-    connBar.appendChild(this.connDot);
-    connBar.appendChild(this.connStatus);
-    connBar.appendChild(disconnectBtn);
-    this.el.appendChild(connBar);
-
-    // ---- Controller section ----
+    // ---- Controller section (connection + firmware + flash) ----
     this.controllerSection = document.createElement('div');
     this.controllerSection.className = 'section';
     this.el.appendChild(this.controllerSection);
-
-    // ---- Flash firmware row ----
-    this.flashRow = document.createElement('div');
-    this.flashRow.className = 'section';
-
-    const flashTitle = document.createElement('div');
-    flashTitle.className = 'section-title';
-    flashTitle.textContent = 'Firmware';
-    this.flashRow.appendChild(flashTitle);
-
-    const flashRowInner = document.createElement('div');
-    flashRowInner.className = 'section-row';
-    const flashLabel = document.createElement('div');
-    const flashMain = document.createElement('div');
-    flashMain.className = 'section-row-label';
-    flashMain.textContent = 'Flash Controller Firmware';
-    const flashSub = document.createElement('div');
-    flashSub.className = 'section-row-sublabel';
-    flashSub.textContent = 'Switch between BLE and Production firmware';
-    flashLabel.appendChild(flashMain);
-    flashLabel.appendChild(flashSub);
-
-    const flashBtn = document.createElement('button');
-    flashBtn.className = 'btn-blue';
-    flashBtn.textContent = 'Flash Firmware';
-    flashBtn.addEventListener('click', () => this.onFlash());
-
-    flashRowInner.appendChild(flashLabel);
-    flashRowInner.appendChild(flashBtn);
-    this.flashRow.appendChild(flashRowInner);
-    this.el.appendChild(this.flashRow);
 
     // ---- Extras section ----
     this.extrasSection = document.createElement('div');
@@ -93,15 +45,8 @@ export class HomePage {
     this.el.appendChild(this.extrasSection);
   }
 
-  setMode(mode: 'normal' | 'bootloader'): void {
-    this.connDot.className = 'conn-dot';
-    if (mode === 'normal') {
-      this.connDot.classList.add('ok');
-      this.connStatus.textContent = 'Connected';
-    } else {
-      this.connDot.classList.add('warn');
-      this.connStatus.textContent = 'Bootloader Mode';
-    }
+  setMode(_mode: 'normal' | 'bootloader'): void {
+    // Mode is shown via setDeviceInfo now
   }
 
   setDeviceInfo(info: ControllerInfo | null): void {
@@ -113,6 +58,7 @@ export class HomePage {
     const badgeClass = fwType === 'ble' ? 'badge-ble' : fwType === 'production' ? 'badge-prod' : 'badge-unknown';
     const badgeText = fwType === 'ble' ? 'BLE' : fwType === 'production' ? 'PRODUCTION' : 'UNKNOWN';
 
+    // Section title with badge
     const title = document.createElement('div');
     title.className = 'section-title';
     title.textContent = 'Controller ';
@@ -122,25 +68,55 @@ export class HomePage {
     title.appendChild(badge);
     this.controllerSection.appendChild(title);
 
-    const rows: [string, string][] = [
-      ['Firmware', fmtRev(info.firmwareRev)],
-      ['Radio', fmtRev(info.radioRev)],
-      ['Bootloader', fmtRev(info.bootloaderRev)],
-    ];
+    // Connection status row
+    const connRow = document.createElement('div');
+    connRow.className = 'section-row';
+    const connLeft = document.createElement('div');
+    connLeft.style.cssText = 'display:flex;align-items:center;gap:8px';
+    this.connDot = document.createElement('div');
+    this.connDot.className = 'conn-dot ok';
+    this.connStatus = document.createElement('span');
+    this.connStatus.className = 'section-row-label';
+    this.connStatus.textContent = 'Connected';
+    connLeft.appendChild(this.connDot);
+    connLeft.appendChild(this.connStatus);
+    const disconnectBtn = document.createElement('button');
+    disconnectBtn.className = 'btn-ghost btn-sm';
+    disconnectBtn.textContent = 'Disconnect';
+    disconnectBtn.addEventListener('click', () => this.onDisconnect());
+    connRow.appendChild(connLeft);
+    connRow.appendChild(disconnectBtn);
+    this.controllerSection.appendChild(connRow);
 
-    for (const [label, value] of rows) {
-      const row = document.createElement('div');
-      row.className = 'section-row';
-      const lbl = document.createElement('div');
-      lbl.className = 'section-row-label';
-      lbl.textContent = label;
-      const val = document.createElement('div');
-      val.className = 'section-row-value';
-      val.textContent = value;
-      row.appendChild(lbl);
-      row.appendChild(val);
-      this.controllerSection.appendChild(row);
-    }
+    // Firmware summary row with info modal
+    const fwRow = document.createElement('div');
+    fwRow.className = 'section-row';
+    const fwLabel = document.createElement('div');
+    fwLabel.className = 'section-row-label';
+    fwLabel.textContent = fwType === 'ble' ? 'Bluetooth LE Firmware' : fwType === 'production' ? 'Production Firmware' : 'Unknown Firmware';
+    fwRow.appendChild(fwLabel);
+    fwRow.appendChild(createInfoButton(info));
+    this.controllerSection.appendChild(fwRow);
+
+    // Flash firmware row
+    const flashRow = document.createElement('div');
+    flashRow.className = 'section-row';
+    const flashLabel = document.createElement('div');
+    const flashMain = document.createElement('div');
+    flashMain.className = 'section-row-label';
+    flashMain.textContent = 'Flash Firmware';
+    const flashSub = document.createElement('div');
+    flashSub.className = 'section-row-sublabel';
+    flashSub.textContent = 'Switch between BLE and Production';
+    flashLabel.appendChild(flashMain);
+    flashLabel.appendChild(flashSub);
+    const flashBtn = document.createElement('button');
+    flashBtn.className = 'btn-blue';
+    flashBtn.textContent = 'Flash';
+    flashBtn.addEventListener('click', () => this.onFlash());
+    flashRow.appendChild(flashLabel);
+    flashRow.appendChild(flashBtn);
+    this.controllerSection.appendChild(flashRow);
   }
 
   setController(ctrl: ControllerDevice | null): void {
@@ -152,6 +128,22 @@ export class HomePage {
     title.className = 'section-title';
     title.textContent = 'Extras';
     this.extrasSection.appendChild(title);
+
+    // BLE Modes button (top of extras)
+    if (this.currentFwType === 'ble') {
+      const modesRow = document.createElement('div');
+      modesRow.className = 'section-row';
+      const modesLabel = document.createElement('div');
+      modesLabel.className = 'section-row-label';
+      modesLabel.textContent = 'Controller Modes';
+      const modesBtn = document.createElement('button');
+      modesBtn.className = 'btn-ghost btn-sm';
+      modesBtn.textContent = 'View BLE Modes';
+      modesBtn.addEventListener('click', () => showBleHelpModal());
+      modesRow.appendChild(modesLabel);
+      modesRow.appendChild(modesBtn);
+      this.extrasSection.appendChild(modesRow);
+    }
 
     // Haptics row
     const hapticRow = document.createElement('div');
@@ -175,22 +167,6 @@ export class HomePage {
     hapticRow.appendChild(hapticLabel);
     hapticRow.appendChild(hapticBtns);
     this.extrasSection.appendChild(hapticRow);
-
-    // BLE Modes button
-    if (this.currentFwType === 'ble') {
-      const modesRow = document.createElement('div');
-      modesRow.className = 'section-row';
-      const modesLabel = document.createElement('div');
-      modesLabel.className = 'section-row-label';
-      modesLabel.textContent = 'Controller Modes';
-      const modesBtn = document.createElement('button');
-      modesBtn.className = 'btn-ghost btn-sm';
-      modesBtn.textContent = 'View BLE Modes';
-      modesBtn.addEventListener('click', () => showBleHelpModal());
-      modesRow.appendChild(modesLabel);
-      modesRow.appendChild(modesBtn);
-      this.extrasSection.appendChild(modesRow);
-    }
 
     // Brightness row
     const brightRow = document.createElement('div');

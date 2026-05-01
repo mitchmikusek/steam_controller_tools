@@ -1,5 +1,6 @@
 import type { ControllerInfo } from '@scflash/protocol';
 import { createBleHelpContent } from '../components/ble-help-modal';
+import { createInfoButton } from '../components/firmware-info-modal';
 
 function fmtRev(ts: number): string {
   if (ts === 0) return 'N/A';
@@ -81,22 +82,17 @@ export class CompletePage {
     title.textContent = 'Result';
     this.detailsEl.appendChild(title);
 
-    const table = document.createElement('table');
-    table.className = 'info-table';
-    const rows: [string, string][] = [['Firmware Type', firmwareType]];
+    // Summary row with info modal button
+    const summaryRow = document.createElement('div');
+    summaryRow.className = 'section-row';
+    const summaryLabel = document.createElement('div');
+    summaryLabel.className = 'section-row-label';
+    summaryLabel.textContent = `${firmwareType} Firmware Installed`;
+    summaryRow.appendChild(summaryLabel);
     if (info) {
-      rows.push(['Firmware', fmtRev(info.firmwareRev)]);
-      if (info.radioRev !== 0) rows.push(['Radio', fmtRev(info.radioRev)]);
-      rows.push(['Bootloader', fmtRev(info.bootloaderRev)]);
+      summaryRow.appendChild(createInfoButton(info));
     }
-    for (const [label, value] of rows) {
-      const tr = document.createElement('tr');
-      const tdl = document.createElement('td'); tdl.textContent = label;
-      const tdv = document.createElement('td'); tdv.textContent = value;
-      tr.appendChild(tdl); tr.appendChild(tdv);
-      table.appendChild(tr);
-    }
-    this.detailsEl.appendChild(table);
+    this.detailsEl.appendChild(summaryRow);
 
     if (firmwareType === 'BLE') {
       const modesCard = document.createElement('div');

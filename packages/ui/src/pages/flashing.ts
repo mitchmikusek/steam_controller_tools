@@ -77,7 +77,7 @@ export class FlashingPage {
   }
 
   updateProgress(p: FlashProgress): void {
-    this.statusText.textContent = p.phase === 'Complete' ? 'Complete' : p.phase;
+    this.statusText.textContent = p.phase === 'Complete' ? 'Complete' : `${p.phase}...`;
     this.fillBar.style.width = `${p.percent}%`;
     this.pctText.textContent = p.phase === 'Complete' ? 'Firmware flashed successfully' : `${p.percent}% complete`;
 
