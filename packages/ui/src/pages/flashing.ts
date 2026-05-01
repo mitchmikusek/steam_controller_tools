@@ -143,7 +143,7 @@ export class FlashingPage {
       desc.textContent = `The controller has rebooted into ${modeName} mode. Select it from the device picker to continue flashing.`;
 
       const btn = document.createElement('button');
-      btn.className = 'btn-blue btn-lg';
+      btn.className = 'btn-blue';
       btn.textContent = 'Reconnect Controller';
       btn.addEventListener('click', async () => {
         try {

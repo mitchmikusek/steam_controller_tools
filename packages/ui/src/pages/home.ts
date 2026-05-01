@@ -218,7 +218,7 @@ export class HomePage {
       modesLabel.className = 'section-row-label';
       modesLabel.textContent = 'Controller Modes';
       const modesBtn = document.createElement('button');
-      modesBtn.className = 'btn-blue btn-sm';
+      modesBtn.className = 'btn-ghost btn-sm';
       modesBtn.textContent = 'View BLE Modes';
       modesBtn.addEventListener('click', () => showBleHelpModal());
       modesRow.appendChild(modesLabel);

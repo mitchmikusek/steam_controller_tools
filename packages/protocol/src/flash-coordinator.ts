@@ -166,6 +166,13 @@ export class FlashCoordinator {
 
     this.log('info', 'Resetting controller...');
     await this.controller.resetSOC();
+    await this.transport.close();
+    this.controller = null;
+
+    this.log('info', 'Reconnecting to read final state...');
+    await this.waitForDevice(CONTROLLER_PID);
+    this.controller = new ControllerDevice(this.transport);
+    this.mode = 'normal';
 
     this.progress('Complete', 100);
     this.log('info', 'BLE firmware flash complete!');

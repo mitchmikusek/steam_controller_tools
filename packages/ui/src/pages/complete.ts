@@ -62,7 +62,7 @@ export class CompletePage {
     this.el.appendChild(this.detailsEl);
 
     this.homeBtn = document.createElement('button');
-    this.homeBtn.className = 'btn-blue btn-lg btn-block';
+    this.homeBtn.className = 'btn-blue btn-block';
     this.homeBtn.textContent = 'Return Home';
     this.homeBtn.style.marginTop = '16px';
     this.homeBtn.addEventListener('click', () => this.onHome());

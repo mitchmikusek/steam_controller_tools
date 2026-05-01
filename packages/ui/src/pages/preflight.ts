@@ -43,7 +43,7 @@ export class PreflightPage {
     const spacer = document.createElement('div');
     spacer.className = 'spacer';
     this.beginBtn = document.createElement('button');
-    this.beginBtn.className = 'btn-blue btn-lg';
+    this.beginBtn.className = 'btn-green';
     this.beginBtn.textContent = 'Begin Flash';
     this.beginBtn.addEventListener('click', () => this.onBegin());
     nav.appendChild(spacer);

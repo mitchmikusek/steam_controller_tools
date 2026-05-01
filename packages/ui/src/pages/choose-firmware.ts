@@ -118,7 +118,7 @@ export class ChooseFirmwarePage {
     const spacer = document.createElement('div');
     spacer.className = 'spacer';
     this.nextBtn = document.createElement('button');
-    this.nextBtn.className = 'btn-blue';
+    this.nextBtn.className = 'btn-ghost';
     this.nextBtn.textContent = 'Next';
     this.nextBtn.disabled = true;
     this.nextBtn.addEventListener('click', () => {
