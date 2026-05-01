@@ -78,17 +78,22 @@ export function showBleHelpModal(onClose?: () => void): void {
   header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:16px';
 
   const title = document.createElement('div');
-  title.style.cssText = 'font-size:0.95rem;font-weight:500;color:var(--text-bright);letter-spacing:0.03em';
+  title.className = 'modal-title';
+  title.style.textAlign = 'left';
   title.textContent = 'BLE Controller Modes';
 
   const closeBtn = document.createElement('button');
   closeBtn.className = 'btn-ghost btn-sm';
   closeBtn.textContent = '\u2715';
   closeBtn.style.cssText = 'font-size:1rem;padding:4px 8px;min-width:auto';
-  closeBtn.addEventListener('click', () => {
-    overlay.remove();
-    onClose?.();
-  });
+  const closeModal = () => {
+    overlay.classList.add('closing');
+    setTimeout(() => {
+      overlay.remove();
+      onClose?.();
+    }, 350);
+  };
+  closeBtn.addEventListener('click', closeModal);
 
   header.appendChild(title);
   header.appendChild(closeBtn);
@@ -104,8 +109,7 @@ export function showBleHelpModal(onClose?: () => void): void {
   overlay.appendChild(modal);
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) {
-      overlay.remove();
-      onClose?.();
+      closeModal();
     }
   });
   document.body.appendChild(overlay);

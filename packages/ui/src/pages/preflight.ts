@@ -35,6 +35,11 @@ export class PreflightPage {
     back.addEventListener('click', () => this.onBack());
     this.el.appendChild(back);
 
+    const heading = document.createElement('div');
+    heading.className = 'page-heading';
+    heading.textContent = 'Pre-flight Checks';
+    this.el.appendChild(heading);
+
     this.contentEl = document.createElement('div');
     this.el.appendChild(this.contentEl);
 
@@ -79,9 +84,12 @@ export class PreflightPage {
     checksSection.appendChild(checksTitle);
 
     let allPass = true;
+
+    // Build check rows (hidden initially)
+    const checkRows: { row: HTMLElement; spinner: HTMLElement; icon: HTMLElement; check: Check }[] = [];
     for (const check of checks) {
       const row = document.createElement('div');
-      row.className = 'section-row';
+      row.className = 'section-row check-item-animated';
       const label = document.createElement('div');
       label.className = 'section-row-label';
       label.textContent = check.label;
@@ -91,12 +99,17 @@ export class PreflightPage {
         sub.textContent = check.detail;
         label.appendChild(sub);
       }
+      const spinner = document.createElement('div');
+      spinner.className = 'check-spinner';
       const icon = document.createElement('div');
       icon.className = `check-icon ${check.status}`;
       icon.textContent = check.status === 'pass' ? '\u2713' : check.status === 'warn' ? '\u26A0' : '\u2717';
+      icon.style.display = 'none';
       row.appendChild(label);
+      row.appendChild(spinner);
       row.appendChild(icon);
       checksSection.appendChild(row);
+      checkRows.push({ row, spinner, icon, check });
       if (check.status === 'fail') allPass = false;
     }
     this.contentEl.appendChild(checksSection);
@@ -112,7 +125,7 @@ export class PreflightPage {
     }
 
     const warnBox = document.createElement('div');
-    warnBox.className = 'warning-box';
+    warnBox.className = 'warning-box preflight-extra';
     for (const w of warnings) {
       const p = document.createElement('div');
       p.textContent = '\u26A0 ' + w;
@@ -124,7 +137,7 @@ export class PreflightPage {
     // Summary
     if (info) {
       const sumSection = document.createElement('div');
-      sumSection.className = 'section';
+      sumSection.className = 'section preflight-extra';
       const sumTitle = document.createElement('div');
       sumTitle.className = 'section-title';
       sumTitle.textContent = 'Summary';
@@ -164,6 +177,49 @@ export class PreflightPage {
       this.contentEl.appendChild(sumSection);
     }
 
-    this.beginBtn.disabled = !allPass;
+    // Hide button initially
+    this.beginBtn.style.opacity = '0';
+    this.beginBtn.style.transition = 'opacity 0.4s ease';
+    this.beginBtn.disabled = true;
+
+    // Animate checks sequentially
+    const extras = this.contentEl.querySelectorAll('.preflight-extra');
+    let delay = 200; // initial delay before first check
+
+    for (let i = 0; i < checkRows.length; i++) {
+      const { row, spinner, icon } = checkRows[i];
+
+      // Show row with spinner
+      setTimeout(() => {
+        row.classList.add('visible');
+      }, delay);
+
+      // After 1s, resolve spinner to check/x
+      delay += 1000;
+      setTimeout(() => {
+        spinner.classList.add('done');
+        setTimeout(() => {
+          spinner.style.display = 'none';
+          icon.style.display = '';
+        }, 300);
+      }, delay);
+
+      delay += 500; // gap before next check
+    }
+
+    // After all checks, show warnings and summary
+    delay += 200;
+    extras.forEach((el, i) => {
+      setTimeout(() => {
+        (el as HTMLElement).classList.add('visible');
+      }, delay + i * 200);
+    });
+
+    // Show begin button after everything
+    const btnDelay = delay + extras.length * 200 + 400;
+    setTimeout(() => {
+      this.beginBtn.style.opacity = '1';
+      this.beginBtn.disabled = !allPass;
+    }, btnDelay);
   }
 }

@@ -210,9 +210,37 @@ export class FlashCoordinator {
     if (!this.controller) throw new Error('Not in normal mode');
 
     // Step 2: Flash radio firmware via SWD
+    // SWD only works on BLE firmware. If it fails, flash BLE LPC temporarily.
     this.log('info', 'Starting SWD interface...');
     this.progress('SWD Start', 0);
-    await this.controller.swdStart();
+    try {
+      await this.controller.swdStart();
+    } catch {
+      this.log('warn', 'SWD not available — flashing BLE LPC temporarily for SWD support...');
+      await this.controller.rebootToBootloader();
+      await this.transport.close();
+      this.controller = null;
+      await this.waitForDevice(BOOTLOADER_PID);
+      this.bootloader = new BootloaderDevice(this.transport);
+      this.mode = 'bootloader';
+
+      this.progress('Erasing LPC', 0);
+      await this.bootloader.eraseFirmware();
+      const bleLpc = await (await fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin')).arrayBuffer();
+      await this.bootloader.flashFirmware(bleLpc, (phase, pct) => this.progress(phase, pct));
+      await this.bootloader.verifyFirmware(bleLpc);
+      this.log('info', 'Rebooting to firmware mode...');
+      await this.bootloader.rebootToFirmware();
+      await this.transport.close();
+      this.bootloader = null;
+      await this.waitForDevice(CONTROLLER_PID);
+      this.controller = new ControllerDevice(this.transport);
+      this.mode = 'normal';
+
+      this.log('info', 'Starting SWD interface...');
+      this.progress('SWD Start', 0);
+      await this.controller.swdStart();
+    }
 
     this.log('info', 'Erasing radio firmware...');
     this.progress('Erasing radio', 0);

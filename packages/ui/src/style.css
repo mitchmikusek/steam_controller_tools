@@ -37,9 +37,26 @@ body {
   flex-direction: column;
 }
 
-/* ---- Page animation ---- */
-.page { animation: fadeIn 0.2s ease; flex: 1; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* ---- Page & element transitions ---- */
+.page { animation: scaleUp 0.4s ease both; flex: 1; display: flex; flex-direction: column; }
+
+/* Centered layout — for connect, flashing, complete pages */
+.page-centered { justify-content: center; align-items: center; }
+.page-centered > * { width: 100%; }
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fade-out {
+  animation: scaleDown 0.4s ease both !important;
+}
+
+@keyframes scaleDown {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.8); }
+}
 
 /* ---- Header ---- */
 .app-header {
@@ -110,6 +127,49 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .btn-sm { font-size: 0.7rem; padding: 5px 14px; }
 .btn-lg { font-size: 0.9rem; padding: 12px 36px; border-radius: 24px; }
 .btn-block { width: 100%; }
+
+/* ---- Connect prompt (disconnected state) ---- */
+.connect-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.connect-prompt {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.connect-prompt.hiding {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.connect-prompt img {
+  width: 200px;
+  opacity: 0.6;
+  animation: controllerFloat 2.5s ease-in-out infinite;
+}
+
+.connect-hint {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin: 16px 0 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+@keyframes controllerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
 
 /* ---- Connection bar ---- */
 .conn-bar {
@@ -219,6 +279,16 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .info-table td:first-child { color: var(--text-dim); width: 100px; }
 .info-table td:last-child { font-family: 'Consolas','SF Mono',monospace; font-size: 0.7rem; color: var(--text); }
 
+/* ---- Page heading ---- */
+.page-heading {
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--text-bright);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 /* ---- Select cards ---- */
 .select-card {
   background: var(--bg-card);
@@ -248,6 +318,49 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .check-icon.fail { color: var(--red); }
 .check-icon.warn { color: var(--yellow); }
 
+/* Preflight check animations */
+.check-item-animated {
+  opacity: 0;
+}
+
+.check-item-animated.visible {
+  animation: checkFadeIn 0.3s ease forwards;
+}
+
+.check-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+.check-spinner.done {
+  animation: checkResolve 0.3s ease forwards;
+  border-color: transparent;
+}
+
+@keyframes checkFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes checkResolve {
+  from { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); }
+  to { transform: scale(1); opacity: 0; }
+}
+
+.preflight-extra {
+  opacity: 0;
+}
+
+.preflight-extra.visible {
+  animation: checkFadeIn 0.4s ease forwards;
+}
+
 .warning-box {
   background: rgba(232,164,58,0.06);
   border: 1px solid rgba(232,164,58,0.2);
@@ -274,7 +387,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 0 32px;
+  flex: 1;
 }
 
 /* Spinning arc around icon */
@@ -285,13 +398,29 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   margin-bottom: 24px;
 }
 
+.logo-ring .arc-wrap {
+  position: absolute;
+  inset: 0;
+  animation: arcPulse 3.5s ease-in-out infinite, spin 12s linear infinite;
+}
+
 .logo-ring .arc {
   position: absolute;
   inset: 0;
   border: 3px solid transparent;
   border-top-color: var(--blue);
+  border-right-color: var(--blue);
+  border-bottom-color: var(--blue);
   border-radius: 50%;
-  animation: spin 1.2s linear infinite;
+  animation: spin 1.6s cubic-bezier(0.35, 0.25, 0.15, 0.75) infinite;
+}
+
+@keyframes arcPulse {
+  0%, 100% { opacity: 1; }
+  35% { opacity: 1; }
+  50% { opacity: 0; }
+  65% { opacity: 0; }
+  80% { opacity: 1; }
 }
 
 .logo-ring .arc-bg {
@@ -324,6 +453,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 .logo-ring.error .icon { color: var(--red); }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
 
 .flash-status {
   font-size: 0.85rem;
@@ -397,7 +527,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   margin-top: 8px;
 }
 .log-line { color: var(--text-dim); }
-.log-line.info { color: var(--blue); }
+.log-line.info { color: var(--text); }
 .log-line.warn { color: var(--yellow); }
 .log-line.error { color: var(--red); }
 .log-line.debug { color: #3a3f47; }
@@ -444,7 +574,12 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.2s ease;
+  animation: modalOverlayIn 0.4s ease;
+}
+
+@keyframes modalOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal {
@@ -456,6 +591,30 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   max-width: 420px;
   width: 90%;
   box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.85) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-overlay.closing {
+  animation: modalOverlayOut 0.35s ease forwards;
+}
+
+.modal-overlay.closing .modal {
+  animation: modalOut 0.35s ease forwards;
+}
+
+@keyframes modalOverlayOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modalOut {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.9) translateY(10px); }
 }
 
 .modal-icon {

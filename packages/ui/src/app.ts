@@ -7,6 +7,7 @@ import {
   type ControllerInfo,
 } from '@scflash/protocol';
 import { logger } from './logger';
+import { ConnectPage } from './pages/connect';
 import { HomePage } from './pages/home';
 import { ChooseFirmwarePage, type FirmwareChoice } from './pages/choose-firmware';
 import { PreflightPage } from './pages/preflight';
@@ -25,6 +26,8 @@ const PROD_FW = {
   radio: 'fw_images/production/d0g_module.bin',
 };
 
+type PageName = 'connect' | 'home' | 'choose' | 'preflight' | 'flashing' | 'complete';
+
 export class App {
   private root: HTMLElement;
   private pageContainer: HTMLElement;
@@ -32,6 +35,7 @@ export class App {
   private deviceInfo: ControllerInfo | null = null;
 
   // Pages
+  private connectPage: ConnectPage;
   private homePage: HomePage;
   private choosePage: ChooseFirmwarePage;
   private preflightPage: PreflightPage;
@@ -41,6 +45,7 @@ export class App {
   // State
   private firmwareChoice: FirmwareChoice = 'ble';
   private isFlashing = false;
+  private isTransitioning = false;
 
   constructor(root: HTMLElement) {
     this.root = root;
@@ -48,9 +53,11 @@ export class App {
 
     // Page container
     this.pageContainer = document.createElement('div');
+    this.pageContainer.style.cssText = 'flex:1;display:flex;flex-direction:column';
     root.appendChild(this.pageContainer);
 
     // Create pages
+    this.connectPage = new ConnectPage();
     this.homePage = new HomePage();
     this.choosePage = new ChooseFirmwarePage();
     this.preflightPage = new PreflightPage();
@@ -65,8 +72,10 @@ export class App {
     // Wire logger to flashing page log
     logger.addListener((level, ts, msg) => this.flashingPage.appendLog(level, ts, msg));
 
+    // Wire connect page
+    this.connectPage.onConnect = () => this.handleConnect();
+
     // Wire home page
-    this.homePage.onConnect = () => this.handleConnect();
     this.homePage.onDisconnect = () => this.handleDisconnect();
     this.homePage.onFlash = () => {
       this.choosePage.setDeviceInfo(this.deviceInfo);
@@ -74,7 +83,7 @@ export class App {
     };
 
     // Wire choose page
-    this.choosePage.onBack = () => this.showPage('home');
+    this.choosePage.onBack = () => this.returnHome();
     this.choosePage.onNext = (choice) => {
       this.firmwareChoice = choice;
       this.preflightPage.configure(choice, this.deviceInfo, this.coordinator.isConnected);
@@ -91,12 +100,20 @@ export class App {
     // Browser back button support
     window.addEventListener('popstate', (e) => {
       if (this.isFlashing) {
-        // Block navigation during flash — push state back
         history.pushState({ page: 'flashing' }, '', '#flashing');
         return;
       }
-      const page = e.state?.page ?? 'home';
-      this.showPage(page, false);
+      const page = (e.state?.page ?? 'connect') as PageName;
+      if (page === 'home') {
+        if (this.coordinator.isConnected) {
+          this.homePage.setMode(this.coordinator.currentMode as 'normal' | 'bootloader');
+          this.showPage('home', false);
+        } else {
+          this.showPage('connect', false);
+        }
+      } else {
+        this.showPage(page, false);
+      }
     });
 
     // Warn before closing tab/window during flash
@@ -106,46 +123,66 @@ export class App {
       }
     });
 
-    // Start on home
-    this.showPage('home');
+    // Start on connect page
+    this.showPage('connect');
     logger.info('Steam Controller Flash Tool ready');
   }
 
-  private showPage(page: 'home' | 'choose' | 'preflight' | 'flashing' | 'complete', pushHistory = true): void {
-    this.pageContainer.textContent = '';
-    if (pushHistory) {
-      history.pushState({ page }, '', `#${page}`);
-    }
-    const pages = {
-      home: this.homePage,
-      choose: this.choosePage,
-      preflight: this.preflightPage,
-      flashing: this.flashingPage,
-      complete: this.completePage,
+  private showPage(page: PageName, pushHistory = true): void {
+    if (this.isTransitioning) return;
+
+    const current = this.pageContainer.firstElementChild as HTMLElement | null;
+    const doSwap = () => {
+      this.isTransitioning = false;
+      this.pageContainer.textContent = '';
+      if (pushHistory) {
+        history.pushState({ page }, '', `#${page}`);
+      }
+      const pages: Record<PageName, { el: HTMLElement }> = {
+        connect: this.connectPage,
+        home: this.homePage,
+        choose: this.choosePage,
+        preflight: this.preflightPage,
+        flashing: this.flashingPage,
+        complete: this.completePage,
+      };
+      const el = pages[page].el;
+      el.classList.remove('fade-out');
+      // Re-trigger the pageIn animation
+      el.style.animation = 'none';
+      el.offsetHeight; // force reflow
+      el.style.animation = '';
+      this.pageContainer.appendChild(el);
     };
-    this.pageContainer.appendChild(pages[page].el);
+
+    if (current) {
+      this.isTransitioning = true;
+      current.classList.add('fade-out');
+      setTimeout(doSwap, 350);
+    } else {
+      doSwap();
+    }
   }
 
   private async handleConnect(): Promise<void> {
     try {
       const mode = await this.coordinator.connect();
-      this.homePage.setConnected(mode);
+      this.homePage.setMode(mode);
       if (mode === 'normal') {
         this.deviceInfo = await this.coordinator.getInfo();
         this.homePage.setDeviceInfo(this.deviceInfo);
         this.homePage.setController(this.coordinator.getController());
       }
+      this.showPage('home');
     } catch (e) {
       logger.error(`Connection failed: ${e}`);
-      this.homePage.setConnected('disconnected');
     }
   }
 
   private async handleDisconnect(): Promise<void> {
     await this.coordinator.disconnect();
     this.deviceInfo = null;
-    this.homePage.setDeviceInfo(null);
-    this.homePage.setController(null);
+    this.showPage('connect');
   }
 
   private async startFlash(): Promise<void> {
@@ -185,20 +222,17 @@ export class App {
   }
 
   private async returnHome(): Promise<void> {
-    // Refresh device state
     if (this.coordinator.isConnected) {
-      this.homePage.setConnected(this.coordinator.currentMode);
+      this.homePage.setMode(this.coordinator.currentMode as 'normal' | 'bootloader');
       try {
         this.deviceInfo = await this.coordinator.getInfo();
         this.homePage.setDeviceInfo(this.deviceInfo);
         this.homePage.setController(this.coordinator.getController());
       } catch { /* ok */ }
+      this.showPage('home');
     } else {
-      this.homePage.setConnected('disconnected');
-      this.homePage.setDeviceInfo(null);
-      this.homePage.setController(null);
+      this.showPage('connect');
     }
-    this.showPage('home');
   }
 
   private async loadBundledBLEFirmware() {

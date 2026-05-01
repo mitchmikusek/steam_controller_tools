@@ -55,18 +55,19 @@ export class CompletePage {
     this.titleEl.className = 'result-title';
     center.appendChild(this.titleEl);
 
-    this.el.appendChild(center);
-
     this.detailsEl = document.createElement('div');
     this.detailsEl.className = 'card';
-    this.el.appendChild(this.detailsEl);
+    this.detailsEl.style.width = '100%';
+    center.appendChild(this.detailsEl);
 
     this.homeBtn = document.createElement('button');
     this.homeBtn.className = 'btn-blue btn-block';
     this.homeBtn.textContent = 'Return Home';
     this.homeBtn.style.marginTop = '16px';
+    center.appendChild(this.homeBtn);
     this.homeBtn.addEventListener('click', () => this.onHome());
-    this.el.appendChild(this.homeBtn);
+
+    this.el.appendChild(center);
   }
 
   showSuccess(firmwareType: string, info: ControllerInfo | null): void {
@@ -84,8 +85,9 @@ export class CompletePage {
     table.className = 'info-table';
     const rows: [string, string][] = [['Firmware Type', firmwareType]];
     if (info) {
-      rows.push(['Firmware Rev', fmtRev(info.firmwareRev)]);
-      rows.push(['Radio Rev', fmtRev(info.radioRev)]);
+      rows.push(['Firmware', fmtRev(info.firmwareRev)]);
+      rows.push(['Radio', fmtRev(info.radioRev)]);
+      rows.push(['Bootloader', fmtRev(info.bootloaderRev)]);
     }
     for (const [label, value] of rows) {
       const tr = document.createElement('tr');
@@ -109,7 +111,7 @@ export class CompletePage {
       subtitle.textContent = 'Hold a button + Steam to switch modes';
       modesCard.appendChild(subtitle);
       modesCard.appendChild(createBleHelpContent());
-      this.el.insertBefore(modesCard, this.homeBtn);
+      this.homeBtn.parentElement!.insertBefore(modesCard, this.homeBtn);
     }
   }
 
@@ -130,7 +132,7 @@ export class CompletePage {
     this.detailsEl.appendChild(title);
 
     const msg = document.createElement('div');
-    msg.style.cssText = 'font-size:0.75rem;color:var(--red);font-family:monospace;word-break:break-all';
+    msg.style.cssText = 'font-size:0.7rem;color:var(--red);font-family:Consolas,SF Mono,monospace;word-break:break-all';
     msg.textContent = error;
     this.detailsEl.appendChild(msg);
 

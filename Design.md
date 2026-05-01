@@ -48,13 +48,28 @@ Inspired by the Steam Deck Big Picture mode aesthetic: dark, minimal, spacious, 
 ### Font stacks
 
 - **UI**: `-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif`
-- **Monospace** (data values, log): `'Consolas', 'SF Mono', monospace`
+- **Monospace** (data values, log, error messages): `'Consolas', 'SF Mono', monospace`
 
 ### Text conventions
 
 - Section titles: uppercase, letter-spacing 0.1em
 - App header: uppercase, letter-spacing 0.12em
+- Page headings: uppercase, letter-spacing 0.04em, weight 300
 - Body text: sentence case
+- Use CSS classes (`.page-heading`, `.section-title`, `.card-title`, `.modal-title`) — avoid inline font styles
+
+### Log colors
+
+Log lines should be readable but not distracting:
+
+| Level | Color | Usage |
+|-------|-------|-------|
+| `debug` | `#3a3f47` | Nearly invisible, internal diagnostics |
+| `info` | `--text` (`#b8bcbf`) | Neutral — normal operation messages |
+| `warn` | `--yellow` (`#e8a43a`) | Attention needed but not fatal |
+| `error` | `--red` (`#d94126`) | Failures, action required |
+
+Info should NOT be blue — blue implies interactivity. Log text is read-only.
 
 ## Spacing Scale
 
@@ -101,6 +116,35 @@ Steam uses neutral buttons for almost everything, with color reserved for emphas
 - Ghost for anything dismissive, secondary, or exploratory
 - Never mix sizes for buttons in the same row
 - All CTAs at bottom-right of their section (except `.btn-block`)
+
+## Text Hierarchy
+
+Pages follow a consistent heading structure:
+
+```
+App Header (always visible)
+├── h1: "STEAM CONTROLLER (2015)"    — 1.1rem, weight 500, uppercase
+└── subtitle: "FIRMWARE FLASH TOOL"  — 0.7rem, uppercase
+
+Page Content
+├── .page-heading: "CHOOSE FIRMWARE" — 1rem, weight 300, uppercase (wizard steps only)
+├── .section-title: "CONTROLLER"     — 0.7rem, weight 600, uppercase, with bottom border
+│   └── .section-row
+│       ├── .section-row-label       — 0.85rem, --text-bright
+│       └── .section-row-value       — 0.7rem, monospace, --text
+├── .card-title: "RESULT"            — 0.65rem, weight 600, uppercase
+├── .flash-status: "Flashing radio"  — 0.85rem, --text-bright (centered, flashing page)
+├── .result-title: "Flash Complete"  — 0.9rem, weight 400, --text-bright (centered, complete page)
+└── .modal-title: "BLE Modes"        — 1.1rem, weight 500, --text-bright (modal dialogs)
+```
+
+### Rules
+
+- Wizard step pages (Choose, Preflight) always have a `.page-heading`
+- Home page uses `.section-title` directly (no page heading — it IS the home)
+- Centered pages (Flashing, Complete) use their own centered title styles
+- Never use inline font styles — use the defined CSS classes
+- Section titles always uppercase with letter-spacing
 
 ## Layout Components
 

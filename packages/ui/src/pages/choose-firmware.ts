@@ -48,7 +48,7 @@ export class ChooseFirmwarePage {
     this.el.appendChild(back);
 
     const heading = document.createElement('div');
-    heading.style.cssText = 'font-size:1rem;font-weight:300;color:var(--text-bright);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em';
+    heading.className = 'page-heading';
     heading.textContent = 'Choose Firmware';
     this.el.appendChild(heading);
 

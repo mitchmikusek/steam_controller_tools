@@ -7,8 +7,6 @@ export class FlashingPage {
   private statusText: HTMLElement;
   private fillBar: HTMLElement;
   private pctText: HTMLElement;
-  private logOutput: HTMLElement;
-  private logWrap: HTMLElement;
   private reconnectArea: HTMLElement;
 
   constructor() {
@@ -35,8 +33,11 @@ export class FlashingPage {
 
     const arcBg = document.createElement('div');
     arcBg.className = 'arc-bg';
+    const arcWrap = document.createElement('div');
+    arcWrap.className = 'arc-wrap';
     const arc = document.createElement('div');
     arc.className = 'arc';
+    arcWrap.appendChild(arc);
     this.iconEl = document.createElement('img');
     this.iconEl.className = 'icon';
     (this.iconEl as HTMLImageElement).src = 'steam-logo.png';
@@ -44,7 +45,7 @@ export class FlashingPage {
     this.iconEl.style.cssText += ';width:100px;height:100px';
 
     this.logoRing.appendChild(arcBg);
-    this.logoRing.appendChild(arc);
+    this.logoRing.appendChild(arcWrap);
     this.logoRing.appendChild(this.iconEl);
     center.appendChild(this.logoRing);
 
@@ -73,27 +74,6 @@ export class FlashingPage {
     this.reconnectArea = document.createElement('div');
     this.reconnectArea.style.display = 'none';
     this.el.appendChild(this.reconnectArea);
-
-    // Log (collapsible)
-    const logToggle = document.createElement('div');
-    logToggle.className = 'log-toggle';
-    logToggle.textContent = '\u25BC Show Log';
-
-    this.logWrap = document.createElement('div');
-    this.logWrap.style.display = 'none';
-
-    this.logOutput = document.createElement('div');
-    this.logOutput.className = 'log-output';
-    this.logWrap.appendChild(this.logOutput);
-
-    logToggle.addEventListener('click', () => {
-      const open = this.logWrap.style.display !== 'none';
-      this.logWrap.style.display = open ? 'none' : '';
-      logToggle.textContent = open ? '\u25BC Show Log' : '\u25B2 Hide Log';
-    });
-
-    this.el.appendChild(logToggle);
-    this.el.appendChild(this.logWrap);
   }
 
   updateProgress(p: FlashProgress): void {
@@ -108,12 +88,8 @@ export class FlashingPage {
     }
   }
 
-  appendLog(level: LogLevel, ts: string, msg: string): void {
-    const line = document.createElement('div');
-    line.className = `log-line ${level}`;
-    line.textContent = `[${ts}] ${msg}`;
-    this.logOutput.appendChild(line);
-    this.logOutput.scrollTop = this.logOutput.scrollHeight;
+  appendLog(_level: LogLevel, _ts: string, _msg: string): void {
+    // Log output removed from UI — logs go to browser console only
   }
 
   showReconnectPrompt(targetPid: number): Promise<void> {
@@ -147,10 +123,16 @@ export class FlashingPage {
       btn.textContent = 'Reconnect Controller';
       btn.addEventListener('click', async () => {
         try {
-          await navigator.hid.requestDevice({
-            filters: [{ vendorId: VALVE_VID, productId: targetPid }],
-          });
-          overlay.remove();
+          // For normal mode, filter by vendor usage page (0xFF00) to get the protocol interface
+          // For bootloader, only one interface exists so no filter needed
+          const filters = targetPid === 0x1002
+            ? [{ vendorId: VALVE_VID, productId: targetPid }]
+            : [{ vendorId: VALVE_VID, productId: targetPid, usagePage: 0xff00 }];
+          await navigator.hid.requestDevice({ filters });
+          overlay.classList.add('closing');
+          setTimeout(() => {
+            overlay.remove();
+          }, 350);
           this.statusText.textContent = 'Resuming...';
           resolve();
         } catch {
@@ -183,6 +165,5 @@ export class FlashingPage {
     this.logoRing.className = 'logo-ring';
     this.iconEl.style.display = '';
     this.reconnectArea.style.display = 'none';
-    this.logOutput.textContent = '';
   }
 }

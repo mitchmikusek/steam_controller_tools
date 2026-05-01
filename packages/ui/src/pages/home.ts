@@ -21,15 +21,13 @@ export class HomePage {
   readonly el: HTMLElement;
   private connDot: HTMLElement;
   private connStatus: HTMLElement;
-  private connBtn: HTMLButtonElement;
   private controllerSection: HTMLElement;
   private extrasSection: HTMLElement;
   private flashRow: HTMLElement;
   private controller: ControllerDevice | null = null;
   private currentFwType: 'ble' | 'production' | 'unknown' = 'unknown';
 
-  onConnect: () => Promise<void> = async () => {};
-  onDisconnect: () => Promise<void> = async () => {};
+  onDisconnect: () => void = () => {};
   onFlash: () => void = () => {};
 
   constructor() {
@@ -37,37 +35,30 @@ export class HomePage {
     this.el.className = 'page';
 
     // ---- Connection bar ----
-    const conn = document.createElement('div');
-    conn.className = 'conn-bar';
+    const connBar = document.createElement('div');
+    connBar.className = 'conn-bar';
     this.connDot = document.createElement('div');
-    this.connDot.className = 'conn-dot';
+    this.connDot.className = 'conn-dot ok';
     this.connStatus = document.createElement('span');
     this.connStatus.className = 'conn-status';
-    this.connStatus.textContent = 'Disconnected';
-    this.connBtn = document.createElement('button');
-    this.connBtn.className = 'btn-blue btn-sm';
-    this.connBtn.textContent = 'Connect';
-    this.connBtn.addEventListener('click', async () => {
-      this.connBtn.disabled = true;
-      this.connBtn.textContent = 'Connecting...';
-      await this.onConnect();
-      this.connBtn.disabled = false;
-    });
-    conn.appendChild(this.connDot);
-    conn.appendChild(this.connStatus);
-    conn.appendChild(this.connBtn);
-    this.el.appendChild(conn);
+    this.connStatus.textContent = 'Connected';
+    const disconnectBtn = document.createElement('button');
+    disconnectBtn.className = 'btn-ghost btn-sm';
+    disconnectBtn.textContent = 'Disconnect';
+    disconnectBtn.addEventListener('click', () => this.onDisconnect());
+    connBar.appendChild(this.connDot);
+    connBar.appendChild(this.connStatus);
+    connBar.appendChild(disconnectBtn);
+    this.el.appendChild(connBar);
 
     // ---- Controller section ----
     this.controllerSection = document.createElement('div');
     this.controllerSection.className = 'section';
-    this.controllerSection.style.display = 'none';
     this.el.appendChild(this.controllerSection);
 
     // ---- Flash firmware row ----
     this.flashRow = document.createElement('div');
     this.flashRow.className = 'section';
-    this.flashRow.style.display = 'none';
 
     const flashTitle = document.createElement('div');
     flashTitle.className = 'section-title';
@@ -99,46 +90,22 @@ export class HomePage {
     // ---- Extras section ----
     this.extrasSection = document.createElement('div');
     this.extrasSection.className = 'section';
-    this.extrasSection.style.display = 'none';
     this.el.appendChild(this.extrasSection);
   }
 
-  setConnected(mode: 'disconnected' | 'normal' | 'bootloader'): void {
+  setMode(mode: 'normal' | 'bootloader'): void {
     this.connDot.className = 'conn-dot';
     if (mode === 'normal') {
       this.connDot.classList.add('ok');
       this.connStatus.textContent = 'Connected';
-      this.connBtn.textContent = 'Disconnect';
-      this.connBtn.className = 'btn-ghost btn-sm';
-      this.connBtn.onclick = async () => {
-        await this.onDisconnect();
-        this.setConnected('disconnected');
-        this.controllerSection.style.display = 'none';
-        this.extrasSection.style.display = 'none';
-        this.flashRow.style.display = 'none';
-      };
-      this.flashRow.style.display = '';
-    } else if (mode === 'bootloader') {
+    } else {
       this.connDot.classList.add('warn');
       this.connStatus.textContent = 'Bootloader Mode';
-      this.flashRow.style.display = '';
-    } else {
-      this.connStatus.textContent = 'Disconnected';
-      this.connBtn.textContent = 'Connect';
-      this.connBtn.className = 'btn-blue btn-sm';
-      this.connBtn.onclick = async () => {
-        this.connBtn.disabled = true;
-        this.connBtn.textContent = 'Connecting...';
-        await this.onConnect();
-        this.connBtn.disabled = false;
-      };
-      this.flashRow.style.display = 'none';
     }
   }
 
   setDeviceInfo(info: ControllerInfo | null): void {
-    if (!info) { this.controllerSection.style.display = 'none'; this.currentFwType = 'unknown'; return; }
-    this.controllerSection.style.display = '';
+    if (!info) { this.controllerSection.textContent = ''; this.currentFwType = 'unknown'; return; }
     this.controllerSection.textContent = '';
 
     const fwType = detectFirmwareType(info);
@@ -178,9 +145,8 @@ export class HomePage {
 
   setController(ctrl: ControllerDevice | null): void {
     this.controller = ctrl;
-    if (!ctrl) { this.extrasSection.style.display = 'none'; return; }
-    this.extrasSection.style.display = '';
     this.extrasSection.textContent = '';
+    if (!ctrl) return;
 
     const title = document.createElement('div');
     title.className = 'section-title';
@@ -210,7 +176,7 @@ export class HomePage {
     hapticRow.appendChild(hapticBtns);
     this.extrasSection.appendChild(hapticRow);
 
-    // BLE Modes button (only when BLE firmware detected)
+    // BLE Modes button
     if (this.currentFwType === 'ble') {
       const modesRow = document.createElement('div');
       modesRow.className = 'section-row';

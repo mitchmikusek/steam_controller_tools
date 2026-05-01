@@ -109,10 +109,10 @@ export class WebHIDTransport implements HIDTransport {
    * Find a previously-granted device by PID. Used after mode switch.
    * For normal mode, filters for the vendor-defined usage page.
    */
-  static async findDevice(productId: number): Promise<HIDDevice | null> {
+  static async findDevice(productId: number, requireVendorPage = true): Promise<HIDDevice | null> {
     const devices = await navigator.hid.getDevices();
 
-    if (productId === CONTROLLER_PID) {
+    if (productId === CONTROLLER_PID && requireVendorPage) {
       return devices.find(
         d => d.vendorId === VALVE_VID && d.productId === productId && isVendorDevice(d),
       ) ?? null;
