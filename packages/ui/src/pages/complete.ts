@@ -1,5 +1,5 @@
 import type { ControllerInfo } from '@scflash/protocol';
-import { createBleHelpContent } from '../components/ble-help-modal';
+import { showBleHelpModal } from '../components/ble-help-modal';
 import { createInfoButton } from '../components/firmware-info-modal';
 
 function fmtRev(ts: number): string {
@@ -57,7 +57,7 @@ export class CompletePage {
     center.appendChild(this.titleEl);
 
     this.detailsEl = document.createElement('div');
-    this.detailsEl.className = 'card';
+    this.detailsEl.className = 'section';
     this.detailsEl.style.width = '100%';
     center.appendChild(this.detailsEl);
 
@@ -77,37 +77,33 @@ export class CompletePage {
     this.titleEl.textContent = 'Flash Complete';
 
     this.detailsEl.textContent = '';
-    const title = document.createElement('div');
-    title.className = 'card-title';
-    title.textContent = 'Result';
-    this.detailsEl.appendChild(title);
 
-    // Summary row with info modal button
-    const summaryRow = document.createElement('div');
-    summaryRow.className = 'section-row';
-    const summaryLabel = document.createElement('div');
-    summaryLabel.className = 'section-row-label';
-    summaryLabel.textContent = `${firmwareType} Firmware Installed`;
-    summaryRow.appendChild(summaryLabel);
+    // Firmware type row with info button
+    const fwRow = document.createElement('div');
+    fwRow.className = 'section-row';
+    const fwLabel = document.createElement('div');
+    fwLabel.className = 'section-row-label';
+    fwLabel.textContent = `${firmwareType} Firmware Installed`;
+    fwRow.appendChild(fwLabel);
     if (info) {
-      summaryRow.appendChild(createInfoButton(info));
+      fwRow.appendChild(createInfoButton(info));
     }
-    this.detailsEl.appendChild(summaryRow);
+    this.detailsEl.appendChild(fwRow);
 
     if (firmwareType === 'BLE') {
-      const modesCard = document.createElement('div');
-      modesCard.className = 'card';
-      modesCard.style.marginTop = '12px';
-      const modesTitle = document.createElement('div');
-      modesTitle.className = 'card-title';
-      modesTitle.textContent = 'BLE Controller Modes';
-      modesCard.appendChild(modesTitle);
-      const subtitle = document.createElement('div');
-      subtitle.style.cssText = 'font-size:0.7rem;color:var(--text-dim);margin-bottom:8px';
-      subtitle.textContent = 'Hold a button + Steam to switch modes';
-      modesCard.appendChild(subtitle);
-      modesCard.appendChild(createBleHelpContent());
-      this.homeBtn.parentElement!.insertBefore(modesCard, this.homeBtn);
+      // BLE modes inline
+      const modesRow = document.createElement('div');
+      modesRow.className = 'section-row';
+      const modesLabel = document.createElement('div');
+      modesLabel.className = 'section-row-label';
+      modesLabel.textContent = 'Controller Modes';
+      const modesBtn = document.createElement('button');
+      modesBtn.className = 'btn-ghost btn-sm';
+      modesBtn.textContent = 'View BLE Modes';
+      modesBtn.addEventListener('click', () => showBleHelpModal());
+      modesRow.appendChild(modesLabel);
+      modesRow.appendChild(modesBtn);
+      this.detailsEl.appendChild(modesRow);
     }
   }
 
@@ -123,7 +119,7 @@ export class CompletePage {
 
     this.detailsEl.textContent = '';
     const title = document.createElement('div');
-    title.className = 'card-title';
+    title.className = 'section-title';
     title.textContent = 'Error';
     this.detailsEl.appendChild(title);
 
