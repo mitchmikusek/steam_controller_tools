@@ -219,6 +219,8 @@ export class App {
       this.showPage('complete');
     } catch (e) {
       this.isFlashing = false;
+      // Clean up connection state on error
+      try { await this.coordinator.disconnect(); } catch { /* ok */ }
       const errMsg = e instanceof Error ? e.message : String(e);
       this.completePage.showError(errMsg);
       this.showPage('complete');

@@ -120,7 +120,7 @@ export class FlashingPage {
 
       const btn = document.createElement('button');
       btn.className = 'btn-blue';
-      btn.textContent = 'Reconnect Controller';
+      btn.textContent = 'Reconnect';
       btn.addEventListener('click', async () => {
         try {
           // For normal mode, filter by vendor usage page (0xFF00) to get the protocol interface
