@@ -203,10 +203,14 @@ export class App {
         await this.coordinator.flashProduction(fw);
       }
 
-      // Get updated info
-      try {
-        this.deviceInfo = await this.coordinator.getInfo();
-      } catch { /* may fail if not in normal mode */ }
+      // Read info — retry until radio is populated (device needs time after reboot)
+      for (let attempt = 0; attempt < 8; attempt++) {
+        try {
+          this.deviceInfo = await this.coordinator.getInfo();
+          if (this.deviceInfo && this.deviceInfo.radioRev !== 0) break;
+        } catch { /* may fail */ }
+        await new Promise(r => setTimeout(r, 2000));
+      }
 
       const label = this.firmwareChoice === 'ble' ? 'BLE' :
                     this.firmwareChoice === 'production' ? 'Production' : 'Custom';

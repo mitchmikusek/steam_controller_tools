@@ -86,7 +86,7 @@ export class CompletePage {
     const rows: [string, string][] = [['Firmware Type', firmwareType]];
     if (info) {
       rows.push(['Firmware', fmtRev(info.firmwareRev)]);
-      rows.push(['Radio', fmtRev(info.radioRev)]);
+      if (info.radioRev !== 0) rows.push(['Radio', fmtRev(info.radioRev)]);
       rows.push(['Bootloader', fmtRev(info.bootloaderRev)]);
     }
     for (const [label, value] of rows) {
