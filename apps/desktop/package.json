@@ -1,0 +1,22 @@
+{
+  "name": "@scflash/desktop",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter @scflash/ui dev\" \"electron .\"",
+    "build": "pnpm --filter @scflash/ui build && tsc && electron-builder",
+    "package:linux": "pnpm run build -- --linux",
+    "package:mac": "pnpm run build -- --mac",
+    "package:win": "pnpm run build -- --win"
+  },
+  "dependencies": {
+    "electron": "^33.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "electron-builder": "^25.0.0",
+    "concurrently": "^9.0.0"
+  }
+}

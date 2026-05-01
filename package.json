@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "steam-controller-flash",
+  "scripts": {
+    "dev": "pnpm --filter @scflash/ui dev",
+    "build:protocol": "pnpm --filter @scflash/protocol build",
+    "build": "pnpm --filter @scflash/protocol build && pnpm --filter @scflash/ui build",
+    "dev:desktop": "pnpm --filter @scflash/desktop dev",
+    "build:desktop": "pnpm --filter @scflash/desktop build"
+  }
+}

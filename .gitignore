@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-electron/
+*.js
+*.d.ts
+*.js.map
+!vite.config.ts
+
+# Firmware files (large binaries)
+fw_images/
+packages/ui/public/fw_images/
+apps/desktop/resources/fw_images/

@@ -1,0 +1,21 @@
+appId: com.scflash.desktop
+productName: Steam Controller Flash Tool
+directories:
+  output: dist-electron
+files:
+  - dist/**/*
+  - "../../packages/ui/dist/**/*"
+extraResources:
+  - from: resources/fw_images
+    to: fw_images
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+mac:
+  target:
+    - dmg
+win:
+  target:
+    - nsis
