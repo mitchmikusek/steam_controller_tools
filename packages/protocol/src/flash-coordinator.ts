@@ -100,9 +100,8 @@ export class FlashCoordinator {
 
   /**
    * Flash BLE firmware. Sequence:
-   * 1. Flash LPC firmware (bootloader mode)
-   * 2. Wait 4s
-   * 3. Flash radio firmware via SWD (normal mode)
+   * 1. Flash LPC firmware (bootloader mode) — needed first for SWD support
+   * 2. Flash radio firmware via SWD (normal mode)
    */
   async flashBLE(fw: FirmwareSet): Promise<void> {
     // Step 1: Switch to bootloader mode if needed
@@ -136,7 +135,7 @@ export class FlashCoordinator {
     await this.transport.close();
     this.bootloader = null;
 
-    this.log('info', 'Waiting 4 seconds for reboot...');
+    this.log('info', 'Waiting for reboot...');
     await delay(4000);
 
     await this.waitForDevice(CONTROLLER_PID);
@@ -153,7 +152,7 @@ export class FlashCoordinator {
     await this.controller.swdErase();
 
     this.log('info', 'Flashing SoftDevice...');
-    await this.controller.swdFlash(fw.softdevice, 0, (phase, pct) =>
+    await this.controller.swdFlash(fw.softdevice, 0, (_phase, pct) =>
       this.progress('Flashing SoftDevice', pct),
     );
 
@@ -180,12 +179,22 @@ export class FlashCoordinator {
    */
   async flashProduction(fw: FirmwareSet): Promise<void> {
     // Step 1: Ensure normal mode for SWD
+    // SWD requires a working LPC firmware. If we're in bootloader mode,
+    // we need to flash BLE LPC first (it has SWD support), reboot, do SWD,
+    // then flash production LPC last.
     if (this.mode === 'bootloader') {
+      this.log('info', 'In bootloader mode — flashing BLE LPC first for SWD support...');
+      this.progress('Erasing LPC', 0);
+      await this.bootloader!.eraseFirmware();
+      // Use BLE LPC firmware temporarily for SWD support
+      const bleLpc = await (await fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin')).arrayBuffer();
+      await this.bootloader!.flashFirmware(bleLpc, (phase, pct) => this.progress(phase, pct));
+      this.log('info', 'Verifying temporary LPC firmware...');
+      await this.bootloader!.verifyFirmware(bleLpc);
       this.log('info', 'Rebooting to firmware mode...');
       await this.bootloader!.rebootToFirmware();
       await this.transport.close();
       this.bootloader = null;
-      await delay(2000);
       await this.waitForDevice(CONTROLLER_PID);
       this.controller = new ControllerDevice(this.transport);
       this.mode = 'normal';
@@ -262,28 +271,15 @@ export class FlashCoordinator {
 
   // --- Internal helpers ---
 
-  private async waitForDevice(targetPid: number, timeoutMs = 10000): Promise<void> {
-    const deadline = Date.now() + timeoutMs;
-    this.log('info', `Waiting for device PID 0x${targetPid.toString(16)}...`);
+  private async waitForDevice(targetPid: number): Promise<void> {
+    this.log('info', `Reconnecting to device PID 0x${targetPid.toString(16)}...`);
 
-    // First try: poll getDevices() in case the browser remembers the permission
-    while (Date.now() < deadline) {
-      const device = await WebHIDTransport.findDevice(targetPid);
-      if (device) {
-        await this.transport.openDevice(device);
-        this.log('info', 'Device found and opened');
-        return;
-      }
-      await delay(500);
-    }
-
-    // Fallback: the device re-enumerated with a new PID and needs fresh permission.
-    // Prompt the user to click a button that triggers requestDevice().
-    this.log('warn', 'Device not found automatically. User action needed to reconnect.');
+    // Mode switch changes PID — WebHID always requires fresh user permission.
+    // Go straight to the reconnect prompt.
     await this.onReconnectNeeded(targetPid);
 
-    // After the user grants permission, try to find and open the device
-    await delay(1000);
+    // After the user grants permission, find and open the device
+    await delay(500);
     const device = await WebHIDTransport.findDevice(targetPid);
     if (device) {
       await this.transport.openDevice(device);

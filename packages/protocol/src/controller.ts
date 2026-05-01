@@ -50,31 +50,35 @@ export class ControllerDevice extends DeviceBase {
 
   // --- SWD (Serial Wire Debug) operations for nRF51822 radio chip ---
 
-  async swdStart(): Promise<void> {
+  async swdStart(timeoutMs = 15000): Promise<void> {
     await this.send([SCProtocolId.SendIRCode, 0x04, 0x17, 0xed, 0xfe, 0xd0]);
-    while (true) {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
       const response = await this.get();
-      const idx = this.expect(
-        response,
-        [0x94, 0x06, 0x00, 0x00, 0xfc, 0x03], // ready
-        [0x94, 0x06, 0x00, 0x00, 0x00, 0x00, 0x02], // in progress
-      );
-      if (idx === 0) break;
-      await delay(100);
+      // Check for ready pattern
+      if (this.matchesPattern(response, [0x94, 0x06, 0x00, 0x00, 0xfc, 0x03])) break;
+      // Any other 0x94 response means still working — keep polling
+      if (response[0] === 0x94) {
+        await delay(100);
+        continue;
+      }
+      throw new Error(`SWD start unexpected response: [${this.hexBytes(response)}]`);
     }
   }
 
-  async swdErase(): Promise<void> {
+  async swdErase(timeoutMs = 15000): Promise<void> {
     await this.send([SCProtocolId.SWDErase]);
-    while (true) {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
       const response = await this.get();
-      const idx = this.expect(
-        response,
-        [0x94, 0x06, 0x00, 0x00, 0x01, 0x00], // complete
-        [0x94, 0x06, 0x00, 0x00, 0x00, 0x00, 0x02], // in progress
-      );
-      if (idx === 0) break;
-      await delay(100);
+      // Check for complete pattern
+      if (this.matchesPattern(response, [0x94, 0x06, 0x00, 0x00, 0x01, 0x00])) break;
+      // Any other 0x94 response means still working
+      if (response[0] === 0x94) {
+        await delay(100);
+        continue;
+      }
+      throw new Error(`SWD erase unexpected response: [${this.hexBytes(response)}]`);
     }
   }
 
@@ -101,15 +105,14 @@ export class ControllerDevice extends DeviceBase {
       await this.send(payload);
 
       // Poll until ready
-      while (true) {
+      for (let attempt = 0; attempt < 500; attempt++) {
         const response = await this.get();
-        const idx = this.expect(
-          response,
-          [0x94, 0x06, 0x00, 0x00, 0x60, 0x09], // ready
-          [0x94, 0x06, 0x00, 0x00, 0x00, 0x00, 0x02], // not ready
-        );
-        if (idx === 0) break;
-        await delay(10);
+        if (this.matchesPattern(response, [0x94, 0x06, 0x00, 0x00, 0x60, 0x09])) break;
+        if (response[0] === 0x94) {
+          await delay(10);
+          continue;
+        }
+        throw new Error(`SWD flash unexpected response: [${this.hexBytes(response)}]`);
       }
 
       onProgress?.('Flashing radio', Math.round(((i + 1) / totalChunks) * 100));
@@ -118,6 +121,19 @@ export class ControllerDevice extends DeviceBase {
 
   async swdSave(): Promise<void> {
     await this.send([SCProtocolId.SWDSave]);
+  }
+
+  // --- Helpers ---
+
+  private matchesPattern(response: Uint8Array, pattern: number[]): boolean {
+    for (let i = 0; i < pattern.length; i++) {
+      if (i >= response.length || response[i] !== pattern[i]) return false;
+    }
+    return true;
+  }
+
+  private hexBytes(data: Uint8Array, count = 8): string {
+    return Array.from(data.slice(0, count)).map(b => '0x' + b.toString(16).padStart(2, '0')).join(', ');
   }
 
   // --- Fun extras ---
