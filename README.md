@@ -6,9 +6,6 @@ Flash BLE firmware onto your original Steam Controller (2015) directly from your
 
 [**Try it live →**](https://steamcontroller.tools)
 
-<!-- TODO: Add screenshot/GIF here -->
-<!-- ![Screenshot](docs/screenshot.png) -->
-
 ## Features
 
 - **One-click Bluetooth flash** — adds BLE support while keeping dongle compatibility

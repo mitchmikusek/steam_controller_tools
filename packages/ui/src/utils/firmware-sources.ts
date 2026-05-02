@@ -10,7 +10,7 @@
 
 // ---- Source URLs ----
 
-const VALVE_CDN = 'http://media.steampowered.com/controller_config/firmware';
+const VALVE_CDN = 'https://media.steampowered.com/controller_config/firmware';
 export const VALVE_ZIP_URL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/steamworks_docs/english/Steam_Controller_FW_Update_Tool.zip';
 
 // Paths inside the Valve ZIP

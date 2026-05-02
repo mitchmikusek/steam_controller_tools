@@ -1,6 +1,7 @@
 {
   "private": true,
   "name": "steam-controller-flash",
+  "license": "GPL-2.0-only",
   "scripts": {
     "dev": "pnpm --filter @scflash/ui dev",
     "build:protocol": "pnpm --filter @scflash/protocol build",

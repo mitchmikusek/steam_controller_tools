@@ -40,7 +40,7 @@ async function loadFromSource(source: FirmwareSource): Promise<ArrayBuffer> {
       const res = await fetch(source.url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const buf = await res.arrayBuffer();
-      if (buf.byteLength < 1000) throw new Error(`Suspiciously small: ${buf.byteLength} bytes`);
+      if (buf.byteLength < 10000 || buf.byteLength > 500000) throw new Error(`Invalid firmware size: ${buf.byteLength} bytes`);
       return buf;
     }
     case 'zip': {
