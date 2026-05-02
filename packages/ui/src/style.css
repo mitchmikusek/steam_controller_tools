@@ -6,7 +6,7 @@
   --border-hover: rgba(255,255,255,0.12);
   --text: #b8bcbf;
   --text-bright: #e1e3e5;
-  --text-dim: #5a6069;
+  --text-dim: #8b929a;
   --blue: #1a9fff;
   --blue-glow: rgba(26,159,255,0.3);
   --blue-dim: #1480cc;
@@ -98,12 +98,12 @@ button {
 button:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .btn-blue {
-  background: var(--blue);
+  background: #1a6dba;
   color: #fff;
   font-weight: 500;
 }
 .btn-blue:hover:not(:disabled) {
-  background: #2eb0ff;
+  background: #2080cc;
   box-shadow: 0 0 20px var(--blue-glow);
 }
 
@@ -162,7 +162,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   margin: 16px 0 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  opacity: 0.6;
 }
 
 @keyframes controllerFloat {
@@ -710,7 +709,7 @@ h2.section-title, .section-title {
 .disclaimer {
   text-align: center;
   font-size: 0.6rem;
-  color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.5);
   padding: 24px 16px 8px;
   line-height: 1.6;
   margin-top: auto;
