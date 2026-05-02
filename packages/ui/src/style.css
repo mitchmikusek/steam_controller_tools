@@ -705,7 +705,20 @@ h2.section-title, .section-title {
 .file-group label { display: block; font-size: 0.65rem; color: var(--text-dim); margin-bottom: 3px; }
 .file-group input[type="file"] { font-size: 0.7rem; color: var(--text); }
 
-/* ---- Disclaimer ---- */
+/* ---- Footer ---- */
+.footer-icons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.footer-icons a {
+  color: rgba(255,255,255,0.35);
+  transition: color 0.15s ease;
+  display: flex;
+}
+.footer-icons a:hover { color: var(--text-bright); }
+
 .disclaimer {
   text-align: center;
   font-size: 0.6rem;
