@@ -3,10 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Steam Controller Flash Tool</title>
+
+  <title>Steam Controller Flash Tool — Unlock Bluetooth on your Steam Controller</title>
+  <meta name="description" content="Flash BLE (Bluetooth) firmware onto your original Steam Controller (2015) directly from your browser using WebHID. Free, open-source, no install required." />
+  <meta name="keywords" content="steam controller, bluetooth, BLE, firmware, flash, WebHID, dongle, wireless, valve, linux, mac, windows" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://steamcontroller.tools/" />
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#0e141b" />
+  <link rel="icon" href="/steam-logo.png" type="image/png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://steamcontroller.tools/" />
+  <meta property="og:title" content="Steam Controller Flash Tool" />
+  <meta property="og:description" content="Unlock Bluetooth on your Steam Controller. Flash BLE firmware directly from your browser — free, open-source, no install required." />
+  <meta property="og:image" content="https://steamcontroller.tools/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Steam Controller Flash Tool" />
+  <meta name="twitter:description" content="Unlock Bluetooth on your Steam Controller. Flash BLE firmware directly from your browser." />
+  <meta name="twitter:image" content="https://steamcontroller.tools/og-image.png" />
+
+  <!-- Performance hints -->
+  <link rel="preload" href="/controller-blueprint.png" as="image" />
+  <link rel="preconnect" href="https://media.steampowered.com" />
+  <link rel="preconnect" href="https://steamcdn-a.akamaihd.net" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Steam Controller Flash Tool",
+    "description": "Flash BLE (Bluetooth) firmware onto your original Steam Controller (2015) directly from your browser using WebHID. Supports BLE and Production firmware with one-click flashing.",
+    "url": "https://steamcontroller.tools/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires WebHID API (Chrome, Edge, or Vivaldi)",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Mitch Mikusek",
+      "url": "https://github.com/mitchmikusek"
+    },
+    "license": "https://opensource.org/licenses/GPL-2.0",
+    "isAccessibleForFree": true
+  }
+  </script>
 </head>
 <body>
   <div id="app"></div>
+  <noscript>
+    <h1>Steam Controller Flash Tool</h1>
+    <p>Unlock Bluetooth on your original Steam Controller (2015). This tool requires JavaScript and a WebHID-compatible browser (Chrome, Edge, or Vivaldi).</p>
+    <p>Flash BLE firmware to use your controller wirelessly via Bluetooth, or revert to production firmware for dongle-only mode.</p>
+  </noscript>
   <script type="module" src="/src/main.tsx"></script>
   <!-- Cloudflare Web Analytics auto-injected via custom domain -->
 </body>
