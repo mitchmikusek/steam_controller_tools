@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { ControllerInfo } from '@scflash/protocol';
 import type { FirmwareChoice } from './ChooseFirmwarePage';
 import { BackLink } from '../components/BackLink';
@@ -18,11 +18,44 @@ interface Props {
   onBegin: () => void;
 }
 
+const FW_FILES: Record<string, string[]> = {
+  ble: [
+    'fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin',
+    'fw_images/ble/s110_nrf51_8.0.0_softdevice.bin',
+    'fw_images/ble/vcf_wired_controller_d0g_5a0e3f348_radio.bin',
+  ],
+  production: [
+    'fw_images/production/vcf_wired_controller_d0g.bin',
+    'fw_images/production/d0g_bootloader.bin',
+    'fw_images/production/d0g_module.bin',
+  ],
+};
+
 export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Props) {
   const [visibleChecks, setVisibleChecks] = useState(0);
   const [resolvedChecks, setResolvedChecks] = useState(0);
   const [showExtras, setShowExtras] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [fwCheckStatus, setFwCheckStatus] = useState<'checking' | 'pass' | 'fail'>('checking');
+  const [fwCheckDetail, setFwCheckDetail] = useState<string | undefined>();
+
+  // Actually verify firmware files are accessible
+  useEffect(() => {
+    if (choice === 'custom') {
+      setFwCheckStatus('pass');
+      return;
+    }
+    const files = FW_FILES[choice] ?? [];
+    Promise.all(files.map(async (url) => {
+      const res = await fetch(url, { method: 'HEAD' });
+      if (!res.ok) throw new Error(`${url}: ${res.status}`);
+    }))
+      .then(() => setFwCheckStatus('pass'))
+      .catch((e) => {
+        setFwCheckStatus('fail');
+        setFwCheckDetail(`Firmware files not found: ${e.message}`);
+      });
+  }, [choice]);
 
   const checks: Check[] = [
     'hid' in navigator
@@ -31,10 +64,14 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
     isConnected
       ? { label: 'Controller connected', status: 'pass' }
       : { label: 'Controller not connected', status: 'fail', detail: 'Plug in via USB and connect' },
-    { label: choice === 'custom' ? 'Custom firmware files selected' : `${choice === 'ble' ? 'BLE' : 'Production'} firmware bundled`, status: 'pass' },
+    {
+      label: choice === 'custom' ? 'Custom firmware files selected' : `${choice === 'ble' ? 'BLE' : 'Production'} firmware bundled`,
+      status: fwCheckStatus === 'checking' ? 'pass' : fwCheckStatus,
+      detail: fwCheckDetail,
+    },
   ];
 
-  const allPass = checks.every(c => c.status === 'pass');
+  const allPass = checks.every(c => c.status === 'pass') && fwCheckStatus === 'pass';
 
   // Sequential animation
   useEffect(() => {
