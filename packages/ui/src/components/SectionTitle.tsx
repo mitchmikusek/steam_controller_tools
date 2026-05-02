@@ -5,5 +5,5 @@ interface Props {
 }
 
 export function SectionTitle({ children }: Props) {
-  return <div className="section-title">{children}</div>;
+  return <h2 className="section-title">{children}</h2>;
 }

@@ -4,8 +4,8 @@ interface Props {
 
 export function BackLink({ onClick }: Props) {
   return (
-    <div className="back-link" onClick={onClick}>
+    <button className="back-link" onClick={onClick} type="button">
       ← Back
-    </div>
+    </button>
   );
 }

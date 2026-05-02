@@ -35,7 +35,7 @@ export function Modal({ open, onClose, title, children }: Props) {
       <div className="modal" style={{ textAlign: 'left', maxWidth: 480, padding: '24px 28px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <div className="modal-title" style={{ textAlign: 'left' }}>{title}</div>
-          <button className="btn-ghost btn-sm" onClick={onClose} style={{ fontSize: '1rem', padding: '4px 8px', minWidth: 'auto' }}>
+          <button className="btn-ghost btn-sm" onClick={onClose} aria-label="Close" style={{ fontSize: '1rem', padding: '4px 8px', minWidth: 'auto' }}>
             ✕
           </button>
         </div>

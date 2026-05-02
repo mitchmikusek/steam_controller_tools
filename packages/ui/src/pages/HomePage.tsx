@@ -95,6 +95,7 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
           <SectionRow label="LED Brightness">
             <input
               type="range" min="0" max="100" defaultValue="100"
+              aria-label="LED Brightness"
               style={{ width: 160, accentColor: 'var(--blue)' }}
               onChange={async (e) => {
                 try { await controller.setBrightness(parseInt(e.target.value)); }

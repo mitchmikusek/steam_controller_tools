@@ -47,10 +47,10 @@ export function FlashingPage({ progress, reconnectPid, onReconnect }: Props) {
       <div className="flash-center">
         <LogoRing state={isComplete ? 'complete' : 'spinning'} />
 
-        <div className="flash-status">{statusText}</div>
+        <div className="flash-status" aria-live="polite" aria-atomic="true">{statusText}</div>
 
         <ProgressBar percent={barPercent} state={barState} />
-        <div className="progress-pct">{pctText}</div>
+        <div className="progress-pct" aria-live="polite">{pctText}</div>
 
         {isWaiting && (
           <div style={{ textAlign: 'center', marginTop: 16 }}>

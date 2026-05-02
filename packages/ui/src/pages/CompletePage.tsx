@@ -41,7 +41,7 @@ export function CompletePage({ success, error, firmwareType, info, onHome }: Pro
           ) : (
             <>
               <div className="section-title">Error</div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--red)', fontFamily: 'Consolas,SF Mono,monospace', wordBreak: 'break-all' }}>
+              <div role="alert" style={{ fontSize: '0.7rem', color: 'var(--red)', fontFamily: 'Consolas,SF Mono,monospace', wordBreak: 'break-all' }}>
                 {error}
               </div>
               <div className="result-tip" style={{ marginTop: 10 }}>
