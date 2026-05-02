@@ -68,12 +68,12 @@ export class FlashingPage {
     this.pctText.textContent = '0%';
     center.appendChild(this.pctText);
 
-    this.el.appendChild(center);
-
-    // Reconnect area
+    // Reconnect area (inline, under progress)
     this.reconnectArea = document.createElement('div');
     this.reconnectArea.style.display = 'none';
-    this.el.appendChild(this.reconnectArea);
+    center.appendChild(this.reconnectArea);
+
+    this.el.appendChild(center);
   }
 
   updateProgress(p: FlashProgress): void {
@@ -84,7 +84,13 @@ export class FlashingPage {
     if (p.phase === 'Complete') {
       this.fillBar.classList.add('complete');
       this.logoRing.classList.add('complete');
-      this.iconEl.style.display = 'none';
+      // Replace Steam logo with checkmark
+      const check = document.createElement('div');
+      check.className = 'icon';
+      check.style.fontSize = '3rem';
+      check.textContent = '\u2713';
+      this.iconEl.replaceWith(check);
+      this.iconEl = check;
     }
   }
 
@@ -94,58 +100,43 @@ export class FlashingPage {
 
   showReconnectPrompt(targetPid: number): Promise<void> {
     return new Promise((resolve) => {
-      this.statusText.textContent = 'Reconnection Required';
-
       const modeName = targetPid === 0x1002 ? 'bootloader' : 'normal';
 
-      // Full-screen modal overlay
-      const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
+      // Update inline status + pulse bar amber
+      this.statusText.textContent = 'Reconnection Required';
+      this.pctText.textContent = `Controller rebooted into ${modeName} mode`;
+      this.fillBar.classList.add('waiting');
 
-      const modal = document.createElement('div');
-      modal.className = 'modal';
-
-      // Icon
-      const icon = document.createElement('div');
-      icon.className = 'modal-icon';
-      icon.textContent = '\u26A0';
-
-      const title = document.createElement('div');
-      title.className = 'modal-title';
-      title.textContent = 'Reconnection Required';
+      // Show reconnect button inline
+      this.reconnectArea.style.display = '';
+      this.reconnectArea.textContent = '';
 
       const desc = document.createElement('div');
-      desc.className = 'modal-desc';
-      desc.textContent = `The controller has rebooted into ${modeName} mode. Select it from the device picker to continue flashing.`;
+      desc.style.cssText = 'font-size:0.75rem;color:var(--text-dim);text-align:center;margin-bottom:12px';
+      desc.textContent = 'Select the controller from the device picker to continue.';
 
       const btn = document.createElement('button');
       btn.className = 'btn-blue';
       btn.textContent = 'Reconnect';
       btn.addEventListener('click', async () => {
         try {
-          // For normal mode, filter by vendor usage page (0xFF00) to get the protocol interface
-          // For bootloader, only one interface exists so no filter needed
           const filters = targetPid === 0x1002
             ? [{ vendorId: VALVE_VID, productId: targetPid }]
             : [{ vendorId: VALVE_VID, productId: targetPid, usagePage: 0xff00 }];
           await navigator.hid.requestDevice({ filters });
-          overlay.classList.add('closing');
-          setTimeout(() => {
-            overlay.remove();
-          }, 350);
+          this.reconnectArea.style.display = 'none';
+          this.fillBar.classList.remove('waiting');
           this.statusText.textContent = 'Resuming...';
+          this.pctText.textContent = 'Reconnected successfully';
           resolve();
         } catch {
-          // User cancelled picker — keep showing modal
+          // User cancelled picker — keep showing button
         }
       });
 
-      modal.appendChild(icon);
-      modal.appendChild(title);
-      modal.appendChild(desc);
-      modal.appendChild(btn);
-      overlay.appendChild(modal);
-      document.body.appendChild(overlay);
+      this.reconnectArea.appendChild(desc);
+      this.reconnectArea.appendChild(btn);
+      this.reconnectArea.style.textAlign = 'center';
     });
   }
 
@@ -163,7 +154,14 @@ export class FlashingPage {
     this.fillBar.className = 'progress-fill';
     this.pctText.textContent = '0%';
     this.logoRing.className = 'logo-ring';
-    this.iconEl.style.display = '';
+    // Restore Steam logo if it was replaced with checkmark
+    const img = document.createElement('img');
+    img.className = 'icon';
+    (img as HTMLImageElement).src = 'steam-logo.png';
+    (img as HTMLImageElement).alt = 'Steam';
+    img.style.cssText += ';width:100px;height:100px';
+    this.iconEl.replaceWith(img);
+    this.iconEl = img;
     this.reconnectArea.style.display = 'none';
   }
 }

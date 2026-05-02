@@ -45,8 +45,66 @@ export class HomePage {
     this.el.appendChild(this.extrasSection);
   }
 
-  setMode(_mode: 'normal' | 'bootloader'): void {
-    // Mode is shown via setDeviceInfo now
+  setMode(mode: 'normal' | 'bootloader'): void {
+    if (mode === 'bootloader') {
+      this.controllerSection.textContent = '';
+      this.currentFwType = 'unknown';
+
+      const title = document.createElement('div');
+      title.className = 'section-title';
+      title.textContent = 'Controller ';
+      const badge = document.createElement('span');
+      badge.className = 'badge badge-unknown';
+      badge.textContent = 'BOOTLOADER';
+      title.appendChild(badge);
+      this.controllerSection.appendChild(title);
+
+      // Connection row
+      const connRow = document.createElement('div');
+      connRow.className = 'section-row';
+      const connLeft = document.createElement('div');
+      connLeft.style.cssText = 'display:flex;align-items:center;gap:8px';
+      this.connDot = document.createElement('div');
+      this.connDot.className = 'conn-dot warn';
+      this.connStatus = document.createElement('span');
+      this.connStatus.className = 'section-row-label';
+      this.connStatus.textContent = 'Bootloader Mode';
+      connLeft.appendChild(this.connDot);
+      connLeft.appendChild(this.connStatus);
+      const disconnectBtn = document.createElement('button');
+      disconnectBtn.className = 'btn-ghost btn-sm';
+      disconnectBtn.textContent = 'Disconnect';
+      disconnectBtn.addEventListener('click', () => this.onDisconnect());
+      connRow.appendChild(connLeft);
+      connRow.appendChild(disconnectBtn);
+      this.controllerSection.appendChild(connRow);
+
+      // Info row
+      const infoRow = document.createElement('div');
+      infoRow.className = 'section-row';
+      const infoLabel = document.createElement('div');
+      infoLabel.className = 'section-row-label';
+      infoLabel.style.fontSize = '0.75rem';
+      infoLabel.textContent = 'No firmware loaded. Flash firmware to restore.';
+      infoRow.appendChild(infoLabel);
+      this.controllerSection.appendChild(infoRow);
+
+      // Flash row
+      const flashRow = document.createElement('div');
+      flashRow.className = 'section-row';
+      const flashLabel = document.createElement('div');
+      flashLabel.className = 'section-row-label';
+      flashLabel.textContent = 'Flash Firmware';
+      const flashBtn = document.createElement('button');
+      flashBtn.className = 'btn-blue';
+      flashBtn.textContent = 'Flash';
+      flashBtn.addEventListener('click', () => this.onFlash());
+      flashRow.appendChild(flashLabel);
+      flashRow.appendChild(flashBtn);
+      this.controllerSection.appendChild(flashRow);
+
+      this.extrasSection.textContent = '';
+    }
   }
 
   setDeviceInfo(info: ControllerInfo | null): void {

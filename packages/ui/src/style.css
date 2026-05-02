@@ -493,6 +493,15 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 }
 .progress-fill.complete { background: var(--green); box-shadow: 0 0 8px rgba(89,191,64,0.3); }
 .progress-fill.error { background: var(--red); box-shadow: none; }
+.progress-fill.waiting {
+  background: var(--yellow);
+  box-shadow: 0 0 8px rgba(232,164,58,0.3);
+  animation: progressPulse 1.5s ease-in-out infinite;
+}
+@keyframes progressPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 
 .progress-pct {
   font-size: 0.65rem;
