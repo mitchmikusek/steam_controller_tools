@@ -669,6 +669,7 @@ h2.section-title, .section-title {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 0.75rem; color: var(--text-dim); cursor: pointer; margin-bottom: 16px;
   background: none; border: none; padding: 0; font-family: inherit;
+  width: auto;
 }
 .back-link:hover { color: var(--blue); }
 
