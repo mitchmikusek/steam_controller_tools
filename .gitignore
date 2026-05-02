@@ -6,7 +6,5 @@ dist-electron/
 *.js.map
 !vite.config.ts
 
-# Firmware files (large binaries)
-fw_images/
-packages/ui/public/fw_images/
+# Desktop app firmware (will be bundled separately)
 apps/desktop/resources/fw_images/
