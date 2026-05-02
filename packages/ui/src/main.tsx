@@ -86,7 +86,7 @@ createRoot(root).render(
       </main>
     ) : (
       <div className="unsupported">
-        <img src="controller-blueprint.webp" alt="Steam Controller" width={600} height={420} />
+        <img src="controller-blueprint.webp" alt="Steam Controller" />
         <div className="unsupported-title">Browser Not Supported</div>
         <div className="unsupported-detail">This tool requires a Chromium-based browser with WebHID support.</div>
       </div>
@@ -98,7 +98,7 @@ createRoot(root).render(
       rel="noopener noreferrer"
       className="new-controller-ad"
     >
-      <img src="new-controller.webp" alt="New Steam Controller" width={924} height={655} />
+      <img src="new-controller.webp" alt="New Steam Controller" />
       <div className="new-controller-ad-text">
         <div className="new-controller-ad-title">The New Steam Controller</div>
         <div className="new-controller-ad-sub">
