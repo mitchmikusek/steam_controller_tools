@@ -12,7 +12,7 @@
     "package:win": "pnpm run build -- --win"
   },
   "dependencies": {
-    "electron": "^33.0.0"
+    "electron": "^39.8.5"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
