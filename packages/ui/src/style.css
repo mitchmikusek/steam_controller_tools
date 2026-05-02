@@ -176,7 +176,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   border-radius: var(--radius);
   text-decoration: none;
   transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-  animation: adGlow 3s ease-in-out infinite;
+  animation: adGlow 4s ease-in-out infinite;
 }
 .new-controller-ad:hover, .new-controller-ad:focus-visible {
   border-color: var(--blue);
@@ -201,8 +201,8 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 }
 
 @keyframes adGlow {
-  0%, 100% { box-shadow: 0 0 6px rgba(26,159,255,0.05); border-color: rgba(26,159,255,0.15); }
-  50% { box-shadow: 0 0 14px rgba(26,159,255,0.2); border-color: rgba(26,159,255,0.4); }
+  0%, 100% { box-shadow: 0 0 4px rgba(26,159,255,0.03); border-color: rgba(26,159,255,0.12); }
+  50% { box-shadow: 0 0 10px rgba(26,159,255,0.12); border-color: rgba(26,159,255,0.28); }
 }
 
 @keyframes controllerFloat {
