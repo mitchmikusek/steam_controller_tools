@@ -195,9 +195,16 @@ export class FlashCoordinator {
       await this.bootloader!.eraseFirmware();
       // Use BLE LPC firmware temporarily for SWD support
       const bleLpc = await (await fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin')).arrayBuffer();
+      this.log('info', `BLE LPC firmware loaded: ${bleLpc.byteLength} bytes`);
+      this.log('info', 'Flashing temporary LPC firmware...');
       await this.bootloader!.flashFirmware(bleLpc, (phase, pct) => this.progress(phase, pct));
       this.log('info', 'Verifying temporary LPC firmware...');
-      await this.bootloader!.verifyFirmware(bleLpc);
+      try {
+        await this.bootloader!.verifyFirmware(bleLpc);
+      } catch (e) {
+        this.log('error', `Verification failed: ${e}. This may be a platform-specific WebHID issue.`);
+        throw e;
+      }
       this.log('info', 'Rebooting to firmware mode...');
       await this.bootloader!.rebootToFirmware();
       await this.transport.close();
@@ -227,7 +234,10 @@ export class FlashCoordinator {
       this.progress('Erasing LPC', 0);
       await this.bootloader.eraseFirmware();
       const bleLpc = await (await fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin')).arrayBuffer();
+      this.log('info', `BLE LPC firmware loaded: ${bleLpc.byteLength} bytes`);
+      this.log('info', 'Flashing temporary LPC firmware...');
       await this.bootloader.flashFirmware(bleLpc, (phase, pct) => this.progress(phase, pct));
+      this.log('info', 'Verifying temporary LPC firmware...');
       await this.bootloader.verifyFirmware(bleLpc);
       this.log('info', 'Rebooting to firmware mode...');
       await this.bootloader.rebootToFirmware();
