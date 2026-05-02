@@ -175,7 +175,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   border: 1px solid rgba(26,159,255,0.25);
   border-radius: var(--radius);
   text-decoration: none;
-  transition: border-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+  transition: border-color 5s ease, background 5s ease, box-shadow 5s ease;
   animation: adGlow 4s ease-in-out infinite;
 }
 .new-controller-ad:hover, .new-controller-ad:focus-visible {
@@ -836,6 +836,12 @@ button:focus-visible, .select-card:focus-visible, .back-link:focus-visible,
   width: 240px;
   opacity: 0.35;
   margin-bottom: 24px;
+  animation: controllerShake 0.4s ease-in-out infinite;
+}
+@keyframes controllerShake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-4px) rotate(-1deg); }
+  75% { transform: translateX(4px) rotate(1deg); }
 }
 .unsupported-title {
   font-size: 1rem;
