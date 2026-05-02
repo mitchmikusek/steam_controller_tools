@@ -10,7 +10,8 @@
   "connect": {
     "hint": "Branchez la manette en USB, puis cliquez sur Connecter",
     "button": "Connecter",
-    "connecting": "Connexion..."
+    "connecting": "Connexion...",
+    "newController": "Découvrez le nouveau Steam Controller"
   },
   "home": {
     "connected": "Connecté",

@@ -23,6 +23,14 @@ export function ConnectPage({ onConnect }: Props) {
         <button className="btn-blue" onClick={handleConnect} disabled={loading}>
           {loading ? t('connect.connecting') : t('connect.button')}
         </button>
+        <a
+          href="https://store.steampowered.com/sale/steamcontroller"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="new-controller-link"
+        >
+          {t('connect.newController', 'Check out the new Steam Controller')} &rarr;
+        </a>
       </div>
     </div>
   );

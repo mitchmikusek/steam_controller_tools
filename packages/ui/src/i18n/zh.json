@@ -10,7 +10,8 @@
   "connect": {
     "hint": "通过 USB 连接控制器，然后点击「连接」",
     "button": "连接",
-    "connecting": "正在连接..."
+    "connecting": "正在连接...",
+    "newController": "了解全新 Steam 手柄"
   },
   "home": {
     "connected": "已连接",

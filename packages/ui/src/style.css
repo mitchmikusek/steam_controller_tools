@@ -164,6 +164,16 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   text-transform: uppercase;
 }
 
+.new-controller-link {
+  margin-top: 20px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.15s ease;
+}
+.new-controller-link:hover { color: var(--text-bright); }
+
 @keyframes controllerFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
