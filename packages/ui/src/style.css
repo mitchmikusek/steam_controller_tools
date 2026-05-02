@@ -175,7 +175,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   border: 1px solid rgba(26,159,255,0.25);
   border-radius: var(--radius);
   text-decoration: none;
-  transition: border-color 5s ease, background 5s ease, box-shadow 5s ease;
+  transition: border-color 3s ease, background 3s ease, box-shadow 3s ease;
   animation: adGlow 4s ease-in-out infinite;
 }
 .new-controller-ad:hover, .new-controller-ad:focus-visible {
@@ -811,6 +811,9 @@ button:focus-visible, .select-card:focus-visible, .back-link:focus-visible,
   color: var(--text-dim);
   letter-spacing: 0.1em;
   font-style: italic;
+}
+.easter-egg button {
+  margin-top: 8px;
 }
 @keyframes eggFadeIn {
   from { opacity: 0; transform: scale(0.9); }
