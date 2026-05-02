@@ -178,10 +178,13 @@ export function App() {
     return () => window.removeEventListener('easter-egg', handler);
   }, [controller]);
 
-  // Block navigation during flash
-  if (typeof window !== 'undefined') {
-    window.onbeforeunload = isFlashing ? () => true : null;
-  }
+  // Block navigation during flash (useEffect ensures cleanup for bfcache)
+  useEffect(() => {
+    if (!isFlashing) return;
+    const handler = () => true;
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [isFlashing]);
 
   const label = firmwareChoice === 'ble' ? 'BLE' : firmwareChoice === 'production' ? 'Production' : 'Custom';
 
