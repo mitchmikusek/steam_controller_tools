@@ -313,21 +313,23 @@ export class FlashCoordinator {
     // Go straight to the reconnect prompt.
     await this.onReconnectNeeded(targetPid);
 
-    // After the user grants permission, find and open the device
-    // Wait for device to fully enumerate after mode switch
-    await delay(1500);
-    const device = await WebHIDTransport.findDevice(targetPid);
-    if (device) {
-      await this.transport.openDevice(device);
-      // Give the device time to stabilize before sending commands
-      await delay(1000);
-      this.log('info', 'Device reconnected');
-      return;
+    // After the user grants permission, find and open the device with retry
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await delay(500 * (attempt + 1)); // 500ms, 1s, 1.5s, 2s, 2.5s backoff
+      try {
+        const device = await WebHIDTransport.findDevice(targetPid);
+        if (device) {
+          await this.transport.openDevice(device);
+          this.log('info', 'Device reconnected');
+          return;
+        }
+      } catch {
+        this.log('debug', `Reconnect attempt ${attempt + 1} failed, retrying...`);
+      }
     }
 
     // Last resort: try opening directly by PID
     await this.transport.open(VALVE_VID, targetPid);
-    await delay(1000);
     this.log('info', 'Device opened via direct request');
   }
 
