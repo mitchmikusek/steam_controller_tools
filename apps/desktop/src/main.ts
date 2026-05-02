@@ -9,7 +9,7 @@ function setupHIDPermissions(): void {
   // Auto-grant HID permission for Valve devices
   session.defaultSession.setDevicePermissionHandler((details) => {
     if (details.deviceType === 'hid') {
-      const d = details.device as any;
+      const d = details.device as { vendorId: number; productId: number };
       if (d.vendorId === VALVE_VID && ALLOWED_PIDS.includes(d.productId)) {
         return true;
       }
@@ -37,7 +37,10 @@ function createWindow(): BrowserWindow {
   // Auto-select Valve HID devices without showing picker
   win.webContents.session.on('select-hid-device', (event, details, callback) => {
     event.preventDefault();
-    const valve = details.deviceList.find((d: any) => d.vendorId === VALVE_VID && ALLOWED_PIDS.includes(d.productId));
+    const valve = details.deviceList.find(
+      (d: { vendorId: number; productId: number; deviceId: string }) =>
+        d.vendorId === VALVE_VID && ALLOWED_PIDS.includes(d.productId),
+    );
     callback(valve?.deviceId ?? '');
   });
 

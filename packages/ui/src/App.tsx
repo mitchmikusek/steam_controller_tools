@@ -9,7 +9,7 @@ import { Toast } from './components/Toast';
 import { logger } from './utils/logger';
 
 // Lazy-loaded pages — reload on stale chunk (deploy changed hashes)
-function lazyWithReload(loader: () => Promise<any>) {
+function lazyWithReload(loader: () => Promise<{ default: React.ComponentType }>) {
   return lazy(() =>
     loader().catch(() => {
       window.location.reload();
