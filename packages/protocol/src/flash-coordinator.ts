@@ -32,6 +32,9 @@ export class FlashCoordinator {
 
   onProgress: ProgressHandler = () => {};
   onLog: LogHandler = () => {};
+  /** Load BLE LPC firmware for temporary SWD support. Override to use CDN with fallback. */
+  loadBleLpc: () => Promise<ArrayBuffer> = () =>
+    fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin').then(r => r.arrayBuffer());
   onReconnectNeeded: ReconnectPromptHandler = async () => {};
 
   constructor() {
@@ -194,7 +197,7 @@ export class FlashCoordinator {
       this.progress('Erasing LPC', 0);
       await this.bootloader!.eraseFirmware();
       // Use BLE LPC firmware temporarily for SWD support
-      const bleLpc = await (await fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin')).arrayBuffer();
+      const bleLpc = await this.loadBleLpc();
       this.log('info', `BLE LPC firmware loaded: ${bleLpc.byteLength} bytes`);
       this.log('info', 'Flashing temporary LPC firmware...');
       await this.bootloader!.flashFirmware(bleLpc, (phase, pct) => this.progress(phase, pct));
@@ -233,7 +236,7 @@ export class FlashCoordinator {
 
       this.progress('Erasing LPC', 0);
       await this.bootloader.eraseFirmware();
-      const bleLpc = await (await fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin')).arrayBuffer();
+      const bleLpc = await this.loadBleLpc();
       this.log('info', `BLE LPC firmware loaded: ${bleLpc.byteLength} bytes`);
       this.log('info', 'Flashing temporary LPC firmware...');
       await this.bootloader.flashFirmware(bleLpc, (phase, pct) => this.progress(phase, pct));

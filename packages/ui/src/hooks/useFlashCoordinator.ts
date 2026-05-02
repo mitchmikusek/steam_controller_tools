@@ -11,17 +11,39 @@ import {
 import type { FirmwareChoice } from '../pages/ChooseFirmwarePage';
 import { logger } from '../utils/logger';
 
+const VALVE_CDN = 'http://media.steampowered.com/controller_config/firmware';
+
 const BLE_FW = {
-  lpc: 'fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin',
-  softdevice: 'fw_images/ble/s110_nrf51_8.0.0_softdevice.bin',
-  radio: 'fw_images/ble/vcf_wired_controller_d0g_5a0e3f348_radio.bin',
+  lpc: 'vcf_wired_controller_d0g_5b0f21bd.bin',
+  softdevice: 's110_nrf51_8.0.0_softdevice.bin',
+  radio: 'vcf_wired_controller_d0g_5a0e3f348_radio.bin',
 };
 
 const PROD_FW = {
-  lpc: 'fw_images/production/vcf_wired_controller_d0g.bin',
-  bootloader: 'fw_images/production/d0g_bootloader.bin',
-  radio: 'fw_images/production/d0g_module.bin',
+  lpc: 'vcf_wired_controller_d0g.bin',
+  bootloader: 'd0g_bootloader.bin',
+  radio: 'd0g_module.bin',
 };
+
+const LOCAL_BLE = 'fw_images/ble';
+const LOCAL_PROD = 'fw_images/production';
+
+/** Try Valve CDN first, fall back to local bundled copy */
+async function fetchFirmware(filename: string, localDir: string): Promise<ArrayBuffer> {
+  // Try Valve CDN
+  try {
+    const res = await fetch(`${VALVE_CDN}/${filename}`);
+    if (res.ok) {
+      logger.info(`Loaded ${filename} from Valve CDN`);
+      return res.arrayBuffer();
+    }
+  } catch {
+    // CDN failed, fall back
+  }
+  // Fall back to local
+  logger.info(`Loading ${filename} from local bundle`);
+  return loadFirmwareFromUrl(`${localDir}/${filename}`);
+}
 
 export function useFlashCoordinator(
   onProgress: (p: FlashProgress) => void,
@@ -33,6 +55,7 @@ export function useFlashCoordinator(
     if (!coordinatorRef.current) {
       const c = new FlashCoordinator();
       c.onLog = (level, msg) => logger.log(level, msg);
+      c.loadBleLpc = () => fetchFirmware(BLE_FW.lpc, LOCAL_BLE);
       coordinatorRef.current = c;
     }
     const c = coordinatorRef.current;
@@ -67,6 +90,7 @@ export function useFlashCoordinator(
   ) => {
     const c = getCoordinator();
 
+    logger.info(`Loading ${choice} firmware...`);
     const fw = customFiles
       ? createBLEFirmwareSet(
           await loadFirmwareFromFile(customFiles.lpc),
@@ -75,14 +99,14 @@ export function useFlashCoordinator(
         )
       : choice === 'ble'
         ? createBLEFirmwareSet(
-            await loadFirmwareFromUrl(BLE_FW.lpc),
-            await loadFirmwareFromUrl(BLE_FW.softdevice),
-            await loadFirmwareFromUrl(BLE_FW.radio),
+            await fetchFirmware(BLE_FW.lpc, LOCAL_BLE),
+            await fetchFirmware(BLE_FW.softdevice, LOCAL_BLE),
+            await fetchFirmware(BLE_FW.radio, LOCAL_BLE),
           )
         : createProductionFirmwareSet(
-            await loadFirmwareFromUrl(PROD_FW.lpc),
-            await loadFirmwareFromUrl(PROD_FW.bootloader),
-            await loadFirmwareFromUrl(PROD_FW.radio),
+            await fetchFirmware(PROD_FW.lpc, LOCAL_PROD),
+            await fetchFirmware(PROD_FW.bootloader, LOCAL_PROD),
+            await fetchFirmware(PROD_FW.radio, LOCAL_PROD),
           );
 
     if (choice === 'ble' || choice === 'custom') {
