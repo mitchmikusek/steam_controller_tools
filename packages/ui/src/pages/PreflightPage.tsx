@@ -103,7 +103,6 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
   const warnings = [
     t('preflight.warnNoUnplug'),
     t('preflight.warnDuration'),
-    t('preflight.warnRecovery'),
     ...(choice === 'production' ? [t('preflight.warnRemoveBle')] : []),
   ];
 
@@ -129,10 +128,11 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
         ))}
       </div>
 
-      <div className={`warning-box preflight-extra${showExtras ? ' visible' : ''}`}>
+      <div className={`section preflight-extra${showExtras ? ' visible' : ''}`}>
+        <div className="section-title">⚠ {t('preflight.warningsTitle', 'Before You Begin')}</div>
         {warnings.map((w, i) => (
-          <div key={i} style={{ marginBottom: 4 }}>
-            ⚠ {w}
+          <div key={i} className="section-row" style={{ color: 'var(--yellow)', fontSize: '0.75rem' }}>
+            <span>{w}</span>
           </div>
         ))}
       </div>
@@ -157,7 +157,7 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
         </div>
       )}
 
-      <div className="nav-row">
+      <div className="nav-row" style={{ marginBottom: 32 }}>
         <div className="spacer" />
         <button
           className="btn-green"

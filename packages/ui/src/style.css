@@ -406,10 +406,11 @@ h2.section-title, .section-title {
 }
 
 .warning-box {
-  background: rgba(232,164,58,0.06);
-  border: 1px solid rgba(232,164,58,0.2);
-  border-radius: var(--radius);
-  padding: 14px 16px;
+  background: rgba(232,164,58,0.04);
+  border: none;
+  border-left: 3px solid var(--yellow);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 14px 16px 14px 14px;
   margin: 14px 0;
   font-size: 0.75rem;
   color: var(--yellow);

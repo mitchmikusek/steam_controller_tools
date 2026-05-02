@@ -46,7 +46,7 @@ export function App() {
   // HID device events — detect plug/unplug
   useHIDEvents({
     onDisconnect: () => {
-      if (!isFlashing && (page === 'home' || page === 'choose')) {
+      if (!isFlashing && (page === 'home' || page === 'choose' || page === 'preflight')) {
         logger.warn('Controller disconnected');
         setToast({ message: t('toast.disconnected'), type: 'warn' });
         coordinator.disconnect();

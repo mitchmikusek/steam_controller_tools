@@ -35,9 +35,9 @@ export function Toast({ message, type = 'info', duration = 3000, onDismiss }: Pr
       aria-live={type === 'info' ? 'polite' : 'assertive'}
       style={{
         position: 'fixed',
-        bottom: 40,
-        left: '50%',
-        transform: `translateX(-50%) translateY(${visible ? 0 : 20}px)`,
+        top: 20,
+        right: 20,
+        transform: `translateY(${visible ? 0 : -20}px)`,
         opacity: visible ? 1 : 0,
         transition: 'all 0.3s ease',
         background: 'var(--bg-card)',
