@@ -785,6 +785,40 @@ button:focus-visible, .select-card:focus-visible, .back-link:focus-visible,
   }
 }
 
+/* ---- Easter egg ---- */
+.easter-egg {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  animation: eggFadeIn 0.5s ease;
+}
+.easter-egg img {
+  width: 160px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 20px rgba(255,150,50,0.4));
+  animation: eggFloat 2s ease-in-out infinite;
+}
+.easter-egg div {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  font-style: italic;
+}
+@keyframes eggFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes eggFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
 /* ---- Unsupported ---- */
 .unsupported {
   flex: 1;
@@ -810,29 +844,4 @@ button:focus-visible, .select-card:focus-visible, .back-link:focus-visible,
   font-size: 0.8rem;
   color: var(--text-dim);
   margin-bottom: 24px;
-}
-.unsupported-browsers {
-  display: flex;
-  gap: 12px;
-}
-.unsupported-browsers a {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  color: var(--text);
-  text-decoration: none;
-  font-size: 0.75rem;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-.unsupported-browsers a:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-card);
-  color: var(--text-bright);
-}
-.unsupported-browsers a:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
 }

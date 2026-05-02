@@ -18,6 +18,33 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 const root = document.getElementById('app')!;
 const controllerAvailable = Date.now() >= new Date('2026-05-04T10:00:00-07:00').getTime();
 
+// Konami code easter egg
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let konamiPos = 0;
+document.addEventListener('keydown', (e) => {
+  if (e.key === KONAMI[konamiPos]) {
+    konamiPos++;
+    if (konamiPos === KONAMI.length) {
+      konamiPos = 0;
+      const existing = document.querySelector('.easter-egg');
+      if (existing) existing.remove();
+      const el = document.createElement('div');
+      el.className = 'easter-egg';
+      const img = document.createElement('img');
+      img.src = 'cake.webp';
+      img.alt = 'cake';
+      const text = document.createElement('div');
+      text.textContent = 'The cake is a lie.';
+      el.appendChild(img);
+      el.appendChild(text);
+      el.addEventListener('click', () => el.remove());
+      document.body.appendChild(el);
+    }
+  } else {
+    konamiPos = e.key === KONAMI[0] ? 1 : 0;
+  }
+});
+
 createRoot(root).render(
   <StrictMode>
     <div className="app-header">
@@ -35,21 +62,7 @@ createRoot(root).render(
       <div className="unsupported">
         <img src="controller-blueprint.webp" alt="Steam Controller" />
         <div className="unsupported-title">Browser Not Supported</div>
-        <div className="unsupported-detail">This tool requires WebHID, which is available in these browsers:</div>
-        <div className="unsupported-browsers">
-          <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001-3.953 6.848c.318.026.639.042.964.042 6.627 0 12.013-5.373 12.013-12 0-1.056-.137-2.08-.393-3.055H15.58z"/><circle cx="12" cy="12" r="3.882"/></svg>
-            Chrome
-          </a>
-          <a href="https://www.microsoft.com/edge" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21.86 17.86q.14 0 .25.12.1.13.1.25t-.11.33l-.32.46q-.43.58-1.15 1.21a7.8 7.8 0 0 1-1.67 1.09 9.9 9.9 0 0 1-4.63 1.11q-2.02 0-3.79-.73A9.4 9.4 0 0 1 7.5 19.4a9.9 9.9 0 0 1-2.08-3.19 10.2 10.2 0 0 1-.76-3.9q0-2.35.86-4.47A10.5 10.5 0 0 1 7.86 4.6a11.4 11.4 0 0 1 3.59-2.38A10.9 10.9 0 0 1 15.78 1.5q1.63 0 3.05.56a7.3 7.3 0 0 1 2.4 1.52q1 .96 1.55 2.18.54 1.21.54 2.53 0 1.88-1.13 3.22t-2.91 1.34q-.78 0-1.38-.34-.59-.35-.85-.94-.86.94-1.87.94-.98 0-1.63-.73-.64-.74-.64-1.87 0-1.55.88-2.79.87-1.24 2.13-1.24.58 0 .99.3.4.31.55.83l.12-.96h1.55l-.84 4.14q-.07.42-.07.67 0 .4.21.63.2.22.57.22.69 0 1.25-.65.55-.66.55-1.81 0-1.12-.42-2.1-.43-.97-1.17-1.7-.75-.73-1.74-1.15-1-.42-2.15-.42-1.5 0-2.82.62t-2.28 1.68q-.97 1.07-1.53 2.48-.56 1.41-.56 2.96 0 1.67.56 3.11.56 1.44 1.55 2.5t2.36 1.66q1.38.6 3 .6 1.33 0 2.47-.4 1.14-.4 2.23-1.26l.34-.28q.12-.1.24-.1z"/></svg>
-            Edge
-          </a>
-          <a href="https://vivaldi.com/" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 16.09c-.464.812-1.08 1.18-1.672 1.18-.296 0-.588-.076-.856-.228l-3.366-1.94-3.366 1.94c-.268.152-.56.228-.856.228-.592 0-1.208-.368-1.672-1.18C4.96 13.968 4.22 11.404 4.22 8.698c0-.636.228-1.18.636-1.52.38-.316.88-.46 1.408-.404.888.092 1.9.7 2.736 1.648l3 3.388 3-3.388c.836-.948 1.848-1.556 2.736-1.648.528-.056 1.028.088 1.408.404.408.34.636.884.636 1.52 0 2.706-.74 5.27-1.886 7.392z"/></svg>
-            Vivaldi
-          </a>
-        </div>
+        <div className="unsupported-detail">This tool requires a Chromium-based browser with WebHID support.</div>
       </div>
     )}
 
