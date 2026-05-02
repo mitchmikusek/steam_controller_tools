@@ -36,6 +36,14 @@ createRoot(root).render(
       </div>
     )}
 
+    <a href="https://store.steampowered.com/sale/steamcontroller" target="_blank" rel="noopener noreferrer" className="new-controller-ad">
+      <img src="new-controller.webp" alt="New Steam Controller" />
+      <div className="new-controller-ad-text">
+        <div className="new-controller-ad-title">The New Steam Controller</div>
+        <div className="new-controller-ad-sub">Available May 4, 10AM Pacific</div>
+      </div>
+    </a>
+
     <div className="disclaimer">
       <div className="footer-icons">
         <a href="https://github.com/mitchmikusek/steam_controller_tools" target="_blank" rel="noopener noreferrer" aria-label="GitHub">

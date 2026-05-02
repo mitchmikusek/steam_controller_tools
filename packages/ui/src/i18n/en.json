@@ -10,8 +10,7 @@
   "connect": {
     "hint": "Plug in controller via USB, then click Connect",
     "button": "Connect",
-    "connecting": "Connecting...",
-    "newController": "Check out the new Steam Controller"
+    "connecting": "Connecting..."
   },
   "home": {
     "connected": "Connected",

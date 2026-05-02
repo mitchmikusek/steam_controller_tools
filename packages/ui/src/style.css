@@ -164,15 +164,38 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   text-transform: uppercase;
 }
 
-.new-controller-link {
-  margin-top: 20px;
-  font-size: 0.7rem;
-  color: var(--text-dim);
+/* ---- New controller ad ---- */
+.new-controller-ad {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto 8px;
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   text-decoration: none;
-  letter-spacing: 0.03em;
-  transition: color 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
-.new-controller-link:hover { color: var(--text-bright); }
+.new-controller-ad:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card);
+}
+.new-controller-ad img {
+  width: 80px;
+  opacity: 0.7;
+}
+.new-controller-ad-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-bright);
+  letter-spacing: 0.03em;
+}
+.new-controller-ad-sub {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
 
 @keyframes controllerFloat {
   0%, 100% { transform: translateY(0); }
