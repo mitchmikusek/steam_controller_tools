@@ -13,7 +13,7 @@ export function LogoRing({ state, waiting }: Props) {
         <div className="arc" />
       </div>
       {state === 'spinning' ? (
-        <img className="icon" src="steam-logo.png" alt="Steam" style={{ width: 140, height: 140 }} />
+        <img className="icon" src="steam-logo.webp" alt="Steam" style={{ width: 140, height: 140 }} />
       ) : (
         <div className="icon" style={{ fontSize: '4rem' }}>
           {state === 'complete' ? '\u2713' : '\u2717'}

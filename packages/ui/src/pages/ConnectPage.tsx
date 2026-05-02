@@ -18,7 +18,7 @@ export function ConnectPage({ onConnect }: Props) {
   return (
     <div className="page page-centered page-wide">
       <div className="connect-prompt">
-        <img src="controller-blueprint.png" alt="Steam Controller" />
+        <img src="controller-blueprint.webp" alt="Steam Controller" />
         <div className="connect-hint">{t('connect.hint')}</div>
         <button className="btn-blue" onClick={handleConnect} disabled={loading}>
           {loading ? t('connect.connecting') : t('connect.button')}

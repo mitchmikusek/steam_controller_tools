@@ -25,7 +25,7 @@ export function BleHelpContent() {
             {combo.button}
           </div>
           <div style={{ color: 'var(--text-dim)', fontSize: '0.8rem', flexShrink: 0 }}>+</div>
-          <img src="steam-logo.png" alt="Steam" style={{ width: 36, height: 36, flexShrink: 0, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '50%' }} />
+          <img src="steam-logo.webp" alt="Steam" style={{ width: 36, height: 36, flexShrink: 0, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '50%' }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-bright)', marginBottom: 2 }}>{t(combo.titleKey)}</div>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{t(combo.descKey)}</div>
