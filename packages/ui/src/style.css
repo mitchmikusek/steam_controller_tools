@@ -172,17 +172,20 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   max-width: 400px;
   margin: 0 auto 24px;
   padding: 12px 20px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(26,159,255,0.25);
   border-radius: var(--radius);
   text-decoration: none;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  animation: adGlow 3s ease-in-out infinite;
 }
-.new-controller-ad:hover {
-  border-color: var(--border-hover);
+.new-controller-ad:hover, .new-controller-ad:focus-visible {
+  border-color: var(--blue);
   background: var(--bg-card);
+  animation: none;
+  box-shadow: 0 0 16px var(--blue-glow);
 }
 .new-controller-ad img {
-  width: 80px;
+  width: 100px;
   opacity: 0.7;
 }
 .new-controller-ad-title {
@@ -195,6 +198,11 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   font-size: 0.65rem;
   color: var(--text-dim);
   margin-top: 2px;
+}
+
+@keyframes adGlow {
+  0%, 100% { box-shadow: 0 0 6px rgba(26,159,255,0.05); border-color: rgba(26,159,255,0.15); }
+  50% { box-shadow: 0 0 14px rgba(26,159,255,0.2); border-color: rgba(26,159,255,0.4); }
 }
 
 @keyframes controllerFloat {
@@ -762,7 +770,8 @@ h2.section-title, .section-title {
 }
 
 /* ---- Focus visible ---- */
-button:focus-visible, .select-card:focus-visible, .back-link:focus-visible {
+button:focus-visible, .select-card:focus-visible, .back-link:focus-visible,
+.new-controller-ad:focus-visible, .footer-icons a:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
