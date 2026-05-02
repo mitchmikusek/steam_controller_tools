@@ -105,6 +105,7 @@ export class FlashingPage {
       // Update inline status + pulse bar amber
       this.statusText.textContent = 'Reconnection Required';
       this.pctText.textContent = `Controller rebooted into ${modeName} mode`;
+      this.fillBar.style.width = '100%';
       this.fillBar.classList.add('waiting');
 
       // Show reconnect button inline
