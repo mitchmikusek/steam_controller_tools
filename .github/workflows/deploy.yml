@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Run tests
+        run: pnpm run test
+
       - name: Build protocol
         run: pnpm --filter @scflash/protocol build
 
