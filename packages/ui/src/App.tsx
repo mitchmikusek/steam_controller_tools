@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, lazy, Suspense } from 'react';
+import { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import type { ControllerInfo, ControllerDevice, FlashProgress } from '@scflash/protocol';
 import { useFlashCoordinator } from './hooks/useFlashCoordinator';
 import { StepIndicator } from './components/StepIndicator';
@@ -150,6 +150,17 @@ export function App() {
       setPage('connect');
     }
   };
+
+  // Easter egg: play Triumph jingle (index 12) if controller connected
+  useEffect(() => {
+    const handler = () => {
+      if (controller) {
+        controller.playJingle(12).catch(() => {});
+      }
+    };
+    window.addEventListener('easter-egg', handler);
+    return () => window.removeEventListener('easter-egg', handler);
+  }, [controller]);
 
   // Block navigation during flash
   if (typeof window !== 'undefined') {

@@ -41,6 +41,7 @@ function showCake() {
   el.appendChild(text);
   el.appendChild(btn);
   document.body.appendChild(el);
+  window.dispatchEvent(new CustomEvent('easter-egg'));
 }
 document.addEventListener('keydown', (e) => {
   if (e.key === KONAMI[konamiPos]) {
