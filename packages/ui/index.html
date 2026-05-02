@@ -63,11 +63,29 @@
 </head>
 <body>
   <div id="app"></div>
-  <noscript>
+  <!-- Static content for SEO — visible to crawlers and noscript users -->
+  <div id="seo-content">
     <h1>Steam Controller Flash Tool</h1>
-    <p>Unlock Bluetooth on your original Steam Controller (2015). This tool requires JavaScript and a WebHID-compatible browser (Chrome, Edge, or Vivaldi).</p>
-    <p>Flash BLE firmware to use your controller wirelessly via Bluetooth, or revert to production firmware for dongle-only mode.</p>
-  </noscript>
+    <h2>Unlock Bluetooth on your Steam Controller</h2>
+    <p>Flash BLE (Bluetooth) firmware onto your original Steam Controller (2015) directly from your browser. No downloads, no installs — just plug in via USB and click flash.</p>
+
+    <h3>Features</h3>
+    <ul>
+      <li>One-click Bluetooth firmware flash with progress tracking</li>
+      <li>Revert to production (dongle-only) firmware anytime</li>
+      <li>Works on Linux, macOS, and Windows via Chrome, Edge, or Vivaldi</li>
+      <li>BLE controller mode guide — switch between Bluetooth and dongle with button combos</li>
+      <li>Haptic feedback testing, LED brightness control, and 14 built-in jingles</li>
+    </ul>
+
+    <h3>How It Works</h3>
+    <p>This tool uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API">WebHID API</a> to communicate directly with your Steam Controller's firmware over USB. The BLE firmware adds Bluetooth Low Energy support while keeping dongle compatibility — hold Steam+Y to pair via Bluetooth, or Steam+A to use the dongle.</p>
+
+    <h3>Open Source</h3>
+    <p>Built with React and TypeScript. Source code available on <a href="https://github.com/mitchmikusek/steam_controller_tools">GitHub</a>. Based on the reverse engineering work of <a href="https://github.com/greggersaurus/OpenSteamController">OpenSteamController</a> and <a href="https://github.com/lilphil/SteamControllerTool">SteamControllerTool</a>.</p>
+  </div>
+  <style>#seo-content { display: none; }</style>
+  <noscript><style>#seo-content { display: block !important; max-width: 640px; margin: 0 auto; padding: 20px; color: #b8bcbf; }</style></noscript>
   <script type="module" src="/src/main.tsx"></script>
   <!-- Cloudflare Web Analytics auto-injected via custom domain -->
 </body>
