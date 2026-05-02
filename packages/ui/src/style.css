@@ -172,16 +172,15 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   max-width: 400px;
   margin: 0 auto 24px;
   padding: 12px 20px;
-  border: 1px solid rgba(26,159,255,0.25);
+  border: 1px solid rgba(26,159,255,0.15);
   border-radius: var(--radius);
   text-decoration: none;
+  box-shadow: 0 0 4px rgba(26,159,255,0.03);
   transition: border-color 3s ease, background 3s ease, box-shadow 3s ease;
-  animation: adGlow 4s ease-in-out infinite;
 }
 .new-controller-ad:hover, .new-controller-ad:focus-visible {
   border-color: var(--blue);
   background: var(--bg-card);
-  animation: none;
   box-shadow: 0 0 16px var(--blue-glow);
 }
 .new-controller-ad img {
@@ -198,11 +197,6 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   font-size: 0.65rem;
   color: var(--text-dim);
   margin-top: 2px;
-}
-
-@keyframes adGlow {
-  0%, 100% { box-shadow: 0 0 4px rgba(26,159,255,0.03); border-color: rgba(26,159,255,0.12); }
-  50% { box-shadow: 0 0 10px rgba(26,159,255,0.12); border-color: rgba(26,159,255,0.28); }
 }
 
 @keyframes controllerFloat {
