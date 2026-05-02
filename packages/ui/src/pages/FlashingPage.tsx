@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { VALVE_VID, type FlashProgress } from '@scflash/protocol';
 import { LogoRing } from '../components/LogoRing';
 import { ProgressBar } from '../components/ProgressBar';
@@ -9,22 +10,23 @@ interface Props {
 }
 
 export function FlashingPage({ progress, reconnectPid, onReconnect }: Props) {
+  const { t } = useTranslation();
   const isComplete = progress?.phase === 'Complete';
   const isWaiting = reconnectPid !== null;
 
   const statusText = isWaiting
-    ? 'Reconnection Required'
+    ? t('flashing.reconnectionRequired')
     : isComplete
-      ? 'Flash Complete'
+      ? t('flashing.flashComplete')
       : progress
         ? `${progress.phase}...`
-        : 'Initializing...';
+        : t('flashing.initializing');
 
   const pctText = isWaiting
-    ? `Controller rebooted into ${reconnectPid === 0x1002 ? 'bootloader' : 'normal'} mode`
+    ? t('flashing.rebootedTo', { mode: reconnectPid === 0x1002 ? 'bootloader' : 'normal' })
     : isComplete
-      ? 'Firmware flashed successfully'
-      : `${progress?.percent ?? 0}% complete`;
+      ? t('flashing.complete')
+      : t('flashing.percentComplete', { percent: progress?.percent ?? 0 });
 
   const barState = isWaiting ? 'waiting' as const : isComplete ? 'complete' as const : 'active' as const;
   const barPercent = isWaiting ? 100 : progress?.percent ?? 0;
@@ -55,9 +57,9 @@ export function FlashingPage({ progress, reconnectPid, onReconnect }: Props) {
         {isWaiting && (
           <div style={{ textAlign: 'center', marginTop: 16 }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 12 }}>
-              Select the controller from the device picker to continue.
+              {t('flashing.reconnectHint')}
             </div>
-            <button className="btn-blue" onClick={handleReconnectClick}>Reconnect</button>
+            <button className="btn-blue" onClick={handleReconnectClick}>{t('flashing.reconnect')}</button>
           </div>
         )}
       </div>

@@ -20,9 +20,6 @@ const root = document.getElementById('app')!;
 createRoot(root).render(
   <StrictMode>
     <div className="app-header">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 4 }}>
-        <LanguageSwitcher />
-      </div>
       <h1>Steam Controller (2015)</h1>
       <div className="subtitle">Firmware Flash Tool</div>
     </div>
@@ -40,6 +37,7 @@ createRoot(root).render(
     )}
 
     <div className="disclaimer">
+      <div style={{ marginBottom: 8 }}><LanguageSwitcher /></div>
       <div>Not affiliated with Valve Corporation. Use this tool at your own risk.</div>
       <div style={{ marginTop: 4 }}>
         &copy;2026 Valve Corporation. Steam&reg; and the Steam logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.

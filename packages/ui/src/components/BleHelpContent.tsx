@@ -1,11 +1,14 @@
+import { useTranslation } from 'react-i18next';
+
 const COMBOS = [
-  { button: 'Y', color: '#e8a43a', title: 'Bluetooth LE Pairing Mode', desc: 'Pair your controller with a new Bluetooth LE-compatible device' },
-  { button: 'B', color: '#d94126', title: 'Switch to Bluetooth LE Mode', desc: 'Launch your controller in BLE mode' },
-  { button: 'X', color: '#1a9fff', title: 'Receiver Pairing Mode', desc: 'Pair your controller with a new dongle or Steam Link' },
-  { button: 'A', color: '#59bf40', title: 'Switch to Receiver Mode', desc: 'Launch your controller in original dongle mode' },
+  { button: 'Y', color: '#e8a43a', titleKey: 'bleHelp.yTitle', descKey: 'bleHelp.yDesc' },
+  { button: 'B', color: '#d94126', titleKey: 'bleHelp.bTitle', descKey: 'bleHelp.bDesc' },
+  { button: 'X', color: '#1a9fff', titleKey: 'bleHelp.xTitle', descKey: 'bleHelp.xDesc' },
+  { button: 'A', color: '#59bf40', titleKey: 'bleHelp.aTitle', descKey: 'bleHelp.aDesc' },
 ];
 
 export function BleHelpContent() {
+  const { t } = useTranslation();
   return (
     <div>
       {COMBOS.map((combo, i) => (
@@ -22,17 +25,10 @@ export function BleHelpContent() {
             {combo.button}
           </div>
           <div style={{ color: 'var(--text-dim)', fontSize: '0.8rem', flexShrink: 0 }}>+</div>
-          <img
-            src="steam-logo.png" alt="Steam"
-            style={{ width: 36, height: 36, flexShrink: 0, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '50%' }}
-          />
+          <img src="steam-logo.png" alt="Steam" style={{ width: 36, height: 36, flexShrink: 0, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '50%' }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-bright)', marginBottom: 2 }}>
-              {combo.title}
-            </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>
-              {combo.desc}
-            </div>
+            <div style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-bright)', marginBottom: 2 }}>{t(combo.titleKey)}</div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{t(combo.descKey)}</div>
           </div>
         </div>
       ))}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ControllerInfo } from '@scflash/protocol';
 import { BackLink } from '../components/BackLink';
 import { SelectCard } from '../components/SelectCard';
@@ -12,13 +13,8 @@ interface Props {
   onNext: (choice: FirmwareChoice, files?: { lpc: File; softdevice: File; radio: File }) => void;
 }
 
-const OPTIONS: { id: FirmwareChoice; title: string; desc: string }[] = [
-  { id: 'ble', title: 'BLE (Bluetooth)', desc: 'Adds Bluetooth support while keeping dongle compatibility' },
-  { id: 'production', title: 'Production', desc: 'Original firmware with dongle support only. Use if experiencing issues with BLE firmware.' },
-  { id: 'custom', title: 'Custom Firmware', desc: 'Load your own firmware files' },
-];
-
 export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<FirmwareChoice | null>(null);
   const [lpcFile, setLpcFile] = useState<File | null>(null);
   const [softdeviceFile, setSoftdeviceFile] = useState<File | null>(null);
@@ -39,13 +35,18 @@ export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
     }
   };
 
+  const options: { id: FirmwareChoice; title: string; desc: string }[] = [
+    { id: 'ble', title: t('choose.bleTitle'), desc: t('choose.bleDesc') },
+    { id: 'production', title: t('choose.prodTitle'), desc: t('choose.prodDesc') },
+    { id: 'custom', title: t('choose.customTitle'), desc: t('choose.customDesc') },
+  ];
+
   return (
     <div className="page page-narrow">
       <BackLink onClick={onBack} />
+      <div className="page-heading">{t('choose.title')}</div>
 
-      <div className="page-heading">Choose Firmware</div>
-
-      {OPTIONS.map(opt => (
+      {options.map(opt => (
         <SelectCard
           key={opt.id}
           title={opt.title}
@@ -66,7 +67,7 @@ export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
 
       <div className="nav-row">
         <div className="spacer" />
-        <button className="btn-ghost" onClick={handleNext} disabled={!canProceed}>Next</button>
+        <button className="btn-ghost" onClick={handleNext} disabled={!canProceed}>{t('choose.next')}</button>
       </div>
     </div>
   );

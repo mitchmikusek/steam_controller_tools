@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ControllerInfo, ControllerDevice } from '@scflash/protocol';
 import { JINGLES } from '@scflash/protocol';
 import { SectionTitle } from '../components/SectionTitle';
@@ -6,7 +7,7 @@ import { SectionRow } from '../components/SectionRow';
 import { Badge } from '../components/Badge';
 import { InfoButton } from '../components/InfoButton';
 import { BleHelpModal } from '../components/BleHelpModal';
-import { detectFirmwareType, fmtFirmwareLabel } from '../utils/firmware';
+import { detectFirmwareType } from '../utils/firmware';
 import { logger } from '../utils/logger';
 
 interface Props {
@@ -18,84 +19,78 @@ interface Props {
 }
 
 export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Props) {
+  const { t } = useTranslation();
   const [bleHelpOpen, setBleHelpOpen] = useState(false);
   const fwType = info ? detectFirmwareType(info) : 'unknown';
   const badgeType = mode === 'bootloader' ? 'bootloader' : fwType === 'ble' ? 'ble' : fwType === 'production' ? 'prod' : 'unknown';
 
+  const fwLabel = fwType === 'ble' ? t('home.bleFirmware') : fwType === 'production' ? t('home.productionFirmware') : t('home.unknownFirmware');
+
   return (
     <div className="page page-narrow">
-      {/* Controller section */}
       <div className="section">
         <SectionTitle>
-          Controller <Badge type={badgeType} />
+          {t('badge.controller', 'Controller')} <Badge type={badgeType} />
         </SectionTitle>
 
-        {/* Connection status */}
         <div className="section-row">
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div className={`conn-dot ${mode === 'normal' ? 'ok' : 'warn'}`} />
             <span className="section-row-label">
-              {mode === 'bootloader' ? 'Bootloader Mode' : 'Connected'}
+              {mode === 'bootloader' ? t('home.bootloaderMode') : t('home.connected')}
             </span>
           </div>
-          <button className="btn-ghost btn-sm" onClick={onDisconnect}>Disconnect</button>
+          <button className="btn-ghost btn-sm" onClick={onDisconnect}>{t('home.disconnect')}</button>
         </div>
 
-        {/* Firmware info (normal mode) */}
         {mode === 'normal' && info && (
-          <SectionRow label={fmtFirmwareLabel(fwType)}>
+          <SectionRow label={fwLabel}>
             <InfoButton info={info} />
           </SectionRow>
         )}
 
-        {/* Bootloader message */}
         {mode === 'bootloader' && (
           <div className="section-row">
             <div className="section-row-label" style={{ fontSize: '0.75rem' }}>
-              No firmware loaded. Flash firmware to restore.
+              {t('home.noFirmware')}
             </div>
           </div>
         )}
 
-        {/* Flash button */}
-        <SectionRow label="Flash Firmware" sublabel="Switch between BLE and Production">
-          <button className="btn-blue" onClick={onFlash}>Flash</button>
+        <SectionRow label={t('home.flashFirmware')} sublabel={t('home.flashSublabel')}>
+          <button className="btn-blue" onClick={onFlash}>{t('home.flash')}</button>
         </SectionRow>
       </div>
 
-      {/* Extras section (normal mode only) */}
       {mode === 'normal' && controller && (
         <div className="section">
-          <SectionTitle>Extras</SectionTitle>
+          <SectionTitle>{t('home.extras')}</SectionTitle>
 
-          {/* BLE Modes */}
           {fwType === 'ble' && (
-            <SectionRow label="Controller Modes">
+            <SectionRow label={t('home.controllerModes')}>
               <button className="btn-ghost btn-sm" onClick={() => setBleHelpOpen(true)}>
-                View BLE Modes
+                {t('home.viewBleModes')}
               </button>
             </SectionRow>
           )}
 
-          {/* Haptics */}
-          <SectionRow label="Haptic Feedback">
+          <SectionRow label={t('home.hapticFeedback')}>
             <div style={{ display: 'flex', gap: 6 }}>
               {(['left', 'right'] as const).map(side => (
                 <button key={side} className="btn-ghost btn-sm" onClick={async () => {
                   try { await controller.hapticPulse(side, 65535, 65535, 2); }
                   catch (e) { logger.error(`${e}`); }
                 }}>
-                  {side === 'left' ? 'Left' : 'Right'}
+                  {t(`home.${side}`)}
                 </button>
               ))}
             </div>
           </SectionRow>
 
-          {/* Brightness */}
-          <SectionRow label="LED Brightness">
+          <SectionRow label={t('home.ledBrightness')}>
             <input
               type="range" min="0" max="100" defaultValue="100"
-              aria-label="LED Brightness"
+              aria-label={t('home.ledBrightness')}
               style={{ width: 160, accentColor: 'var(--blue)' }}
               onChange={async (e) => {
                 try { await controller.setBrightness(parseInt(e.target.value)); }
@@ -104,8 +99,7 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
             />
           </SectionRow>
 
-          {/* Jingles */}
-          <SectionTitle>Jingles</SectionTitle>
+          <SectionTitle>{t('home.jingles')}</SectionTitle>
           <div className="jingle-grid">
             {JINGLES.map((name, i) => (
               <button key={i} className="btn-ghost btn-sm" onClick={async () => {

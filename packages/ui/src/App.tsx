@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, lazy, Suspense } from 'react';
 import type { ControllerInfo, ControllerDevice, FlashProgress } from '@scflash/protocol';
 import { useFlashCoordinator } from './hooks/useFlashCoordinator';
 import { StepIndicator } from './components/StepIndicator';
+import { useTranslation } from 'react-i18next';
 import type { FirmwareChoice } from './pages/ChooseFirmwarePage';
 import { useHIDEvents } from './hooks/useHIDEvents';
 import { Toast } from './components/Toast';
@@ -31,6 +32,7 @@ export function App() {
 
   // Reconnect promise resolver — must be ref, not state (useState would call the function)
   const reconnectResolverRef = useRef<(() => void) | null>(null);
+  const { t } = useTranslation();
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'warn' | 'error' } | null>(null);
 
   // HID device events — detect plug/unplug
@@ -38,7 +40,7 @@ export function App() {
     onDisconnect: () => {
       if (!isFlashing && (page === 'home' || page === 'choose')) {
         logger.warn('Controller disconnected');
-        setToast({ message: 'Controller disconnected', type: 'warn' });
+        setToast({ message: t('toast.disconnected'), type: 'warn' });
         coordinator.disconnect();
         setDeviceInfo(null);
         setController(null);
@@ -47,7 +49,7 @@ export function App() {
     },
     onConnect: () => {
       if (page === 'connect') {
-        setToast({ message: 'Controller detected', type: 'info' });
+        setToast({ message: t('toast.detected'), type: 'info' });
       }
     },
     enabled: !isFlashing,

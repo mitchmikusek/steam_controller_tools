@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onConnect: () => Promise<void>;
 }
 
 export function ConnectPage({ onConnect }: Props) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const handleConnect = async () => {
@@ -17,9 +19,9 @@ export function ConnectPage({ onConnect }: Props) {
     <div className="page page-centered page-wide">
       <div className="connect-prompt">
         <img src="controller-blueprint.png" alt="Steam Controller" />
-        <div className="connect-hint">Plug in controller via USB, then click Connect</div>
+        <div className="connect-hint">{t('connect.hint')}</div>
         <button className="btn-blue" onClick={handleConnect} disabled={loading}>
-          {loading ? 'Connecting...' : 'Connect'}
+          {loading ? t('connect.connecting') : t('connect.button')}
         </button>
       </div>
     </div>
