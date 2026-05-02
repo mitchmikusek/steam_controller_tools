@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import react from '@vitejs/plugin-react';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 export default defineConfig({
   base: './',
-  plugins: [react()],
+  plugins: [react(), basicSsl()],
   root: resolve(__dirname),
   resolve: {
     alias: {

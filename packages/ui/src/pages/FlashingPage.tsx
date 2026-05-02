@@ -15,7 +15,7 @@ export function FlashingPage({ progress, reconnectPid, onReconnect }: Props) {
   const statusText = isWaiting
     ? 'Reconnection Required'
     : isComplete
-      ? 'Complete'
+      ? 'Flash Complete'
       : progress
         ? `${progress.phase}...`
         : 'Initializing...';
