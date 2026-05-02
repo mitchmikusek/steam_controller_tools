@@ -15,7 +15,7 @@ Inspired by the Steam Deck Big Picture mode aesthetic: dark, minimal, spacious, 
 | `--border-hover` | `rgba(255,255,255,0.12)` | Hover borders |
 | `--text` | `#b8bcbf` | Body text |
 | `--text-bright` | `#e1e3e5` | Headings, emphasis |
-| `--text-dim` | `#5a6069` | Labels, secondary text |
+| `--text-dim` | `#8b929a` | Labels, secondary text |
 | `--blue` | `#1a9fff` | Primary actions, active states, links |
 | `--green` | `#59bf40` | Success, confirmations, critical "go" actions |
 | `--red` | `#d94126` | Errors, destructive actions |
@@ -43,7 +43,7 @@ Inspired by the Steam Deck Big Picture mode aesthetic: dark, minimal, spacious, 
 | Body text | 0.8rem | 400 | `--text` | General content |
 | Small text | 0.65rem | 400 | `--text-dim` | Log output, file labels |
 | Badge | 0.55rem | 700 | varies | "BLE", "INSTALLED" pills |
-| Disclaimer | 0.6rem | 400 | `rgba(255,255,255,0.15)` | Footer legal text |
+| Disclaimer | 0.6rem | 400 | `rgba(255,255,255,0.5)` | Footer legal text |
 
 ### Font stacks
 
@@ -94,7 +94,7 @@ Steam uses neutral buttons for almost everything, with color reserved for emphas
 | Class | Background | Color | Usage |
 |-------|-----------|-------|-------|
 | `.btn-ghost` | transparent, outlined | `--text-dim` | Default button style. Most actions use this: Connect, Disconnect, Next, haptics, jingles, modal close, View BLE Modes |
-| `.btn-blue` | `--blue` | white | Confirmation actions that advance the flow: Flash Firmware (home), Reconnect (modal), Return Home |
+| `.btn-blue` | `#1a6dba` | white | Confirmation actions that advance the flow: Flash Firmware (home), Reconnect (modal), Return Home |
 | `.btn-green` | `--green` | white | Critical/irreversible actions only: Begin Flash |
 
 ### Sizes
@@ -197,6 +197,19 @@ Home ──> Choose Firmware ──> Preflight ──> Flashing ──> Complete
 |-------|------|-------|
 | Steam logo (white) | `steam-logo.png` | Flashing page spinner, BLE help modal |
 | Steam pixel logo | `steam-pixel.png` | Reserved for future use |
+
+## Footer
+
+The footer area (below main content, above the fold bottom) contains:
+
+1. **New Controller Ad** (`.new-controller-ad`) — card linking to Steam store for the new controller. Blue border with gentle 4s pulse glow animation. Image + title + availability text. Stops glowing on hover/focus with 0.4s transition.
+2. **Footer Icons** (`.footer-icons`) — GitHub, Ko-fi, Steam icons. Dim by default, brighten on hover.
+3. **Language Switcher** — `<select>` dropdown using `--text-dim`.
+4. **Disclaimer** — Legal text at `rgba(255,255,255,0.5)`.
+
+### Spacing rules
+- Section titles after a `.section-row` or `.jingle-grid` get `margin-top: 24px` (sibling combinator rule)
+- All color contrast must meet WCAG AA 4.5:1 against `--bg: #0e141b`
 
 ## Known Patterns
 
