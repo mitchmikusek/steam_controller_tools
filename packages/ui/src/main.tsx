@@ -16,6 +16,7 @@ if (import.meta.env.VITE_SENTRY_DSN) {
 }
 
 const root = document.getElementById('app')!;
+const controllerAvailable = Date.now() >= new Date('2026-05-04T10:00:00-07:00').getTime();
 
 createRoot(root).render(
   <StrictMode>
@@ -40,7 +41,7 @@ createRoot(root).render(
       <img src="new-controller.webp" alt="New Steam Controller" />
       <div className="new-controller-ad-text">
         <div className="new-controller-ad-title">The New Steam Controller</div>
-        <div className="new-controller-ad-sub">Available May 4, 10AM Pacific</div>
+        <div className="new-controller-ad-sub">{controllerAvailable ? 'Now Available!' : 'Available May 4, 10AM Pacific'}</div>
       </div>
     </a>
 
