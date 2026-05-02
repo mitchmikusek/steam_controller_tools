@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { ControllerInfo, ControllerDevice, FlashProgress } from '@scflash/protocol';
 import { useFlashCoordinator } from './hooks/useFlashCoordinator';
 import { StepIndicator } from './components/StepIndicator';
@@ -24,15 +24,15 @@ export function App() {
   const [reconnectPid, setReconnectPid] = useState<number | null>(null);
   const [flashResult, setFlashResult] = useState<{ success: boolean; error?: string } | null>(null);
 
-  // Reconnect promise resolver
-  const [reconnectResolver, setReconnectResolver] = useState<(() => void) | null>(null);
+  // Reconnect promise resolver — must be ref, not state (useState would call the function)
+  const reconnectResolverRef = useRef<(() => void) | null>(null);
 
   const onProgress = useCallback((p: FlashProgress) => setFlashProgress(p), []);
 
   const onReconnectNeeded = useCallback((pid: number): Promise<void> => {
     return new Promise((resolve) => {
       setReconnectPid(pid);
-      setReconnectResolver(() => resolve);
+      reconnectResolverRef.current = resolve;
     });
   }, []);
 
@@ -105,7 +105,8 @@ export function App() {
 
   const handleReconnect = () => {
     setReconnectPid(null);
-    reconnectResolver?.();
+    reconnectResolverRef.current?.();
+    reconnectResolverRef.current = null;
   };
 
   const handleReturnHome = async () => {
