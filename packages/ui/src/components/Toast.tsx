@@ -31,8 +31,8 @@ export function Toast({ message, type = 'info', duration = 3000, onDismiss }: Pr
 
   return (
     <div
-      role="status"
-      aria-live="polite"
+      role={type === 'info' ? 'status' : 'alert'}
+      aria-live={type === 'info' ? 'polite' : 'assertive'}
       style={{
         position: 'fixed',
         bottom: 40,

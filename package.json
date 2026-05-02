@@ -8,11 +8,19 @@
     "build": "pnpm --filter @scflash/protocol build && pnpm --filter @scflash/ui build",
     "dev:desktop": "pnpm --filter @scflash/desktop dev",
     "build:desktop": "pnpm --filter @scflash/desktop build",
+    "lint": "eslint 'packages/*/src/**/*.{ts,tsx}' 'apps/*/src/**/*.{ts,tsx}'",
+    "format:check": "prettier --check 'packages/*/src/**/*.{ts,tsx}' 'apps/*/src/**/*.{ts,tsx}'",
+    "format": "prettier --write 'packages/*/src/**/*.{ts,tsx}' 'apps/*/src/**/*.{ts,tsx}'",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
+    "typescript-eslint": "^8.59.1",
     "vitest": "^4.1.5",
     "wrangler": "^4.87.0"
   }

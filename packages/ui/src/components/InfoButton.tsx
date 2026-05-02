@@ -14,7 +14,11 @@ export function InfoButton({ info }: Props) {
 
   return (
     <>
-      <button className="btn-ghost btn-sm btn-info-circle" onClick={() => setOpen(true)} aria-label={t('firmware.details')}>
+      <button
+        className="btn-ghost btn-sm btn-info-circle"
+        onClick={() => setOpen(true)}
+        aria-label={t('firmware.details')}
+      >
         i
       </button>
       <Modal open={open} onClose={() => setOpen(false)} title={t('firmware.details')}>

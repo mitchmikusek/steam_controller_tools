@@ -11,9 +11,7 @@ export function BleHelpModal({ open, onClose }: Props) {
   const { t } = useTranslation();
   return (
     <Modal open={open} onClose={onClose} title={t('bleHelp.title')}>
-      <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: 12 }}>
-        {t('bleHelp.subtitle')}
-      </div>
+      <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: 12 }}>{t('bleHelp.subtitle')}</div>
       <BleHelpContent />
     </Modal>
   );

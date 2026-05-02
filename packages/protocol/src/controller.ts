@@ -91,13 +91,8 @@ export class ControllerDevice extends DeviceBase {
       const end = Math.min(offset + SWD_CHUNK_SIZE, bytes.byteLength);
       const chunk = bytes.slice(offset, end);
 
-      const address = (i * SWD_CHUNK_SIZE) + startAddress;
-      const addrBytes = [
-        address & 0xff,
-        (address >> 8) & 0xff,
-        (address >> 16) & 0xff,
-        (address >> 24) & 0xff,
-      ];
+      const address = i * SWD_CHUNK_SIZE + startAddress;
+      const addrBytes = [address & 0xff, (address >> 8) & 0xff, (address >> 16) & 0xff, (address >> 24) & 0xff];
 
       const payload: number[] = [SCProtocolId.FlashSWD, chunk.length + 4];
       payload.push(...addrBytes);
@@ -133,7 +128,9 @@ export class ControllerDevice extends DeviceBase {
   }
 
   private hexBytes(data: Uint8Array, count = 8): string {
-    return Array.from(data.slice(0, count)).map(b => '0x' + b.toString(16).padStart(2, '0')).join(', ');
+    return Array.from(data.slice(0, count))
+      .map((b) => '0x' + b.toString(16).padStart(2, '0'))
+      .join(', ');
   }
 
   // --- Fun extras ---
@@ -144,9 +141,12 @@ export class ControllerDevice extends DeviceBase {
       SCProtocolId.TriggerHapticPulse,
       0x07,
       sideVal,
-      highDuration & 0xff, (highDuration >> 8) & 0xff,
-      lowDuration & 0xff, (lowDuration >> 8) & 0xff,
-      repeat & 0xff, (repeat >> 8) & 0xff,
+      highDuration & 0xff,
+      (highDuration >> 8) & 0xff,
+      lowDuration & 0xff,
+      (lowDuration >> 8) & 0xff,
+      repeat & 0xff,
+      (repeat >> 8) & 0xff,
     ]);
   }
 
@@ -163,8 +163,23 @@ export class ControllerDevice extends DeviceBase {
   async enterPersonaliseMode(): Promise<void> {
     await this.send([
       SCProtocolId.SetPersonalise,
-      0x10, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-      0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+      0x10,
+      0x00,
+      0x01,
+      0x02,
+      0x03,
+      0x04,
+      0x05,
+      0x06,
+      0x07,
+      0x08,
+      0x09,
+      0x0a,
+      0x0b,
+      0x0c,
+      0x0d,
+      0x0e,
+      0x0f,
     ]);
   }
 

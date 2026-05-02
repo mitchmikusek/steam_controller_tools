@@ -46,7 +46,9 @@ export function Modal({ open, onClose, title, children }: Props) {
       if (e.key !== 'Tab') return;
       const modal = document.querySelector('.modal') as HTMLElement;
       if (!modal) return;
-      const focusable = modal.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      const focusable = modal.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -67,14 +69,18 @@ export function Modal({ open, onClose, title, children }: Props) {
   return createPortal(
     <div
       className={`modal-overlay${closing ? ' closing' : ''}`}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       role="dialog"
       aria-modal="true"
-      aria-label={title}
+      aria-labelledby="modal-title"
     >
       <div className="modal" style={{ textAlign: 'left', maxWidth: 480, padding: '24px 28px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <div className="modal-title" style={{ textAlign: 'left' }}>{title}</div>
+          <div id="modal-title" className="modal-title" style={{ textAlign: 'left' }}>
+            {title}
+          </div>
           <button
             ref={closeRef}
             className="btn-ghost btn-sm"

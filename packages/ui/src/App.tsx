@@ -10,7 +10,12 @@ import { logger } from './utils/logger';
 
 // Lazy-loaded pages — reload on stale chunk (deploy changed hashes)
 function lazyWithReload(loader: () => Promise<any>) {
-  return lazy(() => loader().catch(() => { window.location.reload(); return loader(); }));
+  return lazy(() =>
+    loader().catch(() => {
+      window.location.reload();
+      return loader();
+    }),
+  );
 }
 const ConnectPage = lazyWithReload(() => import('./pages/ConnectPage'));
 const HomePage = lazyWithReload(() => import('./pages/HomePage'));
@@ -114,11 +119,13 @@ export function App() {
       // Retry getInfo until radio is populated
       let info: ControllerInfo | null = null;
       for (let i = 0; i < 8; i++) {
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 1000));
         try {
           info = await coordinator.getInfo();
           if (info && info.radioRev !== 0) break;
-        } catch { /* ok */ }
+        } catch {
+          /* ok */
+        }
       }
       setDeviceInfo(info);
       setController(coordinator.getController());
@@ -126,7 +133,11 @@ export function App() {
       setFlashResult({ success: true });
       setPage('complete');
     } catch (e) {
-      try { await coordinator.disconnect(); } catch { /* ok */ }
+      try {
+        await coordinator.disconnect();
+      } catch {
+        /* ok */
+      }
       setFlashResult({ success: false, error: e instanceof Error ? e.message : String(e) });
       setPage('complete');
     } finally {
@@ -147,7 +158,9 @@ export function App() {
         const info = await coordinator.getInfo();
         setDeviceInfo(info);
         setController(coordinator.getController());
-      } catch { /* ok */ }
+      } catch {
+        /* ok */
+      }
       setPage('home');
     } else {
       setPage('connect');
@@ -174,8 +187,12 @@ export function App() {
 
   // Step indicator mapping
   const stepMap: Record<PageName, number | null> = {
-    connect: null, home: null,
-    choose: 0, preflight: 1, flashing: 2, complete: 3,
+    connect: null,
+    home: null,
+    choose: 0,
+    preflight: 1,
+    flashing: 2,
+    complete: 3,
   };
   const currentStep = stepMap[page];
 
@@ -187,54 +204,42 @@ export function App() {
         </div>
       )}
       <Suspense fallback={null}>
-      {page === 'connect' && <ConnectPage onConnect={handleConnect} />}
-      {page === 'home' && (
-        <HomePage
-          info={deviceInfo}
-          controller={controller}
-          mode={deviceMode}
-          onDisconnect={handleDisconnect}
-          onFlash={handleFlash}
-        />
-      )}
-      {page === 'choose' && (
-        <ChooseFirmwarePage
-          info={deviceInfo}
-          onBack={handleReturnHome}
-          onNext={handleChooseNext}
-        />
-      )}
-      {page === 'preflight' && (
-        <PreflightPage
-          choice={firmwareChoice}
-          info={deviceInfo}
-          isConnected={coordinator.isConnected()}
-          onBack={() => setPage('choose')}
-          onBegin={handleBeginFlash}
-        />
-      )}
-      {page === 'flashing' && (
-        <FlashingPage
-          progress={flashProgress}
-          reconnectPid={reconnectPid}
-          onReconnect={handleReconnect}
-        />
-      )}
-      {page === 'complete' && flashResult && (
-        <CompletePage
-          success={flashResult.success}
-          error={flashResult.error}
-          firmwareType={label}
-          info={deviceInfo}
-          onHome={handleReturnHome}
-        />
-      )}
+        {page === 'connect' && <ConnectPage onConnect={handleConnect} />}
+        {page === 'home' && (
+          <HomePage
+            info={deviceInfo}
+            controller={controller}
+            mode={deviceMode}
+            onDisconnect={handleDisconnect}
+            onFlash={handleFlash}
+          />
+        )}
+        {page === 'choose' && (
+          <ChooseFirmwarePage info={deviceInfo} onBack={handleReturnHome} onNext={handleChooseNext} />
+        )}
+        {page === 'preflight' && (
+          <PreflightPage
+            choice={firmwareChoice}
+            info={deviceInfo}
+            isConnected={coordinator.isConnected()}
+            onBack={() => setPage('choose')}
+            onBegin={handleBeginFlash}
+          />
+        )}
+        {page === 'flashing' && (
+          <FlashingPage progress={flashProgress} reconnectPid={reconnectPid} onReconnect={handleReconnect} />
+        )}
+        {page === 'complete' && flashResult && (
+          <CompletePage
+            success={flashResult.success}
+            error={flashResult.error}
+            firmwareType={label}
+            info={deviceInfo}
+            onHome={handleReturnHome}
+          />
+        )}
       </Suspense>
-      <Toast
-        message={toast?.message ?? null}
-        type={toast?.type}
-        onDismiss={() => setToast(null)}
-      />
+      <Toast message={toast?.message ?? null} type={toast?.type} onDismiss={() => setToast(null)} />
     </>
   );
 }

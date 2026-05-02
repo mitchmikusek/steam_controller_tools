@@ -37,9 +37,7 @@ function createWindow(): BrowserWindow {
   // Auto-select Valve HID devices without showing picker
   win.webContents.session.on('select-hid-device', (event, details, callback) => {
     event.preventDefault();
-    const valve = details.deviceList.find(
-      (d: any) => d.vendorId === VALVE_VID && ALLOWED_PIDS.includes(d.productId),
-    );
+    const valve = details.deviceList.find((d: any) => d.vendorId === VALVE_VID && ALLOWED_PIDS.includes(d.productId));
     callback(valve?.deviceId ?? '');
   });
 

@@ -22,9 +22,7 @@ export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
 
   const installedType = info ? detectFirmwareType(info) : null;
 
-  const canProceed = selected === 'custom'
-    ? !!(lpcFile && softdeviceFile && radioFile)
-    : !!selected;
+  const canProceed = selected === 'custom' ? !!(lpcFile && softdeviceFile && radioFile) : !!selected;
 
   const handleNext = () => {
     if (!selected) return;
@@ -46,7 +44,7 @@ export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
       <BackLink onClick={onBack} />
       <div className="page-heading">{t('choose.title')}</div>
 
-      {options.map(opt => (
+      {options.map((opt) => (
         <SelectCard
           key={opt.id}
           title={opt.title}
@@ -67,7 +65,9 @@ export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
 
       <div className="nav-row">
         <div className="spacer" />
-        <button className="btn-ghost" onClick={handleNext} disabled={!canProceed}>{t('choose.next')}</button>
+        <button className="btn-ghost" onClick={handleNext} disabled={!canProceed}>
+          {t('choose.next')}
+        </button>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import type { HIDTransport, DeviceInfo } from './hid-transport.js';
 const VENDOR_USAGE_PAGE = 0xff00;
 
 function isVendorDevice(device: HIDDevice): boolean {
-  return device.collections.some(c => c.usagePage === VENDOR_USAGE_PAGE);
+  return device.collections.some((c) => c.usagePage === VENDOR_USAGE_PAGE);
 }
 
 export class WebHIDTransport implements HIDTransport {
@@ -34,24 +34,21 @@ export class WebHIDTransport implements HIDTransport {
   async open(vendorId: number, productId: number): Promise<void> {
     // First check if we already have permission for this device
     const existing = await navigator.hid.getDevices();
-    let device = existing.find(
-      d => d.vendorId === vendorId && d.productId === productId && isVendorDevice(d),
-    );
+    let device = existing.find((d) => d.vendorId === vendorId && d.productId === productId && isVendorDevice(d));
 
     if (!device) {
       // For bootloader mode (0x1002), there's only one interface, no need for usage filter
       if (productId === BOOTLOADER_PID) {
-        device = existing.find(
-          d => d.vendorId === vendorId && d.productId === productId,
-        );
+        device = existing.find((d) => d.vendorId === vendorId && d.productId === productId);
       }
     }
 
     if (!device) {
       // Request permission — filter by usage page for normal mode
-      const filters = productId === CONTROLLER_PID
-        ? [{ vendorId, productId, usagePage: VENDOR_USAGE_PAGE }]
-        : [{ vendorId, productId }];
+      const filters =
+        productId === CONTROLLER_PID
+          ? [{ vendorId, productId, usagePage: VENDOR_USAGE_PAGE }]
+          : [{ vendorId, productId }];
 
       const selected = await navigator.hid.requestDevice({ filters });
       if (!selected.length) throw new Error('No device selected');
@@ -113,13 +110,9 @@ export class WebHIDTransport implements HIDTransport {
     const devices = await navigator.hid.getDevices();
 
     if (productId === CONTROLLER_PID && requireVendorPage) {
-      return devices.find(
-        d => d.vendorId === VALVE_VID && d.productId === productId && isVendorDevice(d),
-      ) ?? null;
+      return devices.find((d) => d.vendorId === VALVE_VID && d.productId === productId && isVendorDevice(d)) ?? null;
     }
 
-    return devices.find(
-      d => d.vendorId === VALVE_VID && d.productId === productId,
-    ) ?? null;
+    return devices.find((d) => d.vendorId === VALVE_VID && d.productId === productId) ?? null;
   }
 }

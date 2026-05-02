@@ -2,7 +2,7 @@ import { REPORT_ID, REPORT_SIZE } from './constants.js';
 import type { HIDTransport } from './hid-transport.js';
 
 function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export class DeviceBase {
@@ -22,7 +22,7 @@ export class DeviceBase {
       if (view.byteLength > 0) {
         const arr = new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
         // Check if response is non-empty (not all zeros)
-        if (arr.some(b => b !== 0)) {
+        if (arr.some((b) => b !== 0)) {
           return arr;
         }
       }
@@ -48,7 +48,9 @@ export class DeviceBase {
       if (match) return pi;
     }
     throw new Error(
-      `Unexpected response: [${Array.from(response.slice(0, 8)).map(b => '0x' + b.toString(16).padStart(2, '0')).join(', ')}...]`
+      `Unexpected response: [${Array.from(response.slice(0, 8))
+        .map((b) => '0x' + b.toString(16).padStart(2, '0'))
+        .join(', ')}...]`,
     );
   }
 

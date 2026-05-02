@@ -11,17 +11,23 @@ interface UseHIDEventsProps {
  * Only fires for Valve devices (VID 0x28de).
  */
 export function useHIDEvents({ onDisconnect, onConnect, enabled = true }: UseHIDEventsProps) {
-  const handleDisconnect = useCallback((e: HIDConnectionEvent) => {
-    if (e.device.vendorId === 0x28de) {
-      onDisconnect?.();
-    }
-  }, [onDisconnect]);
+  const handleDisconnect = useCallback(
+    (e: HIDConnectionEvent) => {
+      if (e.device.vendorId === 0x28de) {
+        onDisconnect?.();
+      }
+    },
+    [onDisconnect],
+  );
 
-  const handleConnect = useCallback((e: HIDConnectionEvent) => {
-    if (e.device.vendorId === 0x28de) {
-      onConnect?.();
-    }
-  }, [onConnect]);
+  const handleConnect = useCallback(
+    (e: HIDConnectionEvent) => {
+      if (e.device.vendorId === 0x28de) {
+        onConnect?.();
+      }
+    },
+    [onConnect],
+  );
 
   useEffect(() => {
     if (!enabled || !('hid' in navigator)) return;

@@ -34,7 +34,7 @@ export class FlashCoordinator {
   onLog: LogHandler = () => {};
   /** Load BLE LPC firmware for temporary SWD support. Override to use CDN with fallback. */
   loadBleLpc: () => Promise<ArrayBuffer> = () =>
-    fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin').then(r => r.arrayBuffer());
+    fetch('fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin').then((r) => r.arrayBuffer());
   onReconnectNeeded: ReconnectPromptHandler = async () => {};
 
   constructor() {
@@ -155,14 +155,10 @@ export class FlashCoordinator {
     await this.controller.swdErase();
 
     this.log('info', 'Flashing SoftDevice...');
-    await this.controller.swdFlash(fw.softdevice, 0, (_phase, pct) =>
-      this.progress('Flashing SoftDevice', pct),
-    );
+    await this.controller.swdFlash(fw.softdevice, 0, (_phase, pct) => this.progress('Flashing SoftDevice', pct));
 
     this.log('info', 'Flashing radio application...');
-    await this.controller.swdFlash(fw.radioApp, fw.radioAppOffset, (phase, pct) =>
-      this.progress(phase, pct),
-    );
+    await this.controller.swdFlash(fw.radioApp, fw.radioAppOffset, (phase, pct) => this.progress(phase, pct));
 
     this.log('info', 'Saving radio firmware...');
     await this.controller.swdSave();
@@ -260,14 +256,10 @@ export class FlashCoordinator {
     await this.controller.swdErase();
 
     this.log('info', 'Flashing bootloader...');
-    await this.controller.swdFlash(fw.softdevice, 0, (phase, pct) =>
-      this.progress('Flashing bootloader', pct),
-    );
+    await this.controller.swdFlash(fw.softdevice, 0, (phase, pct) => this.progress('Flashing bootloader', pct));
 
     this.log('info', 'Flashing radio module...');
-    await this.controller.swdFlash(fw.radioApp, fw.radioAppOffset, (phase, pct) =>
-      this.progress(phase, pct),
-    );
+    await this.controller.swdFlash(fw.radioApp, fw.radioAppOffset, (phase, pct) => this.progress(phase, pct));
 
     this.log('info', 'Saving radio firmware...');
     await this.controller.swdSave();

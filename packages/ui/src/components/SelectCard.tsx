@@ -17,7 +17,11 @@ export function SelectCard({ title, desc, selected, installed, onClick }: Props)
     >
       <div className="select-card-title">
         {title}
-        {installed && <span className="badge badge-prod" style={{ marginLeft: 8 }}>INSTALLED</span>}
+        {installed && (
+          <span className="badge badge-prod" style={{ marginLeft: 8 }}>
+            INSTALLED
+          </span>
+        )}
       </div>
       <div className="select-card-desc">{desc}</div>
     </button>

@@ -1,9 +1,8 @@
 interface Props {
   state: 'spinning' | 'complete' | 'error';
-  waiting?: boolean;
 }
 
-export function LogoRing({ state, waiting }: Props) {
+export function LogoRing({ state }: Props) {
   const ringClass = `logo-ring${state === 'complete' ? ' complete' : state === 'error' ? ' error' : ''}`;
 
   return (

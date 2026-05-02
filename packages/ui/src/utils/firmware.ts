@@ -18,8 +18,11 @@ export function fmtRev(ts: number): string {
 
 export function fmtFirmwareLabel(type: FirmwareType): string {
   switch (type) {
-    case 'ble': return 'Bluetooth LE Firmware';
-    case 'production': return 'Production Firmware';
-    default: return 'Unknown Firmware';
+    case 'ble':
+      return 'Bluetooth LE Firmware';
+    case 'production':
+      return 'Production Firmware';
+    default:
+      return 'Unknown Firmware';
   }
 }

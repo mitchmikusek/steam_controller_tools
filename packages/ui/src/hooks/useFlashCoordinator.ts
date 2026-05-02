@@ -12,10 +12,34 @@ import type { FirmwareChoice } from '../pages/ChooseFirmwarePage';
 import { logger } from '../utils/logger';
 import {
   VALVE_ZIP_URL,
-  BLE_LPC, BLE_SOFTDEVICE, BLE_RADIO,
-  PROD_LPC, PROD_BOOTLOADER, PROD_RADIO,
-  type FirmwareFileConfig, type FirmwareSource,
+  BLE_LPC,
+  BLE_SOFTDEVICE,
+  BLE_RADIO,
+  PROD_LPC,
+  PROD_BOOTLOADER,
+  PROD_RADIO,
+  type FirmwareFileConfig,
+  type FirmwareSource,
 } from '../utils/firmware-sources';
+
+// ---- Fetch with retry ----
+
+async function fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) return res;
+      if (res.status >= 400 && res.status < 500) throw new Error(`HTTP ${res.status}`);
+      // Server error — retry
+    } catch (e) {
+      if (attempt === maxRetries) throw e;
+    }
+    const backoff = 1000 * 2 ** attempt;
+    logger.debug(`Retry ${attempt + 1}/${maxRetries} in ${backoff}ms...`);
+    await new Promise((r) => setTimeout(r, backoff));
+  }
+  throw new Error('Fetch failed after retries');
+}
 
 // ---- ZIP cache ----
 
@@ -24,8 +48,7 @@ let zipCache: Record<string, Uint8Array> | null = null;
 async function loadValveZip(): Promise<Record<string, Uint8Array>> {
   if (zipCache) return zipCache;
   logger.info('Downloading Valve FW Update Tool ZIP...');
-  const res = await fetch(VALVE_ZIP_URL);
-  if (!res.ok) throw new Error(`ZIP download failed: ${res.status}`);
+  const res = await fetchWithRetry(VALVE_ZIP_URL);
   const data = new Uint8Array(await res.arrayBuffer());
   logger.info('Extracting firmware from ZIP...');
   zipCache = unzipSync(data);
@@ -37,10 +60,10 @@ async function loadValveZip(): Promise<Record<string, Uint8Array>> {
 async function loadFromSource(source: FirmwareSource): Promise<ArrayBuffer> {
   switch (source.type) {
     case 'url': {
-      const res = await fetch(source.url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const res = await fetchWithRetry(source.url);
       const buf = await res.arrayBuffer();
-      if (buf.byteLength < 10000 || buf.byteLength > 500000) throw new Error(`Invalid firmware size: ${buf.byteLength} bytes`);
+      if (buf.byteLength < 10000 || buf.byteLength > 500000)
+        throw new Error(`Invalid firmware size: ${buf.byteLength} bytes`);
       return buf;
     }
     case 'zip': {
@@ -61,7 +84,9 @@ async function loadFirmwareFile(config: FirmwareFileConfig): Promise<ArrayBuffer
   for (const source of config.sources) {
     try {
       const data = await loadFromSource(source);
-      logger.info(`${config.name}: loaded from ${source.type}${source.type === 'url' ? '' : source.type === 'zip' ? ' (Valve ZIP)' : ' (local bundle)'}`);
+      logger.info(
+        `${config.name}: loaded from ${source.type}${source.type === 'url' ? '' : source.type === 'zip' ? ' (Valve ZIP)' : ' (local bundle)'}`,
+      );
       return data;
     } catch (e) {
       logger.debug(`${config.name}: ${source.type} failed — ${e}`);
@@ -111,37 +136,37 @@ export function useFlashCoordinator(
     return c.getController();
   }, [getCoordinator]);
 
-  const flash = useCallback(async (
-    choice: FirmwareChoice,
-    customFiles?: { lpc: File; softdevice: File; radio: File },
-  ) => {
-    const c = getCoordinator();
+  const flash = useCallback(
+    async (choice: FirmwareChoice, customFiles?: { lpc: File; softdevice: File; radio: File }) => {
+      const c = getCoordinator();
 
-    logger.info(`Loading ${choice} firmware...`);
-    const fw = customFiles
-      ? createBLEFirmwareSet(
-          await loadFirmwareFromFile(customFiles.lpc),
-          await loadFirmwareFromFile(customFiles.softdevice),
-          await loadFirmwareFromFile(customFiles.radio),
-        )
-      : choice === 'ble'
+      logger.info(`Loading ${choice} firmware...`);
+      const fw = customFiles
         ? createBLEFirmwareSet(
-            await loadFirmwareFile(BLE_LPC),
-            await loadFirmwareFile(BLE_SOFTDEVICE),
-            await loadFirmwareFile(BLE_RADIO),
+            await loadFirmwareFromFile(customFiles.lpc),
+            await loadFirmwareFromFile(customFiles.softdevice),
+            await loadFirmwareFromFile(customFiles.radio),
           )
-        : createProductionFirmwareSet(
-            await loadFirmwareFile(PROD_LPC),
-            await loadFirmwareFile(PROD_BOOTLOADER),
-            await loadFirmwareFile(PROD_RADIO),
-          );
+        : choice === 'ble'
+          ? createBLEFirmwareSet(
+              await loadFirmwareFile(BLE_LPC),
+              await loadFirmwareFile(BLE_SOFTDEVICE),
+              await loadFirmwareFile(BLE_RADIO),
+            )
+          : createProductionFirmwareSet(
+              await loadFirmwareFile(PROD_LPC),
+              await loadFirmwareFile(PROD_BOOTLOADER),
+              await loadFirmwareFile(PROD_RADIO),
+            );
 
-    if (choice === 'ble' || choice === 'custom') {
-      await c.flashBLE(fw);
-    } else {
-      await c.flashProduction(fw);
-    }
-  }, [getCoordinator]);
+      if (choice === 'ble' || choice === 'custom') {
+        await c.flashBLE(fw);
+      } else {
+        await c.flashProduction(fw);
+      }
+    },
+    [getCoordinator],
+  );
 
   const isConnected = useCallback(() => {
     return coordinatorRef.current?.isConnected ?? false;

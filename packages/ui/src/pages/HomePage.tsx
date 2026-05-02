@@ -22,9 +22,15 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
   const { t } = useTranslation();
   const [bleHelpOpen, setBleHelpOpen] = useState(false);
   const fwType = info ? detectFirmwareType(info) : 'unknown';
-  const badgeType = mode === 'bootloader' ? 'bootloader' : fwType === 'ble' ? 'ble' : fwType === 'production' ? 'prod' : 'unknown';
+  const badgeType =
+    mode === 'bootloader' ? 'bootloader' : fwType === 'ble' ? 'ble' : fwType === 'production' ? 'prod' : 'unknown';
 
-  const fwLabel = fwType === 'ble' ? t('home.bleFirmware') : fwType === 'production' ? t('home.productionFirmware') : t('home.unknownFirmware');
+  const fwLabel =
+    fwType === 'ble'
+      ? t('home.bleFirmware')
+      : fwType === 'production'
+        ? t('home.productionFirmware')
+        : t('home.unknownFirmware');
 
   return (
     <div className="page page-narrow">
@@ -40,7 +46,9 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
               {mode === 'bootloader' ? t('home.bootloaderMode') : t('home.connected')}
             </span>
           </div>
-          <button className="btn-ghost btn-sm" onClick={onDisconnect}>{t('home.disconnect')}</button>
+          <button className="btn-ghost btn-sm" onClick={onDisconnect}>
+            {t('home.disconnect')}
+          </button>
         </div>
 
         {mode === 'normal' && info && (
@@ -58,7 +66,9 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
         )}
 
         <SectionRow label={t('home.flashFirmware')} sublabel={t('home.flashSublabel')}>
-          <button className="btn-blue" onClick={onFlash}>{t('home.flash')}</button>
+          <button className="btn-blue" onClick={onFlash}>
+            {t('home.flash')}
+          </button>
         </SectionRow>
       </div>
 
@@ -76,11 +86,18 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
 
           <SectionRow label={t('home.hapticFeedback')}>
             <div style={{ display: 'flex', gap: 6 }}>
-              {(['left', 'right'] as const).map(side => (
-                <button key={side} className="btn-ghost btn-sm" onClick={async () => {
-                  try { await controller.hapticPulse(side, 65535, 65535, 2); }
-                  catch (e) { logger.error(`${e}`); }
-                }}>
+              {(['left', 'right'] as const).map((side) => (
+                <button
+                  key={side}
+                  className="btn-ghost btn-sm"
+                  onClick={async () => {
+                    try {
+                      await controller.hapticPulse(side, 65535, 65535, 2);
+                    } catch (e) {
+                      logger.error(`${e}`);
+                    }
+                  }}
+                >
                   {t(`home.${side}`)}
                 </button>
               ))}
@@ -89,12 +106,18 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
 
           <SectionRow label={t('home.ledBrightness')}>
             <input
-              type="range" min="0" max="100" defaultValue="100"
+              type="range"
+              min="0"
+              max="100"
+              defaultValue="100"
               aria-label={t('home.ledBrightness')}
               style={{ width: 160, accentColor: 'var(--blue)' }}
               onChange={async (e) => {
-                try { await controller.setBrightness(parseInt(e.target.value)); }
-                catch (err) { logger.error(`${err}`); }
+                try {
+                  await controller.setBrightness(parseInt(e.target.value));
+                } catch (err) {
+                  logger.error(`${err}`);
+                }
               }}
             />
           </SectionRow>
@@ -102,10 +125,18 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
           <SectionTitle>{t('home.jingles')}</SectionTitle>
           <div className="jingle-grid">
             {JINGLES.map((name, i) => (
-              <button key={i} className="btn-ghost btn-sm" onClick={async () => {
-                try { await controller.playJingle(i); logger.info(`Playing: ${name}`); }
-                catch (e) { logger.error(`${e}`); }
-              }}>
+              <button
+                key={i}
+                className="btn-ghost btn-sm"
+                onClick={async () => {
+                  try {
+                    await controller.playJingle(i);
+                    logger.info(`Playing: ${name}`);
+                  } catch (e) {
+                    logger.error(`${e}`);
+                  }
+                }}
+              >
                 {name}
               </button>
             ))}

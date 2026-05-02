@@ -5,11 +5,7 @@ export interface FirmwareSet {
   radioAppOffset: number; // 0 for BLE, 1024 for production
 }
 
-export function createBLEFirmwareSet(
-  lpc: ArrayBuffer,
-  softdevice: ArrayBuffer,
-  radioApp: ArrayBuffer,
-): FirmwareSet {
+export function createBLEFirmwareSet(lpc: ArrayBuffer, softdevice: ArrayBuffer, radioApp: ArrayBuffer): FirmwareSet {
   return { lpc, softdevice, radioApp, radioAppOffset: 0 };
 }
 

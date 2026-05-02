@@ -7,7 +7,13 @@ export { ControllerDevice } from './controller.js';
 export type { ControllerInfo } from './controller.js';
 export { WebHIDTransport } from './webhid-transport.js';
 export { FlashCoordinator } from './flash-coordinator.js';
-export type { FlashProgress, LogLevel, ProgressHandler, LogHandler, ReconnectPromptHandler } from './flash-coordinator.js';
+export type {
+  FlashProgress,
+  LogLevel,
+  ProgressHandler,
+  LogHandler,
+  ReconnectPromptHandler,
+} from './flash-coordinator.js';
 export { computeChecksum } from './checksum.js';
 export type { FirmwareSet } from './firmware.js';
 export {

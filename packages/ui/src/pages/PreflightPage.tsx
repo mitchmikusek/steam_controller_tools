@@ -42,19 +42,30 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
   const [fwCheckDetail, setFwCheckDetail] = useState<string | undefined>();
 
   useEffect(() => {
-    if (choice === 'custom') { setFwCheckStatus('pass'); return; }
+    if (choice === 'custom') {
+      setFwCheckStatus('pass');
+      return;
+    }
     const files = FW_FILES[choice] ?? [];
-    Promise.all(files.map(async (url) => {
-      const res = await fetch(url, { method: 'HEAD' });
-      if (!res.ok) throw new Error(`${url}: ${res.status}`);
-    }))
+    Promise.all(
+      files.map(async (url) => {
+        const res = await fetch(url, { method: 'HEAD' });
+        if (!res.ok) throw new Error(`${url}: ${res.status}`);
+      }),
+    )
       .then(() => setFwCheckStatus('pass'))
-      .catch((e) => { setFwCheckStatus('fail'); setFwCheckDetail(`${e.message}`); });
+      .catch((e) => {
+        setFwCheckStatus('fail');
+        setFwCheckDetail(`${e.message}`);
+      });
   }, [choice]);
 
-  const fwLabel = choice === 'custom' ? t('preflight.customSelected')
-    : choice === 'ble' ? t('preflight.bleBundled')
-    : t('preflight.prodBundled');
+  const fwLabel =
+    choice === 'custom'
+      ? t('preflight.customSelected')
+      : choice === 'ble'
+        ? t('preflight.bleBundled')
+        : t('preflight.prodBundled');
 
   const checks: Check[] = [
     'hid' in navigator
@@ -66,7 +77,7 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
     { label: fwLabel, status: fwCheckStatus === 'checking' ? 'pass' : fwCheckStatus, detail: fwCheckDetail },
   ];
 
-  const allPass = checks.every(c => c.status === 'pass') && fwCheckStatus === 'pass';
+  const allPass = checks.every((c) => c.status === 'pass') && fwCheckStatus === 'pass';
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -119,7 +130,11 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
       </div>
 
       <div className={`warning-box preflight-extra${showExtras ? ' visible' : ''}`}>
-        {warnings.map((w, i) => (<div key={i} style={{ marginBottom: 4 }}>⚠ {w}</div>))}
+        {warnings.map((w, i) => (
+          <div key={i} style={{ marginBottom: 4 }}>
+            ⚠ {w}
+          </div>
+        ))}
       </div>
 
       {info && (
@@ -128,8 +143,14 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
           <div className="summary-row">
             <span className="summary-label">{t('preflight.firmware')}</span>
             <span className="summary-values">
-              <span className="summary-value" title={info ? `0x${info.firmwareRev.toString(16)}` : ''}>{currentType}</span>
-              <span style={{ color: 'var(--blue)', margin: '0 8px', fontSize: '0.7rem', position: 'relative', top: -2 }}>→</span>
+              <span className="summary-value" title={info ? `0x${info.firmwareRev.toString(16)}` : ''}>
+                {currentType}
+              </span>
+              <span
+                style={{ color: 'var(--blue)', margin: '0 8px', fontSize: '0.7rem', position: 'relative', top: -2 }}
+              >
+                →
+              </span>
               <span className="summary-value">{targetType}</span>
             </span>
           </div>
@@ -138,8 +159,12 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
 
       <div className="nav-row">
         <div className="spacer" />
-        <button className="btn-green" onClick={onBegin} disabled={!allPass || !showButton}
-          style={{ opacity: showButton ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+        <button
+          className="btn-green"
+          onClick={onBegin}
+          disabled={!allPass || !showButton}
+          style={{ opacity: showButton ? 1 : 0, transition: 'opacity 0.4s ease' }}
+        >
           {t('preflight.beginFlash')}
         </button>
       </div>
