@@ -29,13 +29,17 @@ body {
 }
 
 #app {
-  max-width: 580px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 20px 40px;
+  padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+
+/* Per-page content width */
+.page-narrow { max-width: 580px; margin: 0 auto; padding: 0 20px; width: 100%; }
+.page-wide { max-width: 940px; margin: 0 auto; padding: 0 20px; width: 100%; }
 
 /* ---- Page & element transitions ---- */
 .page { animation: scaleUp 0.4s ease both; flex: 1; display: flex; flex-direction: column; }
@@ -147,7 +151,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 }
 
 .connect-prompt img {
-  width: 200px;
+  width: 320px;
   opacity: 0.6;
   animation: controllerFloat 2.5s ease-in-out infinite;
 }
@@ -393,8 +397,8 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 /* Spinning arc around icon */
 .logo-ring {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 140px;
+  height: 140px;
   margin-bottom: 24px;
 }
 
@@ -456,7 +460,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 
 
 .flash-status {
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text-bright);
   text-align: center;
   margin-bottom: 8px;
@@ -475,7 +479,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 /* Progress bar */
 .progress-track {
   width: 100%;
-  max-width: 360px;
+  max-width: 480px;
   height: 4px;
   background: rgba(255,255,255,0.06);
   border-radius: 2px;
@@ -490,6 +494,12 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   transition: width 0.25s ease;
   width: 0%;
   box-shadow: 0 0 8px var(--blue-glow);
+  animation: progressGlow 2s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--blue-glow); }
+  50% { opacity: 0.7; box-shadow: 0 0 16px var(--blue-glow); }
 }
 .progress-fill.complete { background: var(--green); box-shadow: 0 0 8px rgba(89,191,64,0.3); }
 .progress-fill.error { background: var(--red); box-shadow: none; }
@@ -664,9 +674,14 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
 /* ---- Step dots ---- */
 .steps { display: flex; gap: 4px; margin-bottom: 20px; }
 .step-dot { flex: 1; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.06); transition: background 0.2s; }
-.step-dot.active { background: var(--blue); }
+.step-dot.active { background: var(--blue); animation: stepPulse 1.5s ease-in-out infinite; }
 .step-dot.done { background: var(--green); }
 .step-dot.error { background: var(--red); }
+
+@keyframes stepPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 
 /* ---- Info circle button ---- */
 .btn-info-circle {
@@ -678,7 +693,9 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
   flex-shrink: 0;
 }
 
