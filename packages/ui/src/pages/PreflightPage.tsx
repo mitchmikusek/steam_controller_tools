@@ -163,3 +163,4 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
     </div>
   );
 }
+export default PreflightPage;

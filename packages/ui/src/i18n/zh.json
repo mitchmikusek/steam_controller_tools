@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "Steam Controller (2015)",
+    "subtitle": "固件刷写工具",
+    "disclaimer1": "与 Valve Corporation 无关。使用本工具的风险由您自行承担。",
+    "disclaimer2": "©2026 Valve Corporation. Steam® and the Steam logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.",
+    "unsupported": "您的浏览器不支持 WebHID。请使用 Chrome、Edge 或 Vivaldi。",
+    "errorFallback": "出现错误，请刷新页面。"
+  },
+  "connect": {
+    "hint": "通过 USB 连接控制器，然后点击「连接」",
+    "button": "连接",
+    "connecting": "正在连接..."
+  },
+  "home": {
+    "connected": "已连接",
+    "bootloaderMode": "引导加载程序模式",
+    "disconnect": "断开连接",
+    "bleFirmware": "Bluetooth LE 固件",
+    "productionFirmware": "出厂固件",
+    "unknownFirmware": "未知固件",
+    "noFirmware": "未加载固件。请刷写固件以恢复。",
+    "flashFirmware": "刷写固件",
+    "flashSublabel": "在 BLE 和出厂固件之间切换",
+    "flash": "刷写",
+    "extras": "更多功能",
+    "controllerModes": "控制器模式",
+    "viewBleModes": "查看 BLE 模式",
+    "hapticFeedback": "触觉反馈",
+    "left": "左",
+    "right": "右",
+    "ledBrightness": "LED 亮度",
+    "jingles": "提示音"
+  },
+  "choose": {
+    "title": "选择固件",
+    "bleTitle": "BLE (Bluetooth)",
+    "bleDesc": "添加蓝牙支持，同时保留接收器兼容性",
+    "prodTitle": "出厂固件",
+    "prodDesc": "仅支持接收器的原始固件。如果 BLE 固件出现问题，请使用此选项。",
+    "customTitle": "自定义固件",
+    "customDesc": "加载您自己的固件文件",
+    "next": "下一步",
+    "installed": "已安装"
+  },
+  "preflight": {
+    "title": "刷写前检查",
+    "systemChecks": "系统检查",
+    "webhidSupported": "WebHID 已支持",
+    "webhidNotSupported": "WebHID 不受支持",
+    "webhidDetail": "请使用 Chrome、Edge 或 Vivaldi",
+    "controllerConnected": "控制器已连接",
+    "controllerNotConnected": "控制器未连接",
+    "controllerDetail": "通过 USB 插入并连接",
+    "customSelected": "已选择自定义固件文件",
+    "bleBundled": "BLE 固件已内置",
+    "prodBundled": "出厂固件已内置",
+    "warnNoUnplug": "刷写过程中请勿拔出控制器。",
+    "warnDuration": "该过程大约需要 30 秒。过程中会有提示。",
+    "warnRecovery": "如果刷写失败，可以通过引导加载程序模式进行恢复。",
+    "warnRemoveBle": "这将移除 Bluetooth (BLE) 支持。",
+    "summary": "摘要",
+    "firmware": "固件",
+    "beginFlash": "开始刷写"
+  },
+  "flashing": {
+    "initializing": "正在初始化...",
+    "flashComplete": "刷写完成",
+    "reconnectionRequired": "需要重新连接",
+    "rebootedTo": "控制器已重启至{{mode}}模式",
+    "reconnectHint": "从设备选择器中选择控制器以继续。",
+    "reconnect": "重新连接",
+    "complete": "固件刷写成功",
+    "percentComplete": "已完成 {{percent}}%"
+  },
+  "complete": {
+    "flashComplete": "刷写完成",
+    "flashFailed": "刷写失败",
+    "firmwareInstalled": "{{type}}固件已安装",
+    "controllerModes": "控制器模式",
+    "viewBleModes": "查看 BLE 模式",
+    "error": "错误",
+    "recoveryTip": "可以在按住右扳机键的同时插入控制器来恢复（引导加载程序模式）。",
+    "returnHome": "返回主页"
+  },
+  "bleHelp": {
+    "title": "BLE 控制器模式",
+    "subtitle": "按住按钮 + Steam 键切换模式（仅限 BLE 固件）",
+    "yTitle": "Bluetooth LE 配对模式",
+    "yDesc": "将控制器与新的 Bluetooth LE 兼容设备配对",
+    "bTitle": "切换到 Bluetooth LE 模式",
+    "bDesc": "以 BLE 模式启动控制器",
+    "xTitle": "接收器配对模式",
+    "xDesc": "将控制器与新的接收器或 Steam Link 配对",
+    "aTitle": "切换到接收器模式",
+    "aDesc": "以原始接收器模式启动控制器"
+  },
+  "firmware": {
+    "details": "固件详情",
+    "firmware": "固件",
+    "radio": "无线电",
+    "bootloader": "引导加载程序",
+    "usbPid": "USB PID"
+  },
+  "toast": {
+    "disconnected": "控制器已断开",
+    "detected": "检测到控制器"
+  },
+  "nav": {
+    "back": "返回"
+  },
+  "badge": {
+    "ble": "BLE",
+    "production": "出厂",
+    "unknown": "未知",
+    "bootloader": "引导加载"
+  },
+  "steps": {
+    "chooseFirmware": "选择固件",
+    "preflightChecks": "刷写前检查",
+    "flashing": "正在刷写",
+    "complete": "完成",
+    "error": "错误"
+  }
+}

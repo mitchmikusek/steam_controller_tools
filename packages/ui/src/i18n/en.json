@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "Steam Controller (2015)",
+    "subtitle": "Firmware Flash Tool",
+    "disclaimer1": "Not affiliated with Valve Corporation. Use this tool at your own risk.",
+    "disclaimer2": "©2026 Valve Corporation. Steam® and the Steam logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.",
+    "unsupported": "Your browser does not support WebHID. Please use Chrome, Edge, or Vivaldi.",
+    "errorFallback": "Something went wrong. Please refresh the page."
+  },
+  "connect": {
+    "hint": "Plug in controller via USB, then click Connect",
+    "button": "Connect",
+    "connecting": "Connecting..."
+  },
+  "home": {
+    "connected": "Connected",
+    "bootloaderMode": "Bootloader Mode",
+    "disconnect": "Disconnect",
+    "bleFirmware": "Bluetooth LE Firmware",
+    "productionFirmware": "Production Firmware",
+    "unknownFirmware": "Unknown Firmware",
+    "noFirmware": "No firmware loaded. Flash firmware to restore.",
+    "flashFirmware": "Flash Firmware",
+    "flashSublabel": "Switch between BLE and Production",
+    "flash": "Flash",
+    "extras": "Extras",
+    "controllerModes": "Controller Modes",
+    "viewBleModes": "View BLE Modes",
+    "hapticFeedback": "Haptic Feedback",
+    "left": "Left",
+    "right": "Right",
+    "ledBrightness": "LED Brightness",
+    "jingles": "Jingles"
+  },
+  "choose": {
+    "title": "Choose Firmware",
+    "bleTitle": "BLE (Bluetooth)",
+    "bleDesc": "Adds Bluetooth support while keeping dongle compatibility",
+    "prodTitle": "Production",
+    "prodDesc": "Original firmware with dongle support only. Use if experiencing issues with BLE firmware.",
+    "customTitle": "Custom Firmware",
+    "customDesc": "Load your own firmware files",
+    "next": "Next",
+    "installed": "INSTALLED"
+  },
+  "preflight": {
+    "title": "Pre-flight Checks",
+    "systemChecks": "System Checks",
+    "webhidSupported": "WebHID supported",
+    "webhidNotSupported": "WebHID not supported",
+    "webhidDetail": "Use Chrome, Edge, or Vivaldi",
+    "controllerConnected": "Controller connected",
+    "controllerNotConnected": "Controller not connected",
+    "controllerDetail": "Plug in via USB and connect",
+    "customSelected": "Custom firmware files selected",
+    "bleBundled": "BLE firmware bundled",
+    "prodBundled": "Production firmware bundled",
+    "warnNoUnplug": "Do not unplug the controller during flashing.",
+    "warnDuration": "The process takes approximately 30 seconds. You will be prompted along the way.",
+    "warnRecovery": "If flashing fails, recovery is possible via bootloader mode.",
+    "warnRemoveBle": "This will remove Bluetooth (BLE) support.",
+    "summary": "Summary",
+    "firmware": "Firmware",
+    "beginFlash": "Begin Flash"
+  },
+  "flashing": {
+    "initializing": "Initializing...",
+    "flashComplete": "Flash Complete",
+    "reconnectionRequired": "Reconnection Required",
+    "rebootedTo": "Controller rebooted into {{mode}} mode",
+    "reconnectHint": "Select the controller from the device picker to continue.",
+    "reconnect": "Reconnect",
+    "complete": "Firmware flashed successfully",
+    "percentComplete": "{{percent}}% complete"
+  },
+  "complete": {
+    "flashComplete": "Flash Complete",
+    "flashFailed": "Flash Failed",
+    "firmwareInstalled": "{{type}} Firmware Installed",
+    "controllerModes": "Controller Modes",
+    "viewBleModes": "View BLE Modes",
+    "error": "Error",
+    "recoveryTip": "The controller can be recovered by plugging it in while holding the right trigger (bootloader mode).",
+    "returnHome": "Return Home"
+  },
+  "bleHelp": {
+    "title": "BLE Controller Modes",
+    "subtitle": "Hold a button + Steam to switch modes (BLE firmware only)",
+    "yTitle": "Bluetooth LE Pairing Mode",
+    "yDesc": "Pair your controller with a new Bluetooth LE-compatible device",
+    "bTitle": "Switch to Bluetooth LE Mode",
+    "bDesc": "Launch your controller in BLE mode",
+    "xTitle": "Receiver Pairing Mode",
+    "xDesc": "Pair your controller with a new dongle or Steam Link",
+    "aTitle": "Switch to Receiver Mode",
+    "aDesc": "Launch your controller in original dongle mode"
+  },
+  "firmware": {
+    "details": "Firmware Details",
+    "firmware": "Firmware",
+    "radio": "Radio",
+    "bootloader": "Bootloader",
+    "usbPid": "USB PID"
+  },
+  "toast": {
+    "disconnected": "Controller disconnected",
+    "detected": "Controller detected"
+  },
+  "nav": {
+    "back": "Back"
+  },
+  "badge": {
+    "ble": "BLE",
+    "production": "PRODUCTION",
+    "unknown": "UNKNOWN",
+    "bootloader": "BOOTLOADER"
+  },
+  "steps": {
+    "chooseFirmware": "Choose Firmware",
+    "preflightChecks": "Pre-flight Checks",
+    "flashing": "Flashing",
+    "complete": "Complete",
+    "error": "Error"
+  }
+}

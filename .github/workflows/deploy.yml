@@ -41,6 +41,8 @@ jobs:
 
       - name: Build UI
         run: pnpm --filter @scflash/ui build
+        env:
+          VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
 
       - name: Deploy to Production
         id: deploy-prod

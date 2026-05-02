@@ -6,5 +6,10 @@ dist-electron/
 *.js.map
 !vite.config.ts
 
+# Environment files
+.env
+.env.local
+.env.*.local
+
 # Desktop app firmware (will be bundled separately)
 apps/desktop/resources/fw_images/

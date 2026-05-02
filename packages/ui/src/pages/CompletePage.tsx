@@ -60,3 +60,4 @@ export function CompletePage({ success, error, firmwareType, info, onHome }: Pro
     </div>
   );
 }
+export default CompletePage;

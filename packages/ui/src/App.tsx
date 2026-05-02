@@ -1,14 +1,19 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, lazy, Suspense } from 'react';
 import type { ControllerInfo, ControllerDevice, FlashProgress } from '@scflash/protocol';
 import { useFlashCoordinator } from './hooks/useFlashCoordinator';
 import { StepIndicator } from './components/StepIndicator';
-import { ConnectPage } from './pages/ConnectPage';
-import { HomePage } from './pages/HomePage';
-import { ChooseFirmwarePage, type FirmwareChoice } from './pages/ChooseFirmwarePage';
-import { PreflightPage } from './pages/PreflightPage';
-import { FlashingPage } from './pages/FlashingPage';
-import { CompletePage } from './pages/CompletePage';
+import type { FirmwareChoice } from './pages/ChooseFirmwarePage';
+import { useHIDEvents } from './hooks/useHIDEvents';
+import { Toast } from './components/Toast';
 import { logger } from './utils/logger';
+
+// Lazy-loaded pages for code splitting
+const ConnectPage = lazy(() => import('./pages/ConnectPage'));
+const HomePage = lazy(() => import('./pages/HomePage'));
+const ChooseFirmwarePage = lazy(() => import('./pages/ChooseFirmwarePage'));
+const PreflightPage = lazy(() => import('./pages/PreflightPage'));
+const FlashingPage = lazy(() => import('./pages/FlashingPage'));
+const CompletePage = lazy(() => import('./pages/CompletePage'));
 
 type PageName = 'connect' | 'home' | 'choose' | 'preflight' | 'flashing' | 'complete';
 
@@ -26,6 +31,27 @@ export function App() {
 
   // Reconnect promise resolver — must be ref, not state (useState would call the function)
   const reconnectResolverRef = useRef<(() => void) | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'info' | 'warn' | 'error' } | null>(null);
+
+  // HID device events — detect plug/unplug
+  useHIDEvents({
+    onDisconnect: () => {
+      if (!isFlashing && (page === 'home' || page === 'choose')) {
+        logger.warn('Controller disconnected');
+        setToast({ message: 'Controller disconnected', type: 'warn' });
+        coordinator.disconnect();
+        setDeviceInfo(null);
+        setController(null);
+        setPage('connect');
+      }
+    },
+    onConnect: () => {
+      if (page === 'connect') {
+        setToast({ message: 'Controller detected', type: 'info' });
+      }
+    },
+    enabled: !isFlashing,
+  });
 
   const onProgress = useCallback((p: FlashProgress) => setFlashProgress(p), []);
 
@@ -144,6 +170,7 @@ export function App() {
           <StepIndicator current={currentStep} error={page === 'complete' && flashResult?.success === false} />
         </div>
       )}
+      <Suspense fallback={null}>
       {page === 'connect' && <ConnectPage onConnect={handleConnect} />}
       {page === 'home' && (
         <HomePage
@@ -186,6 +213,12 @@ export function App() {
           onHome={handleReturnHome}
         />
       )}
+      </Suspense>
+      <Toast
+        message={toast?.message ?? null}
+        type={toast?.type}
+        onDismiss={() => setToast(null)}
+      />
     </>
   );
 }

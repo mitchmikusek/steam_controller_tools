@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "Steam Controller (2015)",
+    "subtitle": "Herramienta de Flash de Firmware",
+    "disclaimer1": "No está afiliado con Valve Corporation. Use esta herramienta bajo su propio riesgo.",
+    "disclaimer2": "©2026 Valve Corporation. Steam® and the Steam logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.",
+    "unsupported": "Su navegador no es compatible con WebHID. Por favor use Chrome, Edge o Vivaldi.",
+    "errorFallback": "Algo salió mal. Por favor actualice la página."
+  },
+  "connect": {
+    "hint": "Conecte el control por USB y luego haga clic en Conectar",
+    "button": "Conectar",
+    "connecting": "Conectando..."
+  },
+  "home": {
+    "connected": "Conectado",
+    "bootloaderMode": "Modo Bootloader",
+    "disconnect": "Desconectar",
+    "bleFirmware": "Firmware Bluetooth LE",
+    "productionFirmware": "Firmware de Producción",
+    "unknownFirmware": "Firmware Desconocido",
+    "noFirmware": "No hay firmware cargado. Flashee el firmware para restaurar.",
+    "flashFirmware": "Flashear Firmware",
+    "flashSublabel": "Cambiar entre BLE y Producción",
+    "flash": "Flashear",
+    "extras": "Extras",
+    "controllerModes": "Modos del Control",
+    "viewBleModes": "Ver Modos BLE",
+    "hapticFeedback": "Retroalimentación Háptica",
+    "left": "Izquierdo",
+    "right": "Derecho",
+    "ledBrightness": "Brillo del LED",
+    "jingles": "Melodías"
+  },
+  "choose": {
+    "title": "Elegir Firmware",
+    "bleTitle": "BLE (Bluetooth)",
+    "bleDesc": "Agrega soporte Bluetooth manteniendo la compatibilidad con el receptor",
+    "prodTitle": "Producción",
+    "prodDesc": "Firmware original solo con soporte de receptor. Úselo si tiene problemas con el firmware BLE.",
+    "customTitle": "Firmware Personalizado",
+    "customDesc": "Cargue sus propios archivos de firmware",
+    "next": "Siguiente",
+    "installed": "INSTALADO"
+  },
+  "preflight": {
+    "title": "Verificaciones Previas",
+    "systemChecks": "Verificaciones del Sistema",
+    "webhidSupported": "WebHID compatible",
+    "webhidNotSupported": "WebHID no compatible",
+    "webhidDetail": "Use Chrome, Edge o Vivaldi",
+    "controllerConnected": "Control conectado",
+    "controllerNotConnected": "Control no conectado",
+    "controllerDetail": "Conecte por USB",
+    "customSelected": "Archivos de firmware personalizados seleccionados",
+    "bleBundled": "Firmware BLE incluido",
+    "prodBundled": "Firmware de producción incluido",
+    "warnNoUnplug": "No desconecte el control durante el flasheo.",
+    "warnDuration": "El proceso toma aproximadamente 30 segundos. Se le guiará durante el proceso.",
+    "warnRecovery": "Si el flasheo falla, la recuperación es posible a través del modo bootloader.",
+    "warnRemoveBle": "Esto eliminará el soporte Bluetooth (BLE).",
+    "summary": "Resumen",
+    "firmware": "Firmware",
+    "beginFlash": "Iniciar Flash"
+  },
+  "flashing": {
+    "initializing": "Inicializando...",
+    "flashComplete": "Flash Completado",
+    "reconnectionRequired": "Reconexión Necesaria",
+    "rebootedTo": "El control se reinició en modo {{mode}}",
+    "reconnectHint": "Seleccione el control en el selector de dispositivos para continuar.",
+    "reconnect": "Reconectar",
+    "complete": "Firmware flasheado exitosamente",
+    "percentComplete": "{{percent}}% completado"
+  },
+  "complete": {
+    "flashComplete": "Flash Completado",
+    "flashFailed": "Flash Fallido",
+    "firmwareInstalled": "Firmware {{type}} Instalado",
+    "controllerModes": "Modos del Control",
+    "viewBleModes": "Ver Modos BLE",
+    "error": "Error",
+    "recoveryTip": "El control se puede recuperar conectándolo mientras mantiene presionado el gatillo derecho (modo bootloader).",
+    "returnHome": "Volver al Inicio"
+  },
+  "bleHelp": {
+    "title": "Modos del Control BLE",
+    "subtitle": "Mantenga un botón + Steam para cambiar de modo (solo firmware BLE)",
+    "yTitle": "Modo de Emparejamiento Bluetooth LE",
+    "yDesc": "Empareje su control con un nuevo dispositivo compatible con Bluetooth LE",
+    "bTitle": "Cambiar a Modo Bluetooth LE",
+    "bDesc": "Inicie su control en modo BLE",
+    "xTitle": "Modo de Emparejamiento del Receptor",
+    "xDesc": "Empareje su control con un nuevo receptor o Steam Link",
+    "aTitle": "Cambiar a Modo Receptor",
+    "aDesc": "Inicie su control en modo receptor original"
+  },
+  "firmware": {
+    "details": "Detalles del Firmware",
+    "firmware": "Firmware",
+    "radio": "Radio",
+    "bootloader": "Bootloader",
+    "usbPid": "USB PID"
+  },
+  "toast": {
+    "disconnected": "Control desconectado",
+    "detected": "Control detectado"
+  },
+  "nav": {
+    "back": "Atrás"
+  },
+  "badge": {
+    "ble": "BLE",
+    "production": "PRODUCCIÓN",
+    "unknown": "DESCONOCIDO",
+    "bootloader": "BOOTLOADER"
+  },
+  "steps": {
+    "chooseFirmware": "Elegir Firmware",
+    "preflightChecks": "Verificaciones Previas",
+    "flashing": "Flasheando",
+    "complete": "Completado",
+    "error": "Error"
+  }
+}

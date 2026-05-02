@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "Steam Controller (2015)",
+    "subtitle": "Outil de Flash du Firmware",
+    "disclaimer1": "Non affilié à Valve Corporation. Utilisez cet outil à vos propres risques.",
+    "disclaimer2": "©2026 Valve Corporation. Steam® and the Steam logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries.",
+    "unsupported": "Votre navigateur ne prend pas en charge WebHID. Veuillez utiliser Chrome, Edge ou Vivaldi.",
+    "errorFallback": "Une erreur s'est produite. Veuillez actualiser la page."
+  },
+  "connect": {
+    "hint": "Branchez la manette en USB, puis cliquez sur Connecter",
+    "button": "Connecter",
+    "connecting": "Connexion..."
+  },
+  "home": {
+    "connected": "Connecté",
+    "bootloaderMode": "Mode Bootloader",
+    "disconnect": "Déconnecter",
+    "bleFirmware": "Firmware Bluetooth LE",
+    "productionFirmware": "Firmware de Production",
+    "unknownFirmware": "Firmware Inconnu",
+    "noFirmware": "Aucun firmware chargé. Flashez le firmware pour restaurer.",
+    "flashFirmware": "Flasher le Firmware",
+    "flashSublabel": "Basculer entre BLE et Production",
+    "flash": "Flasher",
+    "extras": "Extras",
+    "controllerModes": "Modes de la Manette",
+    "viewBleModes": "Voir les Modes BLE",
+    "hapticFeedback": "Retour Haptique",
+    "left": "Gauche",
+    "right": "Droite",
+    "ledBrightness": "Luminosité LED",
+    "jingles": "Mélodies"
+  },
+  "choose": {
+    "title": "Choisir le Firmware",
+    "bleTitle": "BLE (Bluetooth)",
+    "bleDesc": "Ajoute le support Bluetooth tout en conservant la compatibilité avec le récepteur",
+    "prodTitle": "Production",
+    "prodDesc": "Firmware original avec support du récepteur uniquement. Utilisez-le en cas de problèmes avec le firmware BLE.",
+    "customTitle": "Firmware Personnalisé",
+    "customDesc": "Chargez vos propres fichiers de firmware",
+    "next": "Suivant",
+    "installed": "INSTALLÉ"
+  },
+  "preflight": {
+    "title": "Vérifications Préalables",
+    "systemChecks": "Vérifications Système",
+    "webhidSupported": "WebHID pris en charge",
+    "webhidNotSupported": "WebHID non pris en charge",
+    "webhidDetail": "Utilisez Chrome, Edge ou Vivaldi",
+    "controllerConnected": "Manette connectée",
+    "controllerNotConnected": "Manette non connectée",
+    "controllerDetail": "Branchez en USB et connectez",
+    "customSelected": "Fichiers de firmware personnalisés sélectionnés",
+    "bleBundled": "Firmware BLE inclus",
+    "prodBundled": "Firmware de production inclus",
+    "warnNoUnplug": "Ne débranchez pas la manette pendant le flash.",
+    "warnDuration": "Le processus prend environ 30 secondes. Vous serez guidé tout au long.",
+    "warnRecovery": "En cas d'échec du flash, la récupération est possible via le mode bootloader.",
+    "warnRemoveBle": "Cela supprimera le support Bluetooth (BLE).",
+    "summary": "Résumé",
+    "firmware": "Firmware",
+    "beginFlash": "Lancer le Flash"
+  },
+  "flashing": {
+    "initializing": "Initialisation...",
+    "flashComplete": "Flash Terminé",
+    "reconnectionRequired": "Reconnexion Nécessaire",
+    "rebootedTo": "La manette a redémarré en mode {{mode}}",
+    "reconnectHint": "Sélectionnez la manette dans le sélecteur d'appareils pour continuer.",
+    "reconnect": "Reconnecter",
+    "complete": "Firmware flashé avec succès",
+    "percentComplete": "{{percent}}% terminé"
+  },
+  "complete": {
+    "flashComplete": "Flash Terminé",
+    "flashFailed": "Échec du Flash",
+    "firmwareInstalled": "Firmware {{type}} Installé",
+    "controllerModes": "Modes de la Manette",
+    "viewBleModes": "Voir les Modes BLE",
+    "error": "Erreur",
+    "recoveryTip": "La manette peut être récupérée en la branchant tout en maintenant la gâchette droite enfoncée (mode bootloader).",
+    "returnHome": "Retour à l'Accueil"
+  },
+  "bleHelp": {
+    "title": "Modes BLE de la Manette",
+    "subtitle": "Maintenez un bouton + Steam pour changer de mode (firmware BLE uniquement)",
+    "yTitle": "Mode d'Appairage Bluetooth LE",
+    "yDesc": "Appairez votre manette avec un nouvel appareil compatible Bluetooth LE",
+    "bTitle": "Passer en Mode Bluetooth LE",
+    "bDesc": "Démarrez votre manette en mode BLE",
+    "xTitle": "Mode d'Appairage du Récepteur",
+    "xDesc": "Appairez votre manette avec un nouveau récepteur ou Steam Link",
+    "aTitle": "Passer en Mode Récepteur",
+    "aDesc": "Démarrez votre manette en mode récepteur original"
+  },
+  "firmware": {
+    "details": "Détails du Firmware",
+    "firmware": "Firmware",
+    "radio": "Radio",
+    "bootloader": "Bootloader",
+    "usbPid": "USB PID"
+  },
+  "toast": {
+    "disconnected": "Manette déconnectée",
+    "detected": "Manette détectée"
+  },
+  "nav": {
+    "back": "Retour"
+  },
+  "badge": {
+    "ble": "BLE",
+    "production": "PRODUCTION",
+    "unknown": "INCONNU",
+    "bootloader": "BOOTLOADER"
+  },
+  "steps": {
+    "chooseFirmware": "Choisir le Firmware",
+    "preflightChecks": "Vérifications Préalables",
+    "flashing": "Flash en cours",
+    "complete": "Terminé",
+    "error": "Erreur"
+  }
+}

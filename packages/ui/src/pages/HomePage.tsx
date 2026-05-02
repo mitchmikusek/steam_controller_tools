@@ -123,3 +123,4 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
     </div>
   );
 }
+export default HomePage;

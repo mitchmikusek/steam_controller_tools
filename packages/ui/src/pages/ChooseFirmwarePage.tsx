@@ -80,3 +80,4 @@ function FileInput({ label, onChange }: { label: string; onChange: (f: File | nu
     </div>
   );
 }
+export default ChooseFirmwarePage;

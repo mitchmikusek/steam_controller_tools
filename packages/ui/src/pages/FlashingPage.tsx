@@ -64,3 +64,4 @@ export function FlashingPage({ progress, reconnectPid, onReconnect }: Props) {
     </div>
   );
 }
+export default FlashingPage;

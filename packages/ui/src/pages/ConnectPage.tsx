@@ -25,3 +25,4 @@ export function ConnectPage({ onConnect }: Props) {
     </div>
   );
 }
+export default ConnectPage;
