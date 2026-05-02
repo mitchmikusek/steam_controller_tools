@@ -13,3 +13,6 @@ dist-electron/
 
 # Desktop app firmware (will be bundled separately)
 apps/desktop/resources/fw_images/
+
+# System Files
+.DS_Store
