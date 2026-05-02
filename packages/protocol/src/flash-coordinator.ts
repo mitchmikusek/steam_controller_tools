@@ -314,17 +314,20 @@ export class FlashCoordinator {
     await this.onReconnectNeeded(targetPid);
 
     // After the user grants permission, find and open the device with retry
-    for (let attempt = 0; attempt < 5; attempt++) {
-      await delay(500 * (attempt + 1)); // 500ms, 1s, 1.5s, 2s, 2.5s backoff
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      const backoff = 500 * attempt;
+      this.log('info', `Reconnect attempt ${attempt}/5 (waiting ${backoff}ms)...`);
+      await delay(backoff);
       try {
         const device = await WebHIDTransport.findDevice(targetPid);
         if (device) {
           await this.transport.openDevice(device);
-          this.log('info', 'Device reconnected');
+          this.log('info', `Device reconnected on attempt ${attempt}`);
           return;
         }
-      } catch {
-        this.log('debug', `Reconnect attempt ${attempt + 1} failed, retrying...`);
+        this.log('info', `Attempt ${attempt}: device not found yet`);
+      } catch (e) {
+        this.log('warn', `Attempt ${attempt} failed: ${e}`);
       }
     }
 
