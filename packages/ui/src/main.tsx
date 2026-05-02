@@ -21,25 +21,31 @@ const controllerAvailable = Date.now() >= new Date('2026-05-04T10:00:00-07:00').
 // Konami code easter egg
 const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
 let konamiPos = 0;
+function showCake() {
+  root.style.display = 'none';
+  const existing = document.querySelector('.easter-egg');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = 'easter-egg';
+  const img = document.createElement('img');
+  img.src = 'cake.webp';
+  img.alt = 'cake';
+  const text = document.createElement('div');
+  text.className = 'easter-egg-text';
+  text.textContent = 'The cake is a lie.';
+  const btn = document.createElement('button');
+  btn.className = 'btn-ghost btn-sm';
+  btn.textContent = 'Return to reality';
+  btn.addEventListener('click', () => { el.remove(); root.style.display = ''; });
+  el.appendChild(img);
+  el.appendChild(text);
+  el.appendChild(btn);
+  document.body.appendChild(el);
+}
 document.addEventListener('keydown', (e) => {
   if (e.key === KONAMI[konamiPos]) {
     konamiPos++;
-    if (konamiPos === KONAMI.length) {
-      konamiPos = 0;
-      const existing = document.querySelector('.easter-egg');
-      if (existing) existing.remove();
-      const el = document.createElement('div');
-      el.className = 'easter-egg';
-      const img = document.createElement('img');
-      img.src = 'cake.webp';
-      img.alt = 'cake';
-      const text = document.createElement('div');
-      text.textContent = 'The cake is a lie.';
-      el.appendChild(img);
-      el.appendChild(text);
-      el.addEventListener('click', () => el.remove());
-      document.body.appendChild(el);
-    }
+    if (konamiPos === KONAMI.length) { konamiPos = 0; showCake(); }
   } else {
     konamiPos = e.key === KONAMI[0] ? 1 : 0;
   }
