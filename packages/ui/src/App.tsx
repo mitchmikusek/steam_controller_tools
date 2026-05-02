@@ -8,13 +8,16 @@ import { useHIDEvents } from './hooks/useHIDEvents';
 import { Toast } from './components/Toast';
 import { logger } from './utils/logger';
 
-// Lazy-loaded pages for code splitting
-const ConnectPage = lazy(() => import('./pages/ConnectPage'));
-const HomePage = lazy(() => import('./pages/HomePage'));
-const ChooseFirmwarePage = lazy(() => import('./pages/ChooseFirmwarePage'));
-const PreflightPage = lazy(() => import('./pages/PreflightPage'));
-const FlashingPage = lazy(() => import('./pages/FlashingPage'));
-const CompletePage = lazy(() => import('./pages/CompletePage'));
+// Lazy-loaded pages — reload on stale chunk (deploy changed hashes)
+function lazyWithReload(loader: () => Promise<any>) {
+  return lazy(() => loader().catch(() => { window.location.reload(); return loader(); }));
+}
+const ConnectPage = lazyWithReload(() => import('./pages/ConnectPage'));
+const HomePage = lazyWithReload(() => import('./pages/HomePage'));
+const ChooseFirmwarePage = lazyWithReload(() => import('./pages/ChooseFirmwarePage'));
+const PreflightPage = lazyWithReload(() => import('./pages/PreflightPage'));
+const FlashingPage = lazyWithReload(() => import('./pages/FlashingPage'));
+const CompletePage = lazyWithReload(() => import('./pages/CompletePage'));
 
 type PageName = 'connect' | 'home' | 'choose' | 'preflight' | 'flashing' | 'complete';
 
