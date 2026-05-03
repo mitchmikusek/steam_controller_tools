@@ -56,6 +56,7 @@
     "bleBundled": "BLE 固件已内置",
     "prodBundled": "出厂固件已内置",
     "warnNoUnplug": "刷写过程中请勿拔出控制器。",
+    "warnCloseSteam": "刷写前请关闭 Steam 和所有游戏——它们可能会干扰控制器。",
     "warnDuration": "该过程大约需要 30 秒。过程中会有提示。",
     "warnRecovery": "如果刷写失败，可以通过引导加载程序模式进行恢复。",
     "warnRemoveBle": "这将移除 Bluetooth (BLE) 支持。",
@@ -80,6 +81,8 @@
     "controllerModes": "控制器模式",
     "viewBleModes": "查看 BLE 模式",
     "error": "错误",
+    "errorHint": "刷写过程中出现问题。请关闭 Steam 和所有可能正在使用控制器的游戏，保持此标签页在前台，然后重试。",
+    "errorDetails": "技术详情",
     "recoveryTip": "可以在按住右扳机键的同时插入控制器来恢复（引导加载程序模式）。",
     "returnHome": "返回主页"
   },

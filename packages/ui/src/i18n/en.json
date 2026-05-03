@@ -56,6 +56,7 @@
     "bleBundled": "BLE firmware bundled",
     "prodBundled": "Production firmware bundled",
     "warnNoUnplug": "Do not unplug the controller during flashing.",
+    "warnCloseSteam": "Close Steam and any games before flashing — they can interfere with the controller.",
     "warnDuration": "The process takes approximately 30 seconds. You will be prompted along the way.",
     "warnRecovery": "If flashing fails, recovery is possible via bootloader mode.",
     "warnRemoveBle": "This will remove Bluetooth (BLE) support.",
@@ -80,6 +81,8 @@
     "controllerModes": "Controller Modes",
     "viewBleModes": "View BLE Modes",
     "error": "Error",
+    "errorHint": "Something went wrong during flashing. Close Steam and any games that may be using the controller, keep this tab in the foreground, and try again.",
+    "errorDetails": "Technical details",
     "recoveryTip": "The controller can be recovered by plugging it in while holding the right trigger (bootloader mode).",
     "returnHome": "Return Home"
   },

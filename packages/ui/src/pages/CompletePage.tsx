@@ -40,21 +40,27 @@ export function CompletePage({ success, error, firmwareType, info, onHome }: Pro
             </>
           ) : (
             <>
-              <div className="section-title">{t('complete.error')}</div>
-              <div
-                role="alert"
-                style={{
-                  fontSize: '0.7rem',
-                  color: 'var(--red)',
-                  fontFamily: 'Consolas,SF Mono,monospace',
-                  wordBreak: 'break-all',
-                }}
-              >
-                {error}
+              <div className="result-tip" role="alert">
+                {t('complete.errorHint')}
               </div>
               <div className="result-tip" style={{ marginTop: 10 }}>
                 {t('complete.recoveryTip')}
               </div>
+              {error && (
+                <details style={{ marginTop: 12, fontSize: '0.7rem', color: 'var(--text-dim)' }}>
+                  <summary style={{ cursor: 'pointer' }}>{t('complete.errorDetails')}</summary>
+                  <div
+                    style={{
+                      marginTop: 6,
+                      color: 'var(--red)',
+                      fontFamily: 'Consolas,SF Mono,monospace',
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {error}
+                  </div>
+                </details>
+              )}
             </>
           )}
         </div>

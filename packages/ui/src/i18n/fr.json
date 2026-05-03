@@ -56,6 +56,7 @@
     "bleBundled": "Firmware BLE inclus",
     "prodBundled": "Firmware de production inclus",
     "warnNoUnplug": "Ne débranchez pas la manette pendant le flash.",
+    "warnCloseSteam": "Fermez Steam et tous les jeux avant le flashage — ils peuvent interférer avec la manette.",
     "warnDuration": "Le processus prend environ 30 secondes. Vous serez guidé tout au long.",
     "warnRecovery": "En cas d'échec du flash, la récupération est possible via le mode bootloader.",
     "warnRemoveBle": "Cela supprimera le support Bluetooth (BLE).",
@@ -80,6 +81,8 @@
     "controllerModes": "Modes de la Manette",
     "viewBleModes": "Voir les Modes BLE",
     "error": "Erreur",
+    "errorHint": "Une erreur s'est produite pendant le flashage. Fermez Steam et tous les jeux qui pourraient utiliser la manette, gardez cet onglet au premier plan et réessayez.",
+    "errorDetails": "Détails techniques",
     "recoveryTip": "La manette peut être récupérée en la branchant tout en maintenant la gâchette droite enfoncée (mode bootloader).",
     "returnHome": "Retour à l'Accueil"
   },

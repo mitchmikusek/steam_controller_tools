@@ -56,6 +56,7 @@
     "bleBundled": "Firmware BLE incluido",
     "prodBundled": "Firmware de producción incluido",
     "warnNoUnplug": "No desconecte el control durante el flasheo.",
+    "warnCloseSteam": "Cierre Steam y cualquier juego antes de flashear — pueden interferir con el control.",
     "warnDuration": "El proceso toma aproximadamente 30 segundos. Se le guiará durante el proceso.",
     "warnRecovery": "Si el flasheo falla, la recuperación es posible a través del modo bootloader.",
     "warnRemoveBle": "Esto eliminará el soporte Bluetooth (BLE).",
@@ -80,6 +81,8 @@
     "controllerModes": "Modos del Control",
     "viewBleModes": "Ver Modos BLE",
     "error": "Error",
+    "errorHint": "Algo salió mal durante el flasheo. Cierra Steam y cualquier juego que pueda estar usando el control, mantén esta pestaña en primer plano e inténtalo de nuevo.",
+    "errorDetails": "Detalles técnicos",
     "recoveryTip": "El control se puede recuperar conectándolo mientras mantiene presionado el gatillo derecho (modo bootloader).",
     "returnHome": "Volver al Inicio"
   },
