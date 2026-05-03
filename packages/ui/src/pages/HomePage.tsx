@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ControllerInfo, ControllerDevice } from '@scflash/protocol';
 import { JINGLES } from '@scflash/protocol';
@@ -6,7 +5,6 @@ import { SectionTitle } from '../components/SectionTitle';
 import { SectionRow } from '../components/SectionRow';
 import { Badge } from '../components/Badge';
 import { InfoButton } from '../components/InfoButton';
-import { BleHelpModal } from '../components/BleHelpModal';
 import { detectFirmwareType } from '../utils/firmware';
 import { logger } from '../utils/logger';
 
@@ -20,7 +18,6 @@ interface Props {
 
 export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Props) {
   const { t } = useTranslation();
-  const [bleHelpOpen, setBleHelpOpen] = useState(false);
   const fwType = info ? detectFirmwareType(info) : 'unknown';
   const badgeType =
     mode === 'bootloader' ? 'bootloader' : fwType === 'ble' ? 'ble' : fwType === 'production' ? 'prod' : 'unknown';
@@ -75,12 +72,6 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
       {mode === 'normal' && controller && (
         <div className="section">
           <SectionTitle>{t('home.extras')}</SectionTitle>
-
-          <SectionRow label={t('home.controllerModes')}>
-            <button className="btn-ghost btn-sm" onClick={() => setBleHelpOpen(true)}>
-              {t('home.viewBleModes')}
-            </button>
-          </SectionRow>
 
           <SectionRow label={t('home.hapticFeedback')}>
             <div style={{ display: 'flex', gap: 6 }}>
@@ -141,8 +132,6 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
           </div>
         </div>
       )}
-
-      <BleHelpModal open={bleHelpOpen} onClose={() => setBleHelpOpen(false)} />
     </div>
   );
 }
