@@ -143,7 +143,7 @@ createRoot(root).render(
           </svg>
         </a>
         <a
-          href="https://help.steampowered.com/en/faqs/view/1796-5FC3-88B3-C85F#how"
+          href="https://help.steampowered.com/en/faqs/view/1796-5FC3-88B3-C85F"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Steam BLE Support"
