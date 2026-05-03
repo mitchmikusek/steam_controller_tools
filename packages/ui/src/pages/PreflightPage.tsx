@@ -102,6 +102,7 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
 
   const warnings = [
     t('preflight.warnNoUnplug'),
+    t('preflight.warnCloseSteam'),
     t('preflight.warnDuration'),
     ...(choice === 'production' ? [t('preflight.warnRemoveBle')] : []),
   ];

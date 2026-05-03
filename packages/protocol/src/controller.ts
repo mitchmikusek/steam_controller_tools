@@ -99,15 +99,18 @@ export class ControllerDevice extends DeviceBase {
       payload.push(...chunk);
       await this.send(payload);
 
-      // Poll until ready
-      for (let attempt = 0; attempt < 500; attempt++) {
+      // Poll until device acknowledges the chunk. Tolerates non-SWD responses
+      // (tab throttling, stale reads) by retrying immediately. A genuine USB
+      // disconnect will throw from receiveFeatureReport. 5-minute safety timeout
+      // catches cases where another app (Steam/game) holds the controller.
+      const deadline = Date.now() + 300000;
+      for (;;) {
         const response = await this.get();
         if (this.matchesPattern(response, [0x94, 0x06, 0x00, 0x00, 0x60, 0x09])) break;
-        if (response[0] === 0x94) {
-          await delay(10);
-          continue;
+        if (response[0] === 0x94) await delay(10);
+        if (Date.now() > deadline) {
+          throw new Error('Flashing timed out — close Steam and any games, then try again');
         }
-        throw new Error(`SWD flash unexpected response: [${this.hexBytes(response)}]`);
       }
 
       onProgress?.('Flashing radio', Math.round(((i + 1) / totalChunks) * 100));
