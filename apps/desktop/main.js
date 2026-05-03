@@ -5,8 +5,10 @@ const VALVE_VID = 0x28de;
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 960,
-    height: 720,
+    width: 800,
+    height: 730,
+    minWidth: 480,
+    minHeight: 520,
     title: 'Steam Controller Flash Tool',
     webPreferences: {
       contextIsolation: true,
