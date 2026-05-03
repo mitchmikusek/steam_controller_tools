@@ -1,5 +1,4 @@
 import { useRef, useCallback } from 'react';
-import { unzipSync } from 'fflate';
 import {
   FlashCoordinator,
   createBLEFirmwareSet,
@@ -11,7 +10,6 @@ import {
 import type { FirmwareChoice } from '../pages/ChooseFirmwarePage';
 import { logger } from '../utils/logger';
 import {
-  VALVE_ZIP_URL,
   BLE_LPC,
   BLE_SOFTDEVICE,
   BLE_RADIO,
@@ -19,80 +17,18 @@ import {
   PROD_BOOTLOADER,
   PROD_RADIO,
   type FirmwareFileConfig,
-  type FirmwareSource,
 } from '../utils/firmware-sources';
-
-// ---- Fetch with retry ----
-
-async function fetchWithRetry(url: string, maxRetries = 3): Promise<Response> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const res = await fetch(url);
-      if (res.ok) return res;
-      if (res.status >= 400 && res.status < 500) throw new Error(`HTTP ${res.status}`);
-      // Server error — retry
-    } catch (e) {
-      if (attempt === maxRetries) throw e;
-    }
-    const backoff = 1000 * 2 ** attempt;
-    logger.debug(`Retry ${attempt + 1}/${maxRetries} in ${backoff}ms...`);
-    await new Promise((r) => setTimeout(r, backoff));
-  }
-  throw new Error('Fetch failed after retries');
-}
-
-// ---- ZIP cache ----
-
-let zipCache: Record<string, Uint8Array> | null = null;
-
-async function loadValveZip(): Promise<Record<string, Uint8Array>> {
-  if (zipCache) return zipCache;
-  logger.info('Downloading Valve FW Update Tool ZIP...');
-  const res = await fetchWithRetry(VALVE_ZIP_URL);
-  const data = new Uint8Array(await res.arrayBuffer());
-  logger.info('Extracting firmware from ZIP...');
-  zipCache = unzipSync(data);
-  return zipCache;
-}
 
 // ---- Firmware loader ----
 
-async function loadFromSource(source: FirmwareSource): Promise<ArrayBuffer> {
-  switch (source.type) {
-    case 'url': {
-      const res = await fetchWithRetry(source.url);
-      const buf = await res.arrayBuffer();
-      if (buf.byteLength < 10000 || buf.byteLength > 500000)
-        throw new Error(`Invalid firmware size: ${buf.byteLength} bytes`);
-      return buf;
-    }
-    case 'zip': {
-      const zip = await loadValveZip();
-      const entry = zip[source.zipPath];
-      if (!entry) throw new Error(`Not found in ZIP: ${source.zipPath}`);
-      return entry.buffer.slice(entry.byteOffset, entry.byteOffset + entry.byteLength);
-    }
-    case 'local': {
-      const res = await fetch(source.path);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.arrayBuffer();
-    }
-  }
-}
-
 async function loadFirmwareFile(config: FirmwareFileConfig): Promise<ArrayBuffer> {
-  for (const source of config.sources) {
-    try {
-      const data = await loadFromSource(source);
-      logger.info(
-        `${config.name}: loaded from ${source.type}${source.type === 'url' ? '' : source.type === 'zip' ? ' (Valve ZIP)' : ' (local bundle)'}`,
-      );
-      return data;
-    } catch (e) {
-      logger.debug(`${config.name}: ${source.type} failed — ${e}`);
-    }
-  }
-  throw new Error(`${config.name}: all sources failed`);
+  const res = await fetch(config.path);
+  if (!res.ok) throw new Error(`${config.name}: failed to load (HTTP ${res.status})`);
+  const buf = await res.arrayBuffer();
+  if (buf.byteLength < 10000 || buf.byteLength > 500000)
+    throw new Error(`${config.name}: invalid size (${buf.byteLength} bytes)`);
+  logger.info(`${config.name}: loaded from local bundle`);
+  return buf;
 }
 
 // ---- Hook ----

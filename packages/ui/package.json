@@ -11,7 +11,6 @@
   "dependencies": {
     "@scflash/protocol": "workspace:*",
     "@sentry/react": "^10.51.0",
-    "fflate": "^0.8.2",
     "i18next": "^26.0.8",
     "i18next-browser-languagedetector": "^8.2.1",
     "react": "^19.2.5",

@@ -56,9 +56,9 @@ Production deploys on push to main. PRs get preview URLs commented automatically
 **UI layer** (`packages/ui/src/`):
 - `main.tsx` — Entry point, header, footer, unsupported browser check, easter egg
 - `App.tsx` — Page router with lazy-loaded pages, state management, HID event handling
-- `hooks/useFlashCoordinator.ts` — Firmware loading with CDN → ZIP → local fallback chain
+- `hooks/useFlashCoordinator.ts` — Firmware loading from local bundle
 - `hooks/useHIDEvents.ts` — WebHID connect/disconnect detection
-- `utils/firmware-sources.ts` — Declarative firmware source config (easy to update URLs)
+- `utils/firmware-sources.ts` — Firmware file paths (local bundle)
 - `i18n/` — Translations: en, zh, es, fr
 
 **Page flow**: Connect → Home → Choose Firmware → Preflight → Flashing → Complete
@@ -68,7 +68,7 @@ Production deploys on push to main. PRs get preview URLs commented automatically
 - **Two USB modes**: Normal (PID 0x1102) and Bootloader (PID 0x1002). Flash sequences switch between them, requiring user to re-grant WebHID permission via `requestDevice()`.
 - **Reconnect resolver**: Stored in `useRef` (not `useState` — React treats function values as state updaters).
 - **Lazy imports**: Wrapped with `lazyWithReload()` to handle stale chunks after deploys.
-- **Firmware sources**: Three-tier fallback: Valve CDN (HTTPS) → Valve ZIP (fflate extraction) → local bundle. ZIP is cached in memory.
+- **Firmware sources**: All firmware loaded from local bundle. Valve's CDN and ZIP sources lack CORS headers and can't be fetched from a browser.
 - **Firmware size validation**: Rejects files < 10KB or > 500KB.
 
 ## Testing

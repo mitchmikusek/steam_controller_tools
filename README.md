@@ -15,7 +15,7 @@ Flash BLE firmware onto your original Steam Controller (2015) directly from your
 - **Controller extras** — haptic test, LED brightness, 14 built-in jingles
 - **BLE mode guide** — button combos for switching between Bluetooth and dongle
 - **Multi-language** — English, 中文, Español, Français
-- **Firmware CDN fallback** — loads from Valve's servers first, falls back to local
+- **Bundled firmware** — all firmware included locally, no external downloads
 
 ## How It Works
 
@@ -94,13 +94,7 @@ packages/
 
 ## Firmware Sources
 
-The tool loads firmware from multiple sources with automatic fallback:
-
-| Priority | Source | Files Available |
-|---|---|---|
-| 1 | Valve CDN | BLE LPC, BLE Radio |
-| 2 | Valve FW Update Tool ZIP | All production files, SoftDevice |
-| 3 | Local bundle | All files (bundled in app) |
+All firmware files are bundled locally in the app. Valve's CDN and ZIP sources lack CORS headers and cannot be fetched from a browser.
 
 Configuration: [`packages/ui/src/utils/firmware-sources.ts`](packages/ui/src/utils/firmware-sources.ts)
 
