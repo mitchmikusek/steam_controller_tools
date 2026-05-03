@@ -87,6 +87,11 @@ Tests require `// @vitest-environment jsdom` comment in UI test files for proper
 - **Buttons**: Ghost for most actions, blue for flow-advancing, green only for "Begin Flash"
 - **i18n**: All user-facing strings use translation keys via `useTranslation()`
 
+## Before Committing
+
+- Always run `pnpm run format` before committing. Prettier formatting is enforced in CI and will fail the build if files aren't formatted.
+- Run `pnpm run lint` to catch errors. Warnings are allowed but errors will fail CI.
+
 ## Things to Know
 
 - The `Design.md` file is the source of truth for colors, spacing, typography, and component patterns. Keep it updated when changing visual elements.
