@@ -5,6 +5,7 @@ import './i18n';
 import './style.css';
 import { App } from './App';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
+import { BleModesButton } from './components/BleModesButton';
 
 // Initialize Sentry (production only)
 if (import.meta.env.VITE_SENTRY_DSN) {
@@ -154,8 +155,9 @@ createRoot(root).render(
           </svg>
         </a>
       </div>
-      <div style={{ marginBottom: 8 }}>
+      <div style={{ marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
         <LanguageSwitcher />
+        <BleModesButton />
       </div>
       <div>Not affiliated with Valve Corporation. Use this tool at your own risk.</div>
       <div style={{ marginTop: 4 }}>

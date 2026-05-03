@@ -719,11 +719,17 @@ h2.section-title, .section-title {
 .step-dot { flex: 1; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.06); transition: background 0.2s; }
 .step-dot.active { background: var(--blue); animation: stepPulse 1.5s ease-in-out infinite; }
 .step-dot.done { background: var(--green); }
+.step-dot.done.pulse { background: var(--green); animation: stepPulseGreen 1.5s ease-in-out infinite; }
 .step-dot.error { background: var(--red); }
 
 @keyframes stepPulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
+}
+
+@keyframes stepPulseGreen {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(89,191,64,0.4); }
+  50% { opacity: 0.6; box-shadow: none; }
 }
 
 /* ---- Info circle button ---- */

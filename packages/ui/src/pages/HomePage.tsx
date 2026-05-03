@@ -76,13 +76,11 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
         <div className="section">
           <SectionTitle>{t('home.extras')}</SectionTitle>
 
-          {fwType === 'ble' && (
-            <SectionRow label={t('home.controllerModes')}>
-              <button className="btn-ghost btn-sm" onClick={() => setBleHelpOpen(true)}>
-                {t('home.viewBleModes')}
-              </button>
-            </SectionRow>
-          )}
+          <SectionRow label={t('home.controllerModes')}>
+            <button className="btn-ghost btn-sm" onClick={() => setBleHelpOpen(true)}>
+              {t('home.viewBleModes')}
+            </button>
+          </SectionRow>
 
           <SectionRow label={t('home.hapticFeedback')}>
             <div style={{ display: 'flex', gap: 6 }}>
