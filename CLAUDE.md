@@ -92,8 +92,9 @@ Tests require `// @vitest-environment jsdom` comment in UI test files for proper
 - **Buttons**: Ghost for most actions, blue for flow-advancing, green only for "Begin Flash"
 - **i18n**: All user-facing strings use translation keys via `useTranslation()`
 
-## Before Committing
+## Workflow
 
+- **Prefer PRs over direct pushes to main.** Create a feature branch and open a PR — Cloudflare Pages generates preview URLs for review.
 - Always run `pnpm run format` before committing. Prettier formatting is enforced in CI and will fail the build if files aren't formatted.
 - Run `pnpm run lint` to catch errors. Warnings are allowed but errors will fail CI.
 - Split changes into thoughtful, logical commits — group by concern (e.g., routing, UI, protocol, i18n) rather than one big commit. Each commit should be independently meaningful.
