@@ -79,7 +79,19 @@ export function App() {
       const mode = await coordinator.connect();
       setDeviceMode(mode);
       if (mode === 'normal') {
-        const info = await coordinator.getInfo();
+        let info = await coordinator.getInfo();
+        // Radio rev sometimes reads as 0 on first attempt - retry
+        if (info && info.radioRev === 0) {
+          for (let i = 0; i < 4; i++) {
+            await new Promise((r) => setTimeout(r, 500));
+            try {
+              info = await coordinator.getInfo();
+              if (info && info.radioRev !== 0) break;
+            } catch {
+              /* ok */
+            }
+          }
+        }
         setDeviceInfo(info);
         setController(coordinator.getController());
       }
