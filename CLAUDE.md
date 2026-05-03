@@ -33,6 +33,8 @@ pnpm run format       # Prettier fix
 
 Protocol must be built before UI (`pnpm run build:protocol`). The full `build` script handles this.
 
+**Nix fallback**: If a command is not available in the host shell, prefix with `nix-shell --run` to pick up project dependencies. For tools outside `shell.nix`, use `nix-shell -p <pkg> --run`.
+
 ## CI Pipeline
 
 GitHub Actions (`.github/workflows/deploy.yml`) runs on push to main and PRs:
