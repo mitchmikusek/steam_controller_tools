@@ -46,6 +46,7 @@ Production deploys on push to main. PRs get preview URLs commented automatically
 ## Architecture
 
 **Protocol layer** (`packages/protocol/src/`):
+
 - `webhid-transport.ts` — WebHID adapter, filters by vendor usage page (0xFF00)
 - `device-base.ts` — 64-byte HID feature report send/receive with retry
 - `controller.ts` — Normal mode: device info, SWD commands, haptics, jingles
@@ -54,6 +55,7 @@ Production deploys on push to main. PRs get preview URLs commented automatically
 - `firmware.ts` — Firmware set constructors (BLE and Production)
 
 **UI layer** (`packages/ui/src/`):
+
 - `main.tsx` — Entry point, header, footer, unsupported browser check, easter egg
 - `App.tsx` — Page router with lazy-loaded pages, state management, HID event handling
 - `hooks/useFlashCoordinator.ts` — Firmware loading from local bundle
@@ -74,6 +76,7 @@ Production deploys on push to main. PRs get preview URLs commented automatically
 ## Testing
 
 Vitest workspace with two projects:
+
 - **protocol** — Node environment, tests HID protocol logic with `MockHIDTransport`
 - **ui** — jsdom environment, React Testing Library, setup file at `tests/setup.ts`
 
@@ -91,6 +94,7 @@ Tests require `// @vitest-environment jsdom` comment in UI test files for proper
 
 - Always run `pnpm run format` before committing. Prettier formatting is enforced in CI and will fail the build if files aren't formatted.
 - Run `pnpm run lint` to catch errors. Warnings are allowed but errors will fail CI.
+- Split changes into thoughtful, logical commits — group by concern (e.g., routing, UI, protocol, i18n) rather than one big commit. Each commit should be independently meaningful.
 
 ## Things to Know
 
