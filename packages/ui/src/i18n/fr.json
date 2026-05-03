@@ -8,7 +8,7 @@
     "errorFallback": "Une erreur s'est produite. Veuillez actualiser la page."
   },
   "connect": {
-    "hint": "Branchez la manette en USB, puis cliquez sur Connecter",
+    "hint": "Branchez la manette à l'aide d'un fil USB, puis cliquez sur Connecter",
     "button": "Connecter",
     "connecting": "Connexion..."
   },
@@ -51,7 +51,7 @@
     "webhidDetail": "Utilisez Chrome, Edge ou Vivaldi",
     "controllerConnected": "Manette connectée",
     "controllerNotConnected": "Manette non connectée",
-    "controllerDetail": "Branchez en USB et connectez",
+    "controllerDetail": "Branchez à l'aide d'un fil USB et connectez",
     "customSelected": "Fichiers de firmware personnalisés sélectionnés",
     "bleBundled": "Firmware BLE inclus",
     "prodBundled": "Firmware de production inclus",
