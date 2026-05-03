@@ -5,6 +5,8 @@ dist-electron/
 *.d.ts
 *.js.map
 !vite.config.ts
+!apps/desktop/main.js
+!apps/desktop/preload.js
 
 # Environment files
 .env
