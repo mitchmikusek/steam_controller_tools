@@ -26,6 +26,17 @@ const CompletePage = lazyWithReload(() => import('./pages/CompletePage'));
 
 type PageName = 'connect' | 'home' | 'choose' | 'preflight' | 'flashing' | 'complete';
 
+const PAGE_HASH: Record<PageName, string> = {
+  connect: '#/',
+  home: '#/home',
+  choose: '#/choose',
+  preflight: '#/preflight',
+  flashing: '#/flashing',
+  complete: '#/complete',
+};
+
+const HASH_PAGE = new Map(Object.entries(PAGE_HASH).map(([page, hash]) => [hash, page as PageName]));
+
 export function App() {
   const [page, setPage] = useState<PageName>('connect');
   const [deviceInfo, setDeviceInfo] = useState<ControllerInfo | null>(null);
@@ -43,6 +54,46 @@ export function App() {
   const { t } = useTranslation();
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'warn' | 'error' } | null>(null);
 
+  // Refs for popstate handler (avoids stale closures)
+  const pageRef = useRef<PageName>(page);
+  pageRef.current = page;
+  const isFlashingRef = useRef(isFlashing);
+  isFlashingRef.current = isFlashing;
+  const coordinatorRef = useRef<{ isConnected(): boolean }>({ isConnected: () => false });
+
+  const navigateTo = useCallback((newPage: PageName, replace = false) => {
+    setPage(newPage);
+    history[replace ? 'replaceState' : 'pushState'](null, '', PAGE_HASH[newPage]);
+  }, []);
+
+  // Hash-based routing: sync browser back/forward with page state
+  useEffect(() => {
+    history.replaceState(null, '', '#/');
+
+    const handlePopState = () => {
+      if (isFlashingRef.current) {
+        // Block back navigation during flash
+        history.pushState(null, '', PAGE_HASH[pageRef.current]);
+        return;
+      }
+      const hash = location.hash || '#/';
+      let target = HASH_PAGE.get(hash) ?? 'connect';
+      // All pages except connect require a device
+      if (target !== 'connect' && !coordinatorRef.current.isConnected()) {
+        target = 'connect';
+      }
+      // Can't navigate back to the transient flashing page
+      if (target === 'flashing') {
+        target = 'home';
+      }
+      history.replaceState(null, '', PAGE_HASH[target]);
+      setPage(target);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // HID device events — detect plug/unplug
   useHIDEvents({
     onDisconnect: () => {
@@ -52,7 +103,7 @@ export function App() {
         coordinator.disconnect();
         setDeviceInfo(null);
         setController(null);
-        setPage('connect');
+        navigateTo('connect', true);
       }
     },
     onConnect: () => {
@@ -73,6 +124,7 @@ export function App() {
   }, []);
 
   const coordinator = useFlashCoordinator(onProgress, onReconnectNeeded);
+  coordinatorRef.current = coordinator;
 
   const handleConnect = async () => {
     try {
@@ -95,7 +147,7 @@ export function App() {
         setDeviceInfo(info);
         setController(coordinator.getController());
       }
-      setPage('home');
+      navigateTo('home');
     } catch (e) {
       logger.error(`Connection failed: ${e}`);
     }
@@ -105,17 +157,17 @@ export function App() {
     await coordinator.disconnect();
     setDeviceInfo(null);
     setController(null);
-    setPage('connect');
+    navigateTo('connect', true);
   };
 
   const handleFlash = () => {
-    setPage('choose');
+    navigateTo('choose');
   };
 
   const handleChooseNext = (choice: FirmwareChoice, files?: { lpc: File; softdevice: File; radio: File }) => {
     setFirmwareChoice(choice);
     setCustomFiles(files);
-    setPage('preflight');
+    navigateTo('preflight');
   };
 
   const handleBeginFlash = async () => {
@@ -123,7 +175,7 @@ export function App() {
     setFlashProgress(null);
     setReconnectPid(null);
     setFlashResult(null);
-    setPage('flashing');
+    navigateTo('flashing');
 
     try {
       await coordinator.flash(firmwareChoice, customFiles);
@@ -143,7 +195,7 @@ export function App() {
       setController(coordinator.getController());
 
       setFlashResult({ success: true });
-      setPage('complete');
+      navigateTo('complete', true);
     } catch (e) {
       try {
         await coordinator.disconnect();
@@ -151,7 +203,7 @@ export function App() {
         /* ok */
       }
       setFlashResult({ success: false, error: e instanceof Error ? e.message : String(e) });
-      setPage('complete');
+      navigateTo('complete', true);
     } finally {
       setIsFlashing(false);
     }
@@ -173,9 +225,9 @@ export function App() {
       } catch {
         /* ok */
       }
-      setPage('home');
+      navigateTo('home', true);
     } else {
-      setPage('connect');
+      navigateTo('connect', true);
     }
   };
 
@@ -190,12 +242,22 @@ export function App() {
     return () => window.removeEventListener('easter-egg', handler);
   }, [controller]);
 
-  // Block navigation during flash (useEffect ensures cleanup for bfcache)
+  // Block navigation and keep screen/tab alive during flash
   useEffect(() => {
     if (!isFlashing) return;
     const handler = () => true;
     window.addEventListener('beforeunload', handler);
-    return () => window.removeEventListener('beforeunload', handler);
+
+    let wakeLock: WakeLockSentinel | null = null;
+    navigator.wakeLock
+      ?.request('screen')
+      .then((wl) => (wakeLock = wl))
+      .catch(() => {});
+
+    return () => {
+      window.removeEventListener('beforeunload', handler);
+      wakeLock?.release().catch(() => {});
+    };
   }, [isFlashing]);
 
   const label = firmwareChoice === 'ble' ? 'BLE' : firmwareChoice === 'production' ? 'Production' : 'Custom';
@@ -215,7 +277,11 @@ export function App() {
     <>
       {currentStep !== null && (
         <div style={{ maxWidth: 940, margin: '0 auto', padding: '0 20px', width: '100%' }}>
-          <StepIndicator current={currentStep} error={page === 'complete' && flashResult?.success === false} />
+          <StepIndicator
+            current={currentStep}
+            error={page === 'complete' && flashResult?.success === false}
+            complete={page === 'complete' && flashResult?.success === true}
+          />
         </div>
       )}
       <Suspense fallback={null}>
@@ -230,14 +296,14 @@ export function App() {
           />
         )}
         {page === 'choose' && (
-          <ChooseFirmwarePage info={deviceInfo} onBack={handleReturnHome} onNext={handleChooseNext} />
+          <ChooseFirmwarePage info={deviceInfo} onBack={() => history.back()} onNext={handleChooseNext} />
         )}
         {page === 'preflight' && (
           <PreflightPage
             choice={firmwareChoice}
             info={deviceInfo}
             isConnected={coordinator.isConnected()}
-            onBack={() => setPage('choose')}
+            onBack={() => history.back()}
             onBegin={handleBeginFlash}
           />
         )}
