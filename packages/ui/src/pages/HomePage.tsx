@@ -13,6 +13,7 @@ interface Props {
   info: ControllerInfo | null;
   controller: ControllerDevice | null;
   mode: 'normal' | 'bootloader';
+  onReadInfo?: () => Promise<ControllerInfo | null>;
   onDisconnect: () => void;
   onFlash: () => void;
 }
@@ -21,7 +22,7 @@ function useShortViewport() {
   return useState(() => window.matchMedia('(max-height: 700px)').matches)[0];
 }
 
-export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Props) {
+export function HomePage({ info, controller, mode, onReadInfo, onDisconnect, onFlash }: Props) {
   const { t } = useTranslation();
   const isShort = useShortViewport();
   const fwType = info ? detectFirmwareType(info) : 'unknown';
@@ -56,7 +57,7 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
 
         {mode === 'normal' && info && (
           <SectionRow label={fwLabel}>
-            <InfoButton info={info} />
+            <InfoButton info={info} onReadInfo={onReadInfo} />
           </SectionRow>
         )}
 

@@ -132,24 +132,36 @@ export function App() {
   const coordinator = useFlashCoordinator(onProgress, onReconnectNeeded);
   coordinatorRef.current = coordinator;
 
+  const handleReadInfo = async (): Promise<ControllerInfo | null> => {
+    if (!controller) return null;
+    try {
+      // Try SWD to wake the radio chip (BLE firmware only)
+      await controller.swdStart();
+      const info = await coordinator.getInfo();
+      await controller.resetSOC();
+      if (info) {
+        setDeviceInfo(info);
+        setController(coordinator.getController());
+      }
+      return info;
+    } catch {
+      // SWD failed (production firmware) — just read info directly
+      try {
+        const info = await coordinator.getInfo();
+        if (info) setDeviceInfo(info);
+        return info;
+      } catch {
+        return null;
+      }
+    }
+  };
+
   const handleConnect = async () => {
     try {
       const mode = await coordinator.connect();
       setDeviceMode(mode);
       if (mode === 'normal') {
-        let info = await coordinator.getInfo();
-        // Radio rev sometimes reads as 0 on first attempt - retry
-        if (info && info.radioRev === 0) {
-          for (let i = 0; i < 4; i++) {
-            await new Promise((r) => setTimeout(r, 500));
-            try {
-              info = await coordinator.getInfo();
-              if (info && info.radioRev !== 0) break;
-            } catch {
-              /* ok */
-            }
-          }
-        }
+        const info = await coordinator.getInfo();
         setDeviceInfo(info);
         setController(coordinator.getController());
       }
@@ -192,28 +204,23 @@ export function App() {
     try {
       await coordinator.flash(firmwareChoice, customFiles);
 
+      // Read final info — radio should be available right after flash
+      try {
+        const info = await coordinator.getInfo();
+        if (info) {
+          setDeviceInfo(info);
+          setController(coordinator.getController());
+        }
+      } catch {
+        // Info read is best-effort; user can retry via the info modal
+      }
       setFlashResult({ success: true });
       navigateTo('complete', true);
-
-      // Read final firmware info in the background (already on complete page)
-      for (let i = 0; i < 8; i++) {
-        await new Promise((r) => setTimeout(r, 1000));
-        try {
-          const info = await coordinator.getInfo();
-          if (info && info.radioRev !== 0) {
-            setDeviceInfo(info);
-            setController(coordinator.getController());
-            break;
-          }
-        } catch {
-          /* ok */
-        }
-      }
     } catch (e) {
       try {
         await coordinator.disconnect();
       } catch {
-        /* ok */
+        // Best-effort cleanup — device may already be disconnected
       }
       setFlashResult({ success: false, error: e instanceof Error ? e.message : String(e) });
       navigateTo('complete', true);
@@ -236,7 +243,7 @@ export function App() {
         setDeviceInfo(info);
         setController(coordinator.getController());
       } catch {
-        /* ok */
+        // Info read failed — home page will show whatever we have
       }
       navigateTo('home', true);
     } else {
@@ -304,6 +311,7 @@ export function App() {
             info={deviceInfo}
             controller={controller}
             mode={deviceMode}
+            onReadInfo={handleReadInfo}
             onDisconnect={handleDisconnect}
             onFlash={handleFlash}
           />
@@ -329,6 +337,7 @@ export function App() {
             error={flashResult.error}
             firmwareType={label}
             info={deviceInfo}
+            onReadInfo={handleReadInfo}
             onHome={handleReturnHome}
           />
         )}
