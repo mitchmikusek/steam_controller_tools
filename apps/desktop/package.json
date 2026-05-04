@@ -17,20 +17,24 @@
   "build": {
     "appId": "tools.steamcontroller.flash",
     "productName": "Steam Controller Flash Tool",
+    "icon": "icon.png",
     "files": ["main.js", "preload.js", "ui/**/*"],
     "directories": {
       "output": "release"
     },
     "linux": {
       "target": ["AppImage", "deb"],
-      "category": "Utility"
+      "category": "Utility",
+      "icon": "icon.png"
     },
     "mac": {
       "target": ["dmg"],
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "icon": "icon.icns"
     },
     "win": {
-      "target": ["nsis"]
+      "target": ["nsis"],
+      "icon": "icon.ico"
     },
     "nsis": {
       "oneClick": true,
