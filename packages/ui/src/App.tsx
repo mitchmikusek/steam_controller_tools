@@ -136,23 +136,20 @@ export function App() {
     if (!controller) return null;
     try {
       // Try SWD to wake the radio chip (BLE firmware only)
+      // Don't resetSOC after — it reboots the controller
       await controller.swdStart();
+    } catch {
+      // SWD not available (production firmware) — that's fine
+    }
+    try {
       const info = await coordinator.getInfo();
-      await controller.resetSOC();
       if (info) {
         setDeviceInfo(info);
         setController(coordinator.getController());
       }
       return info;
     } catch {
-      // SWD failed (production firmware) — just read info directly
-      try {
-        const info = await coordinator.getInfo();
-        if (info) setDeviceInfo(info);
-        return info;
-      } catch {
-        return null;
-      }
+      return null;
     }
   };
 
