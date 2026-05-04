@@ -139,6 +139,7 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
   align-items: center;
   justify-content: center;
   flex: 1;
+  margin-bottom: 24px;
 }
 
 .connect-prompt {
@@ -433,6 +434,7 @@ h2.section-title, .section-title {
   align-items: center;
   justify-content: center;
   flex: 1;
+  margin-bottom: 24px;
 }
 
 /* Spinning arc around icon */
@@ -606,6 +608,58 @@ h2.section-title, .section-title {
 .jingle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 6px; }
 .jingle-grid button { font-size: 0.65rem; padding: 5px 8px; text-align: left; }
 
+/* ---- Collapsible sections (accordion) ---- */
+.collapsible-section {
+  margin-bottom: 0;
+}
+
+.collapsible-section + .collapsible-section {
+  margin-top: 24px;
+}
+
+.collapsible-section summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
+  user-select: none;
+}
+
+.collapsible-section summary::-webkit-details-marker { display: none; }
+
+.collapsible-section summary .chevron {
+  transition: transform 0.2s ease;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+}
+
+.collapsible-section[open] summary .chevron {
+  transform: rotate(180deg);
+}
+
+.collapsible-section summary:hover {
+  color: var(--text-bright);
+}
+
+.collapsible-section summary:focus-visible {
+  outline: none;
+}
+
+.collapsible-section summary:focus-visible .chevron {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
 /* ---- Complete ---- */
 .result-title {
   font-size: 0.9rem;
@@ -703,7 +757,7 @@ h2.section-title, .section-title {
 }
 
 /* ---- Nav ---- */
-.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 8px; }
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 24px; gap: 8px; }
 .nav-row .spacer { flex: 1; }
 
 .back-link {
@@ -765,7 +819,8 @@ h2.section-title, .section-title {
   transition: color 0.15s ease;
   display: flex;
 }
-.footer-icons a:hover { color: var(--text-bright); }
+.footer-icons a:hover, .footer-icons a:focus-visible { color: var(--text-bright); }
+.footer-icons a:focus-visible { border-radius: 50%; }
 
 .disclaimer {
   text-align: center;
@@ -776,9 +831,21 @@ h2.section-title, .section-title {
   margin-top: auto;
 }
 
+/* ---- Language selector ---- */
+.lang-select {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+}
+
 /* ---- Focus visible ---- */
 button:focus-visible, .select-card:focus-visible, .back-link:focus-visible,
-.new-controller-ad:focus-visible, .footer-icons a:focus-visible {
+.new-controller-ad:focus-visible, .footer-icons a:focus-visible, .lang-select:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
