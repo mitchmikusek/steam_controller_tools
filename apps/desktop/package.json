@@ -4,6 +4,7 @@
   "description": "Flash BLE firmware onto the original Steam Controller (2015)",
   "author": "Mitch Mikusek",
   "license": "GPL-2.0-only",
+  "repository": "github:mitchmikusek/steam_controller_tools",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
