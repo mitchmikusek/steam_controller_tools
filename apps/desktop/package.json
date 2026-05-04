@@ -7,6 +7,7 @@
     "email": "mitchmikusek@users.noreply.github.com"
   },
   "license": "GPL-2.0-only",
+  "homepage": "https://steamcontroller.tools",
   "repository": "github:mitchmikusek/steam_controller_tools",
   "main": "main.js",
   "scripts": {
@@ -37,11 +38,16 @@
       "icon": "icon.icns",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
-      "notarize": true
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": {
+        "teamId": "8ARVP9U577"
+      }
     },
     "win": {
       "target": ["nsis"],
-      "icon": "icon.ico"
+      "icon": "icon.ico",
+      "publisherName": "Mitch Mikusek"
     },
     "nsis": {
       "oneClick": true,
