@@ -29,17 +29,27 @@
     "appId": "tools.steamcontroller.flash",
     "productName": "Steam Controller Flash Tool",
     "icon": "icon.png",
-    "files": ["main.js", "preload.js", "ui/**/*", "icon.*"],
+    "files": [
+      "main.js",
+      "preload.js",
+      "ui/**/*",
+      "icon.*"
+    ],
     "directories": {
       "output": "release"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Utility",
       "icon": "icon.png"
     },
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "category": "public.app-category.utilities",
       "icon": "icon.icns",
       "hardenedRuntime": true,
@@ -49,7 +59,9 @@
       "notarize": true
     },
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "icon.ico",
       "publisherName": "Mitch Mikusek"
     },
