@@ -40,9 +40,7 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
-      "notarize": {
-        "teamId": "8ARVP9U577"
-      }
+      "notarize": true
     },
     "win": {
       "target": ["nsis"],
