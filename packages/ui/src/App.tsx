@@ -135,11 +135,11 @@ export function App() {
   const handleReadInfo = async (): Promise<ControllerInfo | null> => {
     if (!controller) return null;
     try {
-      // Try SWD to wake the radio chip (BLE firmware only)
-      // Don't resetSOC after — it reboots the controller
+      logger.info('Starting SWD to read radio info...');
       await controller.swdStart();
-    } catch {
-      // SWD not available (production firmware) — that's fine
+      logger.info('SWD started');
+    } catch (e) {
+      logger.info(`SWD not available (expected on production firmware): ${e}`);
     }
     try {
       const info = await coordinator.getInfo();
