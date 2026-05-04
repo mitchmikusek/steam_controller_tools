@@ -10,7 +10,9 @@
   "connect": {
     "hint": "通过 USB 连接控制器，然后点击「连接」",
     "button": "连接",
-    "connecting": "正在连接..."
+    "connecting": "正在连接...",
+    "failed": "未找到控制器。是否已通过 USB 连接？",
+    "udevHint": "未找到控制器。在 Linux 上，您可能需要安装 Steam（它会设置设备权限），或手动将附带的 udev 规则文件复制到 /etc/udev/rules.d/ 并重启。"
   },
   "home": {
     "connected": "已连接",

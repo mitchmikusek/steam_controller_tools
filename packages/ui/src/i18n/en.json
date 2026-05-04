@@ -10,7 +10,9 @@
   "connect": {
     "hint": "Plug in controller via USB, then click Connect",
     "button": "Connect",
-    "connecting": "Connecting..."
+    "connecting": "Connecting...",
+    "failed": "No controller found. Is it plugged in via USB?",
+    "udevHint": "No controller found. On Linux, you may need to install Steam (which sets up device permissions) or manually copy the included udev rules file to /etc/udev/rules.d/ and reboot."
   },
   "home": {
     "connected": "Connected",

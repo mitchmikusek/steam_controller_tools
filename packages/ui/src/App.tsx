@@ -116,12 +116,18 @@ export function App() {
 
   const onProgress = useCallback((p: FlashProgress) => setFlashProgress(p), []);
 
-  const onReconnectNeeded = useCallback((pid: number): Promise<void> => {
-    return new Promise((resolve) => {
-      setReconnectPid(pid);
-      reconnectResolverRef.current = resolve;
-    });
-  }, []);
+  const isDesktop = !!(window as { desktop?: { isDesktop: boolean } }).desktop?.isDesktop;
+
+  const onReconnectNeeded = useCallback(
+    (pid: number): Promise<void> => {
+      if (isDesktop) return Promise.resolve();
+      return new Promise((resolve) => {
+        setReconnectPid(pid);
+        reconnectResolverRef.current = resolve;
+      });
+    },
+    [isDesktop],
+  );
 
   const coordinator = useFlashCoordinator(onProgress, onReconnectNeeded);
   coordinatorRef.current = coordinator;
@@ -150,6 +156,12 @@ export function App() {
       navigateTo('home');
     } catch (e) {
       logger.error(`Connection failed: ${e}`);
+      const isLinux = navigator.platform?.startsWith('Linux');
+      if (isDesktop && isLinux) {
+        setToast({ message: t('connect.udevHint'), type: 'warn' });
+      } else {
+        setToast({ message: t('connect.failed'), type: 'error' });
+      }
     }
   };
 

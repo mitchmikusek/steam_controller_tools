@@ -6,6 +6,8 @@
     "dev": "pnpm --filter @scflash/ui dev",
     "build:protocol": "pnpm --filter @scflash/protocol build",
     "build": "pnpm --filter @scflash/protocol build && pnpm --filter @scflash/ui build",
+    "build:desktop": "pnpm run build && cp -r packages/ui/dist apps/desktop/ui && pnpm --filter steam-controller-flash-tool dist",
+    "build:desktop:dir": "pnpm run build && cp -r packages/ui/dist apps/desktop/ui && pnpm --filter steam-controller-flash-tool dist:dir",
     "lint": "eslint 'packages/*/src/**/*.{ts,tsx}'",
     "format:check": "prettier --check 'packages/*/src/**/*.{ts,tsx}'",
     "format": "prettier --write 'packages/*/src/**/*.{ts,tsx}'",

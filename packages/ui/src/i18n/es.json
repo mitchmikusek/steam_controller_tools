@@ -10,7 +10,9 @@
   "connect": {
     "hint": "Conecte el control por USB y luego haga clic en Conectar",
     "button": "Conectar",
-    "connecting": "Conectando..."
+    "connecting": "Conectando...",
+    "failed": "No se encontró el control. ¿Está conectado por USB?",
+    "udevHint": "No se encontró el control. En Linux, puede necesitar instalar Steam (que configura los permisos del dispositivo) o copiar manualmente el archivo de reglas udev incluido a /etc/udev/rules.d/ y reiniciar."
   },
   "home": {
     "connected": "Conectado",
