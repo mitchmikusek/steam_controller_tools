@@ -32,7 +32,17 @@
     "left": "Left",
     "right": "Right",
     "ledBrightness": "LED Brightness",
-    "jingles": "Jingles"
+    "jingles": "Jingles",
+    "resetSettings": "Reset Settings",
+    "resetSettingsSub": "Restore default mappings and preferences",
+    "resetSettingsDetail": "This will reset button mappings, LED brightness, and other preferences to defaults. Your device pairings will be kept.",
+    "factoryReset": "Factory Reset",
+    "factoryResetSub": "Clear all data including pairings",
+    "factoryResetDetail": "This will erase all settings and pairing data. The controller will need to be re-paired with your devices.",
+    "reset": "Reset",
+    "cancel": "Cancel",
+    "confirmReset": "Reset Settings",
+    "confirmFactoryReset": "Factory Reset"
   },
   "choose": {
     "title": "Choose Firmware",

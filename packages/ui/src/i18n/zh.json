@@ -32,7 +32,17 @@
     "left": "左",
     "right": "右",
     "ledBrightness": "LED 亮度",
-    "jingles": "提示音"
+    "jingles": "提示音",
+    "resetSettings": "重置设置",
+    "resetSettingsSub": "恢复默认映射和偏好设置",
+    "resetSettingsDetail": "这将重置按键映射、LED 亮度和其他偏好设置为默认值。设备配对信息将保留。",
+    "factoryReset": "恢复出厂设置",
+    "factoryResetSub": "清除所有数据（包括配对信息）",
+    "factoryResetDetail": "这将清除所有设置和配对数据。控制器需要重新与您的设备配对。",
+    "reset": "重置",
+    "cancel": "取消",
+    "confirmReset": "重置设置",
+    "confirmFactoryReset": "恢复出厂设置"
   },
   "choose": {
     "title": "选择固件",

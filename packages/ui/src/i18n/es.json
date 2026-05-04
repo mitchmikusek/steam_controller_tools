@@ -32,7 +32,17 @@
     "left": "Izquierdo",
     "right": "Derecho",
     "ledBrightness": "Brillo del LED",
-    "jingles": "Melodías"
+    "jingles": "Melodías",
+    "resetSettings": "Restablecer Configuración",
+    "resetSettingsSub": "Restaurar mapeos y preferencias predeterminados",
+    "resetSettingsDetail": "Esto restablecerá los mapeos de botones, brillo del LED y otras preferencias a los valores predeterminados. Los emparejamientos de dispositivos se mantendrán.",
+    "factoryReset": "Restablecimiento de Fábrica",
+    "factoryResetSub": "Borrar todos los datos incluyendo emparejamientos",
+    "factoryResetDetail": "Esto borrará toda la configuración y los datos de emparejamiento. El control deberá emparejarse nuevamente con sus dispositivos.",
+    "reset": "Restablecer",
+    "cancel": "Cancelar",
+    "confirmReset": "Restablecer",
+    "confirmFactoryReset": "Restablecer de Fábrica"
   },
   "choose": {
     "title": "Elegir Firmware",

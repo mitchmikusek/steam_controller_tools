@@ -32,7 +32,17 @@
     "left": "Gauche",
     "right": "Droite",
     "ledBrightness": "Luminosité LED",
-    "jingles": "Mélodies"
+    "jingles": "Mélodies",
+    "resetSettings": "Réinitialiser les Paramètres",
+    "resetSettingsSub": "Restaurer les mappages et préférences par défaut",
+    "resetSettingsDetail": "Cela réinitialisera les mappages de boutons, la luminosité LED et les autres préférences aux valeurs par défaut. Les appairages seront conservés.",
+    "factoryReset": "Réinitialisation d'Usine",
+    "factoryResetSub": "Effacer toutes les données y compris les appairages",
+    "factoryResetDetail": "Cela effacera tous les paramètres et données d'appairage. La manette devra être réappairée avec vos appareils.",
+    "reset": "Réinitialiser",
+    "cancel": "Annuler",
+    "confirmReset": "Réinitialiser",
+    "confirmFactoryReset": "Réinitialisation d'Usine"
   },
   "choose": {
     "title": "Choisir le Firmware",
