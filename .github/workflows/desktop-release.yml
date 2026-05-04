@@ -30,7 +30,7 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           cd apps/desktop
-          npm version "$VERSION" --no-git-tag-version
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
           cd ../..
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
