@@ -48,7 +48,6 @@ export function App() {
   const [flashProgress, setFlashProgress] = useState<FlashProgress | null>(null);
   const [reconnectPid, setReconnectPid] = useState<number | null>(null);
   const [flashResult, setFlashResult] = useState<{ success: boolean; error?: string } | null>(null);
-  const [loadingInfo, setLoadingInfo] = useState(false);
 
   // Reconnect promise resolver — must be ref, not state (useState would call the function)
   const reconnectResolverRef = useRef<(() => void) | null>(null);
@@ -133,22 +132,28 @@ export function App() {
   const coordinator = useFlashCoordinator(onProgress, onReconnectNeeded);
   coordinatorRef.current = coordinator;
 
-  const retryGetInfo = async () => {
-    setLoadingInfo(true);
-    for (let i = 0; i < 30; i++) {
-      await new Promise((r) => setTimeout(r, 1000));
+  const handleReadInfo = async (): Promise<ControllerInfo | null> => {
+    if (!controller) return null;
+    try {
+      // Try SWD to wake the radio chip (BLE firmware only)
+      await controller.swdStart();
+      const info = await coordinator.getInfo();
+      await controller.resetSOC();
+      if (info) {
+        setDeviceInfo(info);
+        setController(coordinator.getController());
+      }
+      return info;
+    } catch {
+      // SWD failed (production firmware) — just read info directly
       try {
         const info = await coordinator.getInfo();
-        if (info && info.radioRev !== 0) {
-          setDeviceInfo(info);
-          setController(coordinator.getController());
-          break;
-        }
+        if (info) setDeviceInfo(info);
+        return info;
       } catch {
-        /* ok */
+        return null;
       }
     }
-    setLoadingInfo(false);
   };
 
   const handleConnect = async () => {
@@ -159,11 +164,8 @@ export function App() {
         const info = await coordinator.getInfo();
         setDeviceInfo(info);
         setController(coordinator.getController());
-        navigateTo('home');
-        if (!info || info.radioRev === 0) retryGetInfo();
-      } else {
-        navigateTo('home');
       }
+      navigateTo('home');
     } catch (e) {
       logger.error(`Connection failed: ${e}`);
       const isLinux = navigator.platform?.startsWith('Linux');
@@ -202,14 +204,23 @@ export function App() {
     try {
       await coordinator.flash(firmwareChoice, customFiles);
 
+      // Read final info — radio should be available right after flash
+      try {
+        const info = await coordinator.getInfo();
+        if (info) {
+          setDeviceInfo(info);
+          setController(coordinator.getController());
+        }
+      } catch {
+        // Info read is best-effort; user can retry via the info modal
+      }
       setFlashResult({ success: true });
       navigateTo('complete', true);
-      retryGetInfo();
     } catch (e) {
       try {
         await coordinator.disconnect();
       } catch {
-        /* ok */
+        // Best-effort cleanup — device may already be disconnected
       }
       setFlashResult({ success: false, error: e instanceof Error ? e.message : String(e) });
       navigateTo('complete', true);
@@ -232,7 +243,7 @@ export function App() {
         setDeviceInfo(info);
         setController(coordinator.getController());
       } catch {
-        /* ok */
+        // Info read failed — home page will show whatever we have
       }
       navigateTo('home', true);
     } else {
@@ -300,7 +311,7 @@ export function App() {
             info={deviceInfo}
             controller={controller}
             mode={deviceMode}
-            loadingInfo={loadingInfo}
+            onReadInfo={handleReadInfo}
             onDisconnect={handleDisconnect}
             onFlash={handleFlash}
           />
@@ -326,7 +337,7 @@ export function App() {
             error={flashResult.error}
             firmwareType={label}
             info={deviceInfo}
-            loadingInfo={loadingInfo}
+            onReadInfo={handleReadInfo}
             onHome={handleReturnHome}
           />
         )}
