@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ControllerInfo } from '@scflash/protocol';
 import { Modal } from './Modal';
@@ -13,33 +13,37 @@ export function InfoButton({ info, onReadInfo }: Props) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [reading, setReading] = useState(false);
+  const [freshInfo, setFreshInfo] = useState<ControllerInfo | null>(null);
 
-  useEffect(() => {
-    if (!open || !onReadInfo || info.radioRev !== 0) return;
-    let cancelled = false;
+  const handleOpen = async () => {
+    setOpen(true);
+    setFreshInfo(null);
+    if (!onReadInfo) return;
     setReading(true);
-    onReadInfo().finally(() => {
-      if (!cancelled) setReading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [open]);
+    try {
+      const result = await onReadInfo();
+      setFreshInfo(result);
+    } finally {
+      setReading(false);
+    }
+  };
+
+  const display = freshInfo ?? info;
 
   return (
     <>
-      <button
-        className="btn-ghost btn-sm btn-info-circle"
-        onClick={() => setOpen(true)}
-        aria-label={t('firmware.details')}
-      >
+      <button className="btn-ghost btn-sm btn-info-circle" onClick={handleOpen} aria-label={t('firmware.details')}>
         i
       </button>
       <Modal open={open} onClose={() => setOpen(false)} title={t('firmware.details')}>
-        <Row label={t('firmware.firmware')} value={fmtRev(info.firmwareRev)} />
-        <Row label={t('firmware.radio')} value={fmtRev(info.radioRev)} loading={reading && info.radioRev === 0} />
-        <Row label={t('firmware.bootloader')} value={fmtRev(info.bootloaderRev)} />
-        <Row label={t('firmware.usbPid')} value={`0x${info.usbPid.toString(16).padStart(4, '0')}`} />
+        <Row label={t('firmware.firmware')} value={fmtRev(display.firmwareRev)} loading={reading} />
+        <Row label={t('firmware.radio')} value={fmtRev(display.radioRev)} loading={reading} />
+        <Row label={t('firmware.bootloader')} value={fmtRev(display.bootloaderRev)} loading={reading} />
+        <Row
+          label={t('firmware.usbPid')}
+          value={`0x${display.usbPid.toString(16).padStart(4, '0')}`}
+          loading={reading}
+        />
       </Modal>
     </>
   );
