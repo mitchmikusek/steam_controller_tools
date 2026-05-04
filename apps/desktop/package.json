@@ -19,7 +19,7 @@
     "appId": "tools.steamcontroller.flash",
     "productName": "Steam Controller Flash Tool",
     "icon": "icon.png",
-    "files": ["main.js", "preload.js", "ui/**/*"],
+    "files": ["main.js", "preload.js", "ui/**/*", "icon.*"],
     "directories": {
       "output": "release"
     },
