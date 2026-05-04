@@ -9,16 +9,7 @@ export function LanguageSwitcher() {
       value={i18n.language.split('-')[0]} // 'zh-CN' → 'zh'
       onChange={(e) => i18n.changeLanguage(e.target.value)}
       aria-label="Language"
-      style={{
-        background: 'transparent',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius)',
-        color: 'var(--text-dim)',
-        fontSize: '0.7rem',
-        padding: '4px 8px',
-        cursor: 'pointer',
-        outline: 'none',
-      }}
+      className="lang-select"
     >
       {LANGUAGES.map(({ code, label }) => (
         <option key={code} value={code} style={{ background: 'var(--bg)' }}>

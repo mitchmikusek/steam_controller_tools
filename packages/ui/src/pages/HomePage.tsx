@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ControllerInfo, ControllerDevice } from '@scflash/protocol';
 import { JINGLES } from '@scflash/protocol';
@@ -18,16 +18,7 @@ interface Props {
 }
 
 function useShortViewport() {
-  const [isShort, setIsShort] = useState(() => window.matchMedia('(max-height: 700px)').matches);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-height: 700px)');
-    const handler = (e: MediaQueryListEvent) => setIsShort(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-
-  return isShort;
+  return useState(() => window.matchMedia('(max-height: 700px)').matches)[0];
 }
 
 export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Props) {
