@@ -1,4 +1,5 @@
 const { app, BrowserWindow, session } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
 const VALVE_VID = 0x28de;
@@ -45,7 +46,10 @@ function createWindow() {
   win.loadFile(uiPath);
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  autoUpdater.checkForUpdatesAndNotify();
+});
 
 app.on('window-all-closed', () => {
   app.quit();

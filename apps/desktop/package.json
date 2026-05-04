@@ -15,11 +15,17 @@
     "dist": "electron-builder",
     "dist:dir": "electron-builder --dir"
   },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
   "devDependencies": {
     "electron": "^41.5.0",
     "electron-builder": "^25.1.8"
   },
   "build": {
+    "publish": {
+      "provider": "github"
+    },
     "appId": "tools.steamcontroller.flash",
     "productName": "Steam Controller Flash Tool",
     "icon": "icon.png",
