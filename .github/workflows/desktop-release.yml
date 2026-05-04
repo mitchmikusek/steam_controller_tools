@@ -15,7 +15,22 @@ permissions:
   contents: write
 
 jobs:
+  tag:
+    if: inputs.version != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create and push tag
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
   build:
+    needs: [tag]
+    if: ${{ !cancelled() && !failure() }}
     strategy:
       matrix:
         include:
@@ -59,46 +74,15 @@ jobs:
         run: pnpm --filter steam-controller-flash-tool dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # macOS code signing (skipped if CSC_LINK is not set)
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          # Skip signing entirely if no cert provided
           CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.CSC_LINK && 'true' || 'false' }}
-          # macOS notarization
           APPLE_ID: ${{ vars.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: desktop-${{ matrix.platform }}
-          path: |
-            apps/desktop/release/*.AppImage
-            apps/desktop/release/*.deb
-            apps/desktop/release/*.dmg
-            apps/desktop/release/*.exe
-            apps/desktop/release/*.yml
-          if-no-files-found: ignore
-
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v') || inputs.version != ''
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        if: inputs.version != ''
-
-      - name: Create and push tag
-        if: inputs.version != ''
-        env:
-          VERSION: ${{ inputs.version }}
-        run: |
-          git tag "v${VERSION}"
-          git push origin "v${VERSION}"
-
       - name: Determine tag
+        if: inputs.version != '' || startsWith(github.ref, 'refs/tags/v')
         id: tag
         env:
           INPUT_VERSION: ${{ inputs.version }}
@@ -109,17 +93,29 @@ jobs:
           else
             echo "tag=${GIT_REF}" >> "$GITHUB_OUTPUT"
           fi
+        shell: bash
 
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: dist
-          merge-multiple: true
-
-      - name: Create GitHub Release
+      - name: Upload to GitHub Release
+        if: steps.tag.outputs.tag != ''
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          files: dist/*
+          files: |
+            apps/desktop/release/*.AppImage
+            apps/desktop/release/*.deb
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.exe
           draft: true
           generate_release_notes: true
+
+      - name: Upload artifacts (test builds)
+        if: steps.tag.outputs.tag == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.platform }}
+          path: |
+            apps/desktop/release/*.AppImage
+            apps/desktop/release/*.deb
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.exe
+          if-no-files-found: ignore
