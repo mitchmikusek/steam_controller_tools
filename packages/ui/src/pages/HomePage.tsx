@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ControllerInfo, ControllerDevice } from '@scflash/protocol';
 import { JINGLES } from '@scflash/protocol';
@@ -16,8 +17,13 @@ interface Props {
   onFlash: () => void;
 }
 
+function useShortViewport() {
+  return useState(() => window.matchMedia('(max-height: 700px)').matches)[0];
+}
+
 export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Props) {
   const { t } = useTranslation();
+  const isShort = useShortViewport();
   const fwType = info ? detectFirmwareType(info) : 'unknown';
   const badgeType =
     mode === 'bootloader' ? 'bootloader' : fwType === 'ble' ? 'ble' : fwType === 'production' ? 'prod' : 'unknown';
@@ -71,65 +77,73 @@ export function HomePage({ info, controller, mode, onDisconnect, onFlash }: Prop
 
       {mode === 'normal' && controller && (
         <div className="section">
-          <SectionTitle>{t('home.extras')}</SectionTitle>
+          <details className="collapsible-section" open={!isShort || undefined}>
+            <summary>
+              {t('home.extras')} <span className="chevron">&#9660;</span>
+            </summary>
 
-          <SectionRow label={t('home.hapticFeedback')}>
-            <div style={{ display: 'flex', gap: 6 }}>
-              {(['left', 'right'] as const).map((side) => (
+            <SectionRow label={t('home.hapticFeedback')}>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {(['left', 'right'] as const).map((side) => (
+                  <button
+                    key={side}
+                    className="btn-ghost btn-sm"
+                    onClick={async () => {
+                      try {
+                        await controller.hapticPulse(side, 65535, 65535, 2);
+                      } catch (e) {
+                        logger.error(`${e}`);
+                      }
+                    }}
+                  >
+                    {t(`home.${side}`)}
+                  </button>
+                ))}
+              </div>
+            </SectionRow>
+
+            <SectionRow label={t('home.ledBrightness')}>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                defaultValue="100"
+                aria-label={t('home.ledBrightness')}
+                style={{ width: 160, accentColor: 'var(--blue)' }}
+                onChange={async (e) => {
+                  try {
+                    await controller.setBrightness(parseInt(e.target.value));
+                  } catch (err) {
+                    logger.error(`${err}`);
+                  }
+                }}
+              />
+            </SectionRow>
+          </details>
+
+          <details className="collapsible-section" open={!isShort || undefined}>
+            <summary>
+              {t('home.jingles')} <span className="chevron">&#9660;</span>
+            </summary>
+            <div className="jingle-grid">
+              {JINGLES.map((name, i) => (
                 <button
-                  key={side}
+                  key={i}
                   className="btn-ghost btn-sm"
                   onClick={async () => {
                     try {
-                      await controller.hapticPulse(side, 65535, 65535, 2);
+                      await controller.playJingle(i);
+                      logger.info(`Playing: ${name}`);
                     } catch (e) {
                       logger.error(`${e}`);
                     }
                   }}
                 >
-                  {t(`home.${side}`)}
+                  {name}
                 </button>
               ))}
             </div>
-          </SectionRow>
-
-          <SectionRow label={t('home.ledBrightness')}>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              defaultValue="100"
-              aria-label={t('home.ledBrightness')}
-              style={{ width: 160, accentColor: 'var(--blue)' }}
-              onChange={async (e) => {
-                try {
-                  await controller.setBrightness(parseInt(e.target.value));
-                } catch (err) {
-                  logger.error(`${err}`);
-                }
-              }}
-            />
-          </SectionRow>
-
-          <SectionTitle>{t('home.jingles')}</SectionTitle>
-          <div className="jingle-grid">
-            {JINGLES.map((name, i) => (
-              <button
-                key={i}
-                className="btn-ghost btn-sm"
-                onClick={async () => {
-                  try {
-                    await controller.playJingle(i);
-                    logger.info(`Playing: ${name}`);
-                  } catch (e) {
-                    logger.error(`${e}`);
-                  }
-                }}
-              >
-                {name}
-              </button>
-            ))}
-          </div>
+          </details>
         </div>
       )}
     </div>

@@ -192,22 +192,23 @@ export function App() {
     try {
       await coordinator.flash(firmwareChoice, customFiles);
 
-      // Retry getInfo until radio is populated
-      let info: ControllerInfo | null = null;
+      setFlashResult({ success: true });
+      navigateTo('complete', true);
+
+      // Read final firmware info in the background (already on complete page)
       for (let i = 0; i < 8; i++) {
         await new Promise((r) => setTimeout(r, 1000));
         try {
-          info = await coordinator.getInfo();
-          if (info && info.radioRev !== 0) break;
+          const info = await coordinator.getInfo();
+          if (info && info.radioRev !== 0) {
+            setDeviceInfo(info);
+            setController(coordinator.getController());
+            break;
+          }
         } catch {
           /* ok */
         }
       }
-      setDeviceInfo(info);
-      setController(coordinator.getController());
-
-      setFlashResult({ success: true });
-      navigateTo('complete', true);
     } catch (e) {
       try {
         await coordinator.disconnect();
