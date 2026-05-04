@@ -156,6 +156,12 @@ export function App() {
       navigateTo('home');
     } catch (e) {
       logger.error(`Connection failed: ${e}`);
+      const isLinux = navigator.platform?.startsWith('Linux');
+      if (isDesktop && isLinux) {
+        setToast({ message: t('connect.udevHint'), type: 'warn' });
+      } else {
+        setToast({ message: t('connect.failed'), type: 'error' });
+      }
     }
   };
 

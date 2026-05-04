@@ -10,7 +10,9 @@
   "connect": {
     "hint": "Branchez la manette à l'aide d'un fil USB, puis cliquez sur Connecter",
     "button": "Connecter",
-    "connecting": "Connexion..."
+    "connecting": "Connexion...",
+    "failed": "Aucune manette trouvée. Est-elle branchée en USB ?",
+    "udevHint": "Aucune manette trouvée. Sous Linux, vous devrez peut-être installer Steam (qui configure les permissions) ou copier manuellement le fichier de règles udev inclus dans /etc/udev/rules.d/ et redémarrer."
   },
   "home": {
     "connected": "Connecté",
