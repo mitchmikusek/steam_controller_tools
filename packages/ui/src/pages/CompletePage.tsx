@@ -11,10 +11,11 @@ interface Props {
   error?: string;
   firmwareType: string;
   info: ControllerInfo | null;
+  loadingInfo?: boolean;
   onHome: () => void;
 }
 
-export function CompletePage({ success, error, firmwareType, info, onHome }: Props) {
+export function CompletePage({ success, error, firmwareType, info, loadingInfo, onHome }: Props) {
   const { t } = useTranslation();
   const [bleHelpOpen, setBleHelpOpen] = useState(false);
 
@@ -28,7 +29,7 @@ export function CompletePage({ success, error, firmwareType, info, onHome }: Pro
           {success ? (
             <>
               <SectionRow label={t('complete.firmwareInstalled', { type: firmwareType })}>
-                {info && <InfoButton info={info} />}
+                {info && <InfoButton info={info} loading={loadingInfo} />}
               </SectionRow>
               {firmwareType === 'BLE' && (
                 <SectionRow label={t('complete.controllerModes')}>
