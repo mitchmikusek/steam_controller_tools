@@ -73,7 +73,7 @@ Production deploys on push to main. PRs get preview URLs commented automatically
 - **Reconnect resolver**: Stored in `useRef` (not `useState` — React treats function values as state updaters).
 - **Lazy imports**: Wrapped with `lazyWithReload()` to handle stale chunks after deploys.
 - **Firmware sources**: All firmware loaded from local bundle. Valve's CDN and ZIP sources lack CORS headers and can't be fetched from a browser.
-- **Firmware size validation**: Rejects files < 10KB or > 500KB.
+- **Firmware size validation**: Rejects files < 512B or > 500KB.
 
 ## Testing
 

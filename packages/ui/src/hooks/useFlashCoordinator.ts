@@ -25,7 +25,7 @@ async function loadFirmwareFile(config: FirmwareFileConfig): Promise<ArrayBuffer
   const res = await fetch(config.path);
   if (!res.ok) throw new Error(`${config.name}: failed to load (HTTP ${res.status})`);
   const buf = await res.arrayBuffer();
-  if (buf.byteLength < 10000 || buf.byteLength > 500000)
+  if (buf.byteLength < 512 || buf.byteLength > 500000)
     throw new Error(`${config.name}: invalid size (${buf.byteLength} bytes)`);
   logger.info(`${config.name}: loaded from local bundle`);
   return buf;
