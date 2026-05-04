@@ -2,6 +2,11 @@ name: Desktop Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 1.0.0). Leave empty for test build only.'
+        required: false
+        type: string
   push:
     tags:
       - 'v*'
@@ -78,10 +83,33 @@ jobs:
 
   release:
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.version != ''
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+        if: inputs.version != ''
+
+      - name: Create and push tag
+        if: inputs.version != ''
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
+      - name: Determine tag
+        id: tag
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          GIT_REF: ${{ github.ref_name }}
+        run: |
+          if [ -n "$INPUT_VERSION" ]; then
+            echo "tag=v${INPUT_VERSION}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GIT_REF}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -91,6 +119,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.tag.outputs.tag }}
           files: dist/*
           draft: true
           generate_release_notes: true
