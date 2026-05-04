@@ -30,7 +30,10 @@
     "mac": {
       "target": ["dmg"],
       "category": "public.app-category.utilities",
-      "icon": "icon.icns"
+      "icon": "icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "notarize": true
     },
     "win": {
       "target": ["nsis"],
