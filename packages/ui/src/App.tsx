@@ -15,7 +15,7 @@ function lazyWithReload(loader: () => Promise<{ default: React.ComponentType }>)
       const key = 'chunk-reload';
       if (!sessionStorage.getItem(key)) {
         sessionStorage.setItem(key, '1');
-        window.location.reload();
+        window.location.replace(location.pathname + '?_=' + Date.now() + location.hash);
         return new Promise(() => {}); // never resolves — page is reloading
       }
       sessionStorage.removeItem(key);

@@ -54,7 +54,7 @@
     if (e.target.tagName === 'LINK' && e.target.rel === 'stylesheet') {
       if (!sessionStorage.getItem('css-reload')) {
         sessionStorage.setItem('css-reload', '1');
-        window.location.reload();
+        window.location.replace(location.pathname + '?_=' + Date.now() + location.hash);
       }
     }
   }, true);
