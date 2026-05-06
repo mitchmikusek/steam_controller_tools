@@ -12,8 +12,14 @@ import { logger } from './utils/logger';
 function lazyWithReload(loader: () => Promise<{ default: React.ComponentType }>) {
   return lazy(() =>
     loader().catch(() => {
-      window.location.reload();
-      return loader();
+      const key = 'chunk-reload';
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, '1');
+        window.location.reload();
+        return new Promise(() => {}); // never resolves — page is reloading
+      }
+      sessionStorage.removeItem(key);
+      throw new Error('Failed to load page after reload');
     }),
   );
 }
