@@ -119,6 +119,14 @@
   </div>
   <style>#seo-content { display: none; }</style>
   <noscript><style>#seo-content { display: block !important; max-width: 640px; margin: 0 auto; padding: 20px; color: #b8bcbf; }</style></noscript>
+  <script>
+  // Remove any leftover service worker from previous site versions
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      registrations.forEach(function(r) { r.unregister(); });
+    });
+  }
+  </script>
   <script type="module" src="/src/main.tsx"></script>
   <!-- Cloudflare Web Analytics auto-injected via custom domain -->
 </body>
