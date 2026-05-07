@@ -76,6 +76,35 @@
     "isAccessibleForFree": true
   }
   </script>
+
+  <!-- Stale asset recovery — must execute before Vite-injected assets below -->
+  <script>
+  (function() {
+    var recovering = false;
+    window.addEventListener('error', function(e) {
+      if (recovering) return;
+      var t = e.target;
+      if (!t || (t.tagName !== 'SCRIPT' && t.tagName !== 'LINK')) return;
+      if ((t.src || t.href || '').indexOf('/assets/') === -1) return;
+      if (location.search.indexOf('_=') !== -1) return;
+      recovering = true;
+      var cleanup = [];
+      if ('serviceWorker' in navigator) {
+        cleanup.push(navigator.serviceWorker.getRegistrations().then(function(regs) {
+          return Promise.all(regs.map(function(r) { return r.unregister(); }));
+        }));
+      }
+      if ('caches' in window) {
+        cleanup.push(caches.keys().then(function(keys) {
+          return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+        }));
+      }
+      Promise.all(cleanup).then(function() {
+        location.replace(location.pathname + '?_=' + Date.now() + location.hash);
+      });
+    }, true);
+  })();
+  </script>
 </head>
 <body>
   <div id="app"></div>

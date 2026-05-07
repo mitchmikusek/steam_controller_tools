@@ -16,6 +16,11 @@ if (import.meta.env.VITE_SENTRY_DSN) {
   });
 }
 
+// Clean up cache-busting param left by stale-asset recovery
+if (location.search.includes('_=')) {
+  history.replaceState(null, '', location.pathname + location.hash);
+}
+
 const root = document.getElementById('app')!;
 const controllerAvailable = Date.now() >= new Date('2026-05-04T10:00:00-07:00').getTime();
 

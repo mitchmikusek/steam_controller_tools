@@ -8,19 +8,35 @@ import { useHIDEvents } from './hooks/useHIDEvents';
 import { Toast } from './components/Toast';
 import { logger } from './utils/logger';
 
-// Lazy-loaded pages — reload on stale chunk (deploy changed hashes)
+// Lazy-loaded pages — reload on stale chunk (deploy changed hashes).
+// Clears service workers and caches before reloading so the retry fetches fresh.
 function lazyWithReload(loader: () => Promise<{ default: React.ComponentType }>) {
   return lazy(() =>
-    loader().catch(() => {
-      const key = 'chunk-reload';
-      if (!sessionStorage.getItem(key)) {
+    loader()
+      .then((mod) => {
+        sessionStorage.removeItem('chunk-reload');
+        return mod;
+      })
+      .catch(async () => {
+        const key = 'chunk-reload';
+        if (sessionStorage.getItem(key)) {
+          sessionStorage.removeItem(key);
+          throw new Error('Failed to load page after reload');
+        }
         sessionStorage.setItem(key, '1');
+        const cleanup: Promise<unknown>[] = [];
+        if ('serviceWorker' in navigator) {
+          cleanup.push(
+            navigator.serviceWorker.getRegistrations().then((regs) => Promise.all(regs.map((r) => r.unregister()))),
+          );
+        }
+        if ('caches' in window) {
+          cleanup.push(caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))));
+        }
+        await Promise.all(cleanup);
         window.location.replace(location.pathname + '?_=' + Date.now() + location.hash);
-        return new Promise(() => {}); // never resolves — page is reloading
-      }
-      sessionStorage.removeItem(key);
-      throw new Error('Failed to load page after reload');
-    }),
+        return new Promise(() => {});
+      }),
   );
 }
 const ConnectPage = lazyWithReload(() => import('./pages/ConnectPage'));
