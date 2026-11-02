@@ -4,6 +4,15 @@ import type { ControllerInfo } from '@scflash/protocol';
 import type { FirmwareChoice } from './ChooseFirmwarePage';
 import { BackLink } from '../components/BackLink';
 import { detectFirmwareType } from '../utils/firmware';
+import {
+  BLE_LPC,
+  BLE_SOFTDEVICE,
+  BLE_RADIO,
+  PROD_LPC,
+  PROD_BOOTLOADER,
+  PROD_RADIO,
+  GAMEPAD_RADIO,
+} from '../utils/firmware-sources';
 
 interface Check {
   label: string;
@@ -11,17 +20,12 @@ interface Check {
   detail?: string;
 }
 
+// The same files the flash loads, so the check cannot pass on one path while
+// the flash fetches another.
 const FW_FILES: Record<string, string[]> = {
-  ble: [
-    'fw_images/ble/vcf_wired_controller_d0g_5b0f21bd.bin',
-    'fw_images/ble/s110_nrf51_8.0.0_softdevice.bin',
-    'fw_images/ble/vcf_wired_controller_d0g_5a0e3f348_radio.bin',
-  ],
-  production: [
-    'fw_images/production/vcf_wired_controller_d0g.bin',
-    'fw_images/production/d0g_bootloader.bin',
-    'fw_images/production/d0g_module.bin',
-  ],
+  ble: [BLE_LPC, BLE_SOFTDEVICE, BLE_RADIO].map((f) => f.path),
+  production: [PROD_LPC, PROD_BOOTLOADER, PROD_RADIO].map((f) => f.path),
+  gamepad: [BLE_LPC, BLE_SOFTDEVICE, GAMEPAD_RADIO].map((f) => f.path),
 };
 
 interface Props {
@@ -65,7 +69,9 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
       ? t('preflight.customSelected')
       : choice === 'ble'
         ? t('preflight.bleBundled')
-        : t('preflight.prodBundled');
+        : choice === 'gamepad'
+          ? t('preflight.gamepadBundled')
+          : t('preflight.prodBundled');
 
   const checks: Check[] = [
     'hid' in navigator
@@ -96,9 +102,16 @@ export function PreflightPage({ choice, info, isConnected, onBack, onBegin }: Pr
   const currentType = useMemo(() => {
     if (!info) return t('badge.unknown', 'Unknown');
     const ft = detectFirmwareType(info);
-    return ft === 'ble' ? 'BLE' : ft === 'production' ? 'Production' : t('badge.unknown', 'Unknown');
+    return ft === 'ble'
+      ? 'BLE'
+      : ft === 'gamepad'
+        ? 'BLE Gamepad'
+        : ft === 'production'
+          ? 'Production'
+          : t('badge.unknown', 'Unknown');
   }, [info, t]);
-  const targetType = choice === 'ble' ? 'BLE' : choice === 'production' ? 'Production' : 'Custom';
+  const targetType =
+    choice === 'ble' ? 'BLE' : choice === 'production' ? 'Production' : choice === 'gamepad' ? 'BLE Gamepad' : 'Custom';
 
   const warnings = [
     t('preflight.warnNoUnplug'),

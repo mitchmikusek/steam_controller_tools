@@ -10,6 +10,7 @@ Flash BLE firmware onto your original Steam Controller (2015) directly from your
 
 - **One-click Bluetooth flash** — adds BLE support while keeping dongle compatibility
 - **Revert to production** firmware anytime
+- **BLE Gamepad (experimental)** — radio firmware that pairs as a standard Bluetooth gamepad (Android TV, phones), from [steamcontroller-ble-gamepad](https://github.com/dimitrieh/steamcontroller-ble-gamepad)
 - **Pre-flight checks** — validates browser, connection, and firmware before flashing
 - **Step-guided wizard** — choose firmware → preflight → flash → done
 - **Controller extras** — haptic test, LED brightness, 14 built-in jingles

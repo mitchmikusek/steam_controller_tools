@@ -3,6 +3,7 @@ import {
   FlashCoordinator,
   createBLEFirmwareSet,
   createProductionFirmwareSet,
+  createCustomRadioFirmwareSet,
   loadFirmwareFromFile,
   type ControllerInfo,
   type FlashProgress,
@@ -16,6 +17,7 @@ import {
   PROD_LPC,
   PROD_BOOTLOADER,
   PROD_RADIO,
+  GAMEPAD_RADIO,
   type FirmwareFileConfig,
 } from '../utils/firmware-sources';
 
@@ -77,6 +79,24 @@ export function useFlashCoordinator(
       const c = getCoordinator();
 
       logger.info(`Loading ${choice} firmware...`);
+      if (choice === 'gamepad') {
+        /*
+         * The LPC gets Valve's BLE firmware, as for a BLE flash. That firmware
+         * implements the SWD bridge, so the BLE sequence applies unchanged: LPC
+         * first, then the radio through it. The only difference from a BLE
+         * flash is the radio: the stock SoftDevice plus the gamepad application
+         * at 0x18000 instead of Valve's radio blob. Leaving Valve's LPC firmware
+         * in place also keeps the radio reflashable later.
+         */
+        const fw = createCustomRadioFirmwareSet(
+          await loadFirmwareFile(BLE_LPC),
+          await loadFirmwareFile(BLE_SOFTDEVICE),
+          await loadFirmwareFile(GAMEPAD_RADIO),
+        );
+        await c.flashBLE(fw);
+        return;
+      }
+
       const fw = customFiles
         ? createBLEFirmwareSet(
             await loadFirmwareFromFile(customFiles.lpc),

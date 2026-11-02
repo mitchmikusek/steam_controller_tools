@@ -299,7 +299,14 @@ export function App() {
     };
   }, [isFlashing]);
 
-  const label = firmwareChoice === 'ble' ? 'BLE' : firmwareChoice === 'production' ? 'Production' : 'Custom';
+  const label =
+    firmwareChoice === 'ble'
+      ? 'BLE'
+      : firmwareChoice === 'production'
+        ? 'Production'
+        : firmwareChoice === 'gamepad'
+          ? 'BLE Gamepad'
+          : 'Custom';
 
   // Step indicator mapping
   const stepMap: Record<PageName, number | null> = {
@@ -354,6 +361,7 @@ export function App() {
           <CompletePage
             success={flashResult.success}
             error={flashResult.error}
+            choice={firmwareChoice}
             firmwareType={label}
             info={deviceInfo}
             onReadInfo={handleReadInfo}

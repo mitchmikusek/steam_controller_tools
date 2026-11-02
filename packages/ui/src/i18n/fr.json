@@ -19,6 +19,7 @@
     "bootloaderMode": "Mode Bootloader",
     "disconnect": "Déconnecter",
     "bleFirmware": "Firmware Bluetooth LE",
+    "gamepadFirmware": "Firmware BLE Gamepad",
     "productionFirmware": "Firmware de Production",
     "unknownFirmware": "Firmware Inconnu",
     "noFirmware": "Aucun firmware chargé. Flashez le firmware pour restaurer.",
@@ -28,6 +29,8 @@
     "extras": "Extras",
     "controllerModes": "Modes de la Manette",
     "viewBleModes": "Voir les Modes BLE",
+    "testGuide": "Ensuite : testez-le étape par étape",
+    "openTestGuide": "Ouvrir le guide de test",
     "hapticFeedback": "Retour Haptique",
     "left": "Gauche",
     "right": "Droite",
@@ -43,7 +46,10 @@
     "customTitle": "Firmware Personnalisé",
     "customDesc": "Chargez vos propres fichiers de firmware",
     "next": "Suivant",
-    "installed": "INSTALLÉ"
+    "installed": "INSTALLÉ",
+    "gamepadTitle": "Manette BLE (expérimental)",
+    "gamepadDesc": "Firmware radio personnalisé pour que la manette s’appaire comme une manette standard, et non comme une souris",
+    "gamepadNote": "Installe le firmware BLE standard de Valve sur le processeur principal et une application radio personnalisée, pour que la manette s’appaire comme une manette Bluetooth standard. Flashez BLE ou Production à tout moment pour revenir en arrière. Expérimental."
   },
   "preflight": {
     "title": "Vérifications Préalables",
@@ -57,6 +63,7 @@
     "customSelected": "Fichiers de firmware personnalisés sélectionnés",
     "bleBundled": "Firmware BLE inclus",
     "prodBundled": "Firmware de production inclus",
+    "gamepadBundled": "Firmware BLE Gamepad inclus",
     "warnNoUnplug": "Ne débranchez pas la manette pendant le flash.",
     "warnCloseSteam": "Fermez Steam et tous les jeux avant le flashage — ils peuvent interférer avec la manette.",
     "warnDuration": "Le processus prend environ 30 secondes. Vous serez guidé tout au long.",

@@ -19,6 +19,7 @@
     "bootloaderMode": "Bootloader Mode",
     "disconnect": "Disconnect",
     "bleFirmware": "Bluetooth LE Firmware",
+    "gamepadFirmware": "BLE Gamepad Firmware",
     "productionFirmware": "Production Firmware",
     "unknownFirmware": "Unknown Firmware",
     "noFirmware": "No firmware loaded. Flash firmware to restore.",
@@ -28,6 +29,8 @@
     "extras": "Extras",
     "controllerModes": "Controller Modes",
     "viewBleModes": "View BLE Modes",
+    "testGuide": "Next: test it step by step",
+    "openTestGuide": "Open test guide",
     "hapticFeedback": "Haptic Feedback",
     "left": "Left",
     "right": "Right",
@@ -43,7 +46,10 @@
     "customTitle": "Custom Firmware",
     "customDesc": "Load your own firmware files",
     "next": "Next",
-    "installed": "INSTALLED"
+    "installed": "INSTALLED",
+    "gamepadTitle": "BLE Gamepad (experimental)",
+    "gamepadDesc": "Custom radio firmware so the controller pairs as a standard gamepad, not a mouse",
+    "gamepadNote": "Installs Valve’s standard BLE firmware on the main processor and a custom radio application, so the controller pairs as a standard Bluetooth gamepad. Flash BLE or Production at any time to go back. Experimental."
   },
   "preflight": {
     "title": "Pre-flight Checks",
@@ -57,6 +63,7 @@
     "customSelected": "Custom firmware files selected",
     "bleBundled": "BLE firmware bundled",
     "prodBundled": "Production firmware bundled",
+    "gamepadBundled": "BLE Gamepad firmware bundled",
     "warnNoUnplug": "Do not unplug the controller during flashing.",
     "warnCloseSteam": "Close Steam and any games before flashing — they can interfere with the controller.",
     "warnDuration": "The process takes approximately 30 seconds. You will be prompted along the way.",

@@ -46,3 +46,21 @@ export const PROD_RADIO: FirmwareFileConfig = {
   name: 'Production radio module',
   path: 'fw_images/production/d0g_module.bin',
 };
+
+// ---- BLE gamepad radio application ----
+
+/**
+ * Replacement nRF51822 radio application that pairs the controller as a
+ * standard BLE HID gamepad instead of a mouse and keyboard. A bare application
+ * linked to 0x18000, flashed on top of the stock SoftDevice.
+ *
+ * Source and release: https://github.com/dimitrieh/steamcontroller-ble-gamepad
+ * (this file is that release's sc_ble_gamepad.bin, checksum in SHA256SUMS).
+ */
+export const GAMEPAD_RADIO: FirmwareFileConfig = {
+  name: 'BLE gamepad radio application',
+  path: 'fw_images/gamepad/sc_ble_gamepad.bin',
+};
+
+/** Step-by-step hardware test guide for the gamepad firmware. */
+export const GAMEPAD_TEST_GUIDE_URL = 'https://dimitrieh.github.io/steamcontroller-ble-gamepad/';
