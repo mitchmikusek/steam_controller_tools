@@ -27,14 +27,22 @@ export function HomePage({ info, controller, mode, onReadInfo, onDisconnect, onF
   const isShort = useShortViewport();
   const fwType = info ? detectFirmwareType(info) : 'unknown';
   const badgeType =
-    mode === 'bootloader' ? 'bootloader' : fwType === 'ble' ? 'ble' : fwType === 'production' ? 'prod' : 'unknown';
+    mode === 'bootloader'
+      ? 'bootloader'
+      : fwType === 'ble' || fwType === 'gamepad'
+        ? 'ble'
+        : fwType === 'production'
+          ? 'prod'
+          : 'unknown';
 
   const fwLabel =
     fwType === 'ble'
       ? t('home.bleFirmware')
-      : fwType === 'production'
-        ? t('home.productionFirmware')
-        : t('home.unknownFirmware');
+      : fwType === 'gamepad'
+        ? t('home.gamepadFirmware')
+        : fwType === 'production'
+          ? t('home.productionFirmware')
+          : t('home.unknownFirmware');
 
   return (
     <div className="page page-narrow">

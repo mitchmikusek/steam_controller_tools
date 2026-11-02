@@ -5,7 +5,7 @@ import { BackLink } from '../components/BackLink';
 import { SelectCard } from '../components/SelectCard';
 import { detectFirmwareType } from '../utils/firmware';
 
-export type FirmwareChoice = 'ble' | 'production' | 'custom';
+export type FirmwareChoice = 'ble' | 'production' | 'gamepad' | 'custom';
 
 interface Props {
   info: ControllerInfo | null;
@@ -36,6 +36,7 @@ export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
   const options: { id: FirmwareChoice; title: string; desc: string }[] = [
     { id: 'ble', title: t('choose.bleTitle'), desc: t('choose.bleDesc') },
     { id: 'production', title: t('choose.prodTitle'), desc: t('choose.prodDesc') },
+    { id: 'gamepad', title: t('choose.gamepadTitle'), desc: t('choose.gamepadDesc') },
     { id: 'custom', title: t('choose.customTitle'), desc: t('choose.customDesc') },
   ];
 
@@ -54,6 +55,12 @@ export function ChooseFirmwarePage({ info, onBack, onNext }: Props) {
           onClick={() => setSelected(opt.id)}
         />
       ))}
+
+      {selected === 'gamepad' && (
+        <div className="card" style={{ marginTop: 8 }}>
+          <p style={{ margin: 0 }}>{t('choose.gamepadNote')}</p>
+        </div>
+      )}
 
       {selected === 'custom' && (
         <div className="card" style={{ marginTop: 8 }}>

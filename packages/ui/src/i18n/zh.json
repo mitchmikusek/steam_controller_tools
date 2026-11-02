@@ -19,6 +19,7 @@
     "bootloaderMode": "引导加载程序模式",
     "disconnect": "断开连接",
     "bleFirmware": "Bluetooth LE 固件",
+    "gamepadFirmware": "BLE 游戏手柄固件",
     "productionFirmware": "出厂固件",
     "unknownFirmware": "未知固件",
     "noFirmware": "未加载固件。请刷写固件以恢复。",
@@ -28,6 +29,8 @@
     "extras": "更多功能",
     "controllerModes": "控制器模式",
     "viewBleModes": "查看 BLE 模式",
+    "testGuide": "下一步：逐步测试",
+    "openTestGuide": "打开测试指南",
     "hapticFeedback": "触觉反馈",
     "left": "左",
     "right": "右",
@@ -43,7 +46,10 @@
     "customTitle": "自定义固件",
     "customDesc": "加载您自己的固件文件",
     "next": "下一步",
-    "installed": "已安装"
+    "installed": "已安装",
+    "gamepadTitle": "BLE 游戏手柄（实验性）",
+    "gamepadDesc": "自定义无线固件，使手柄作为标准游戏手柄配对，而不是鼠标",
+    "gamepadNote": "在主处理器上安装 Valve 标准 BLE 固件，并安装自定义无线应用，使手柄作为标准蓝牙游戏手柄配对。随时刷入 BLE 或出厂固件即可恢复。实验性功能。"
   },
   "preflight": {
     "title": "刷写前检查",
@@ -57,6 +63,7 @@
     "customSelected": "已选择自定义固件文件",
     "bleBundled": "BLE 固件已内置",
     "prodBundled": "出厂固件已内置",
+    "gamepadBundled": "BLE 游戏手柄固件已内置",
     "warnNoUnplug": "刷写过程中请勿拔出控制器。",
     "warnCloseSteam": "刷写前请关闭 Steam 和所有游戏——它们可能会干扰控制器。",
     "warnDuration": "该过程大约需要 30 秒。过程中会有提示。",
