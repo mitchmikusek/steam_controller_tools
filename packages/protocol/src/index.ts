@@ -19,6 +19,9 @@ export type { FirmwareSet } from './firmware.js';
 export {
   createBLEFirmwareSet,
   createProductionFirmwareSet,
+  createCustomRadioFirmwareSet,
+  NRF51_S110_APP_BASE,
+  validateFirmwareSet,
   loadFirmwareFromFile,
   loadFirmwareFromUrl,
 } from './firmware.js';

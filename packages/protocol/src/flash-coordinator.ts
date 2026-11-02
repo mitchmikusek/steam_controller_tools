@@ -3,7 +3,7 @@ import { delay } from './device-base.js';
 import { ControllerDevice, type ControllerInfo } from './controller.js';
 import { BootloaderDevice } from './bootloader.js';
 import { WebHIDTransport } from './webhid-transport.js';
-import type { FirmwareSet } from './firmware.js';
+import { validateFirmwareSet, type FirmwareSet } from './firmware.js';
 
 export interface FlashProgress {
   phase: string;
@@ -107,6 +107,8 @@ export class FlashCoordinator {
    * 2. Flash radio firmware via SWD (normal mode)
    */
   async flashBLE(fw: FirmwareSet): Promise<void> {
+    this.assertFirmwareSetValid(fw);
+
     // Step 1: Switch to bootloader mode if needed
     if (this.mode === 'normal') {
       this.log('info', 'Rebooting to bootloader...');
@@ -150,18 +152,7 @@ export class FlashCoordinator {
     this.progress('SWD Start', 0);
     await this.controller.swdStart();
 
-    this.log('info', 'Erasing radio firmware...');
-    this.progress('Erasing radio', 0);
-    await this.controller.swdErase();
-
-    this.log('info', 'Flashing SoftDevice...');
-    await this.controller.swdFlash(fw.softdevice, 0, (_phase, pct) => this.progress('Flashing SoftDevice', pct));
-
-    this.log('info', 'Flashing radio application...');
-    await this.controller.swdFlash(fw.radioApp, fw.radioAppOffset, (phase, pct) => this.progress(phase, pct));
-
-    this.log('info', 'Saving radio firmware...');
-    await this.controller.swdSave();
+    await this.writeRadio(fw, 'SoftDevice', 'radio application');
 
     this.log('info', 'Resetting controller...');
     await this.controller.resetSOC();
@@ -184,6 +175,8 @@ export class FlashCoordinator {
    * 3. Flash LPC firmware (bootloader mode)
    */
   async flashProduction(fw: FirmwareSet): Promise<void> {
+    this.assertFirmwareSetValid(fw);
+
     // Step 1: Ensure normal mode for SWD
     // SWD requires a working LPC firmware. If we're in bootloader mode,
     // we need to flash BLE LPC first (it has SWD support), reboot, do SWD,
@@ -251,18 +244,7 @@ export class FlashCoordinator {
       await this.controller.swdStart();
     }
 
-    this.log('info', 'Erasing radio firmware...');
-    this.progress('Erasing radio', 0);
-    await this.controller.swdErase();
-
-    this.log('info', 'Flashing bootloader...');
-    await this.controller.swdFlash(fw.softdevice, 0, (phase, pct) => this.progress('Flashing bootloader', pct));
-
-    this.log('info', 'Flashing radio module...');
-    await this.controller.swdFlash(fw.radioApp, fw.radioAppOffset, (phase, pct) => this.progress(phase, pct));
-
-    this.log('info', 'Saving radio firmware...');
-    await this.controller.swdSave();
+    await this.writeRadio(fw, 'bootloader', 'radio module');
 
     // Step 3: Switch to bootloader for LPC flash
     this.log('info', 'Rebooting to bootloader...');
@@ -310,6 +292,50 @@ export class FlashCoordinator {
   }
 
   // --- Internal helpers ---
+
+  /**
+   * Erase the radio and write the set's two radio images over SWD: the base
+   * image at 0x0 and the application at its offset. Shared by both sequences
+   * so the two cannot drift apart. The SWD interface must already be started.
+   */
+  private async writeRadio(fw: FirmwareSet, defaultBase: string, defaultApp: string): Promise<void> {
+    if (!this.controller) throw new Error('Not in normal mode');
+
+    const baseLabel = fw.labels?.base ?? defaultBase;
+    const appLabel = fw.labels?.app ?? defaultApp;
+
+    this.log('info', 'Erasing radio firmware...');
+    this.progress('Erasing radio', 0);
+    await this.controller.swdErase();
+
+    this.log('info', `Flashing ${baseLabel} at 0x0...`);
+    await this.controller.swdFlash(fw.softdevice, 0, (_phase, pct) => this.progress(`Flashing ${baseLabel}`, pct));
+
+    this.log('info', `Flashing ${appLabel} at 0x${fw.radioAppOffset.toString(16)}...`);
+    await this.controller.swdFlash(fw.radioApp, fw.radioAppOffset, (_phase, pct) =>
+      this.progress(`Flashing ${appLabel}`, pct),
+    );
+
+    this.log('info', 'Saving radio firmware...');
+    await this.controller.swdSave();
+  }
+
+  /**
+   * Refuse a firmware set whose radio images and write offset disagree.
+   *
+   * Writing a 0x18000-linked application at address 0 lands it on top of the
+   * SoftDevice. Nothing reports an error when that happens -- swdFlash writes
+   * wherever it is told and the flash completes normally -- the radio just
+   * never boots again. Catching it here is the difference between a clear
+   * message and a silent failure the user has to guess at.
+   */
+  private assertFirmwareSetValid(fw: FirmwareSet): void {
+    const problem = validateFirmwareSet(fw);
+    if (problem) {
+      this.log('error', problem);
+      throw new Error(problem);
+    }
+  }
 
   private async waitForDevice(targetPid: number): Promise<void> {
     this.log('info', `Reconnecting to device PID 0x${targetPid.toString(16)}...`);
